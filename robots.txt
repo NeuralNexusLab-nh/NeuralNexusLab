@@ -1,0 +1,5 @@
+robots.txt for NeuralNexusLab's official website.
+
+Disallow: *
+
+By NeuralNexusLab.
