@@ -1,4 +1,4 @@
-robots.txt for NeuralNexusLab's official website.
+Robots.txt for NeuralNexusLab's official website.
 
 Disallow: *
 
