@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NXClaw // Terminal AI Agent</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-color: #050508;
+            --terminal-green: #39ff14;
+            --cyber-cyan: #00f0ff;
+            --cyber-magenta: #ff0055;
+            --dark-gray: #121216;
+            --border-color: #242430;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #d1d1de;
+            font-family: 'Share Tech Mono', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Scanlines Overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Glitch Effect */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .glitch {
+            font-size: 5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--terminal-green);
+            position: relative;
+            display: inline-block;
+            animation: glitch-anim 4s infinite linear alternate-reverse;
+        }
+
+        .glitch::before, .glitch::after {
+            content: "NXCLAW";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--cyber-magenta);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--cyber-cyan), 0 2px var(--terminal-green);
+            clip: rect(85px, 450px, 140px, 0);
+            animation: glitch-anim3 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { text-shadow: 2px 0 var(--cyber-magenta), -2px 0 var(--cyber-cyan); }
+            50% { text-shadow: -2px 0 var(--cyber-magenta), 2px 0 var(--cyber-cyan); }
+            100% { text-shadow: 2px -1px var(--cyber-magenta), -1px 2px var(--cyber-cyan); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(12px, 9999px, 85px, 0); }
+            50% { clip: rect(40px, 9999px, 10px, 0); }
+            100% { clip: rect(70px, 9999px, 105px, 0); }
+        }
+
+        @keyframes glitch-anim3 {
+            0% { clip: rect(80px, 9999px, 5px, 0); }
+            50% { clip: rect(15px, 9999px, 115px, 0); }
+            100% { clip: rect(95px, 9999px, 40px, 0); }
+        }
+
+        .tagline {
+            color: var(--cyber-cyan);
+            font-size: 1.2rem;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Section Styling */
+        section {
+            background-color: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        section::before {
+            content: "SYS_MSG //";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--bg-color);
+            padding: 0 8px;
+            font-size: 0.8rem;
+            color: var(--cyber-cyan);
+        }
+
+        section.download-sec::before {
+            content: "SYS_DEPLOYS //";
+        }
+
+        section.tutorial-sec::before {
+            content: "SYS_OPERATIONS //";
+        }
+
+        h2 {
+            color: var(--terminal-green);
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        /* Grid for buttons */
+        .download-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .download-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Button styling */
+        .btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #16161f;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            border-color: var(--terminal-green);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-win:hover {
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .btn-linux:hover {
+            border-color: var(--cyber-magenta);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+        }
+
+        .btn .os-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .btn-win .os-title { color: var(--cyber-cyan); }
+        .btn-linux .os-title { color: var(--cyber-magenta); }
+        .btn-py .os-title { color: var(--terminal-green); }
+
+        .btn .desc {
+            font-size: 0.85rem;
+            color: #8c8c9e;
+            margin-top: 5px;
+        }
+
+        /* Console styling */
+        .terminal-block {
+            background-color: #0b0b0e;
+            border: 1px solid #1c1c24;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .terminal-block::after {
+            content: "Terminal";
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: #555566;
+            text-transform: uppercase;
+        }
+
+        .code-line {
+            color: #a9ff8f;
+        }
+        .code-comment {
+            color: #555566;
+        }
+        .code-prompt {
+            color: var(--cyber-cyan);
+            user-select: none;
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        ul li::before {
+            content: ">>";
+            position: absolute;
+            left: 0;
+            color: var(--terminal-green);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.85rem;
+            color: #555566;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div class="glitch">NXClaw</div>
+            <div class="tagline">Autonomous Sandboxed Terminal Agent</div>
+        </header>
+
+        <!-- Intro -->
+        <section>
+            <h2>System Overview</h2>
+            <p>NXClaw is a lightweight, zero-dependency, hacker-style coding agent operating entirely inside a secure terminal sandbox. Engineered without heavy web frameworks, it utilizes the native Python standard library to run, evaluate, write, and patch files autonomously.</p>
+            <p>Powered by advanced reasoning models—including <strong>GPT-5.5</strong>, <strong>Claude Fable 5</strong>, and local <strong>Ollama</strong> instances—NXClaw handles complex developer pipelines by recursively running commands, compiling test scripts, reading runtime environments, and self-correcting its output based on terminal feedback.</p>
+        </section>
+
+        <!-- Download Buttons -->
+        <section class="download-sec">
+            <h2>Deploy Standalone Binary</h2>
+            <p>Select your deployment target. Standard library configurations make all distributions highly portable and fast.</p>
+            
+            <div class="download-grid">
+                
+                <!-- Windows -->
+                <a href="/nxclaw.exe" class="btn btn-win">
+                    <span class="os-title">Windows x64</span>
+                    <span class="desc">deploy_win_x64.exe</span>
+                    <span class="desc">Standalone Compiled EXE</span>
+                </a>
+
+                <!-- Linux -->
+                <a href="/nxclaw.sh" class="btn btn-linux">
+                    <span class="os-title">Linux Exec</span>
+                    <span class="desc">bootstrap_linux.sh</span>
+                    <span class="desc">Unix Shell Executable</span>
+                </a>
+
+                <!-- Python -->
+                <a href="/nxclaw.py" class="btn btn-py">
+                    <span class="os-title">Python Src</span>
+                    <span class="desc">nxclaw.py</span>
+                    <span class="desc">Standard Library Source</span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Tutorial -->
+        <section class="tutorial-sec">
+            <h2>Operational Runbook</h2>
+            <p>Deploy the agent and initiate interaction directly through standard command terminal utilities.</p>
+            
+            <p><strong>Step 1: Bootstrap the Core Environment</strong></p>
+            <p>Execute the downloaded source or compiled target to configure your API endpoint, backend, and sandbox workspace:</p>
+            <div class="terminal-block">
+                <span class="code-comment"># If running from the raw Python source:</span><br>
+                <span class="code-prompt">$</span> <span class="code-line">python3 nxclaw.py</span>
+            </div>
+
+            <p><strong>Step 2: Reference Local Files with @ Syntax</strong></p>
+            <p>When asking tasks, flag workspace files using the <code>@</code> operator. NXClaw will automatically read the file contents, inject it into the LLM context, and strip the identifier during disk operations:</p>
+            <div class="terminal-block">
+                <span class="code-prompt">&gt;</span> <span class="code-line">Please refactor the error handling in @app.py and run the local compiler to verify.</span>
+            </div>
+
+            <p><strong>Step 3: Leverage Slash Instructions</strong></p>
+            <p>Query or modify workspace states directly from the prompt line using integrated slash commands:</p>
+            <ul>
+                <li><code>/ls</code> — Scan and print directory structures inside the safe workspace.</li>
+                <li><code>/rm {file}</code> — Safely delete specified target files inside the sandbox.</li>
+                <li><code>/open {file}</code> — Launch the workspace file in your OS's native text editor.</li>
+                <li><code>/auto-confirm</code> — Toggle autonomous execution mode to skip user command prompts.</li>
+                <li><code>/clear</code> — Purge conversation history to reset context.</li>
+            </ul>
+        </section>
+
+        <footer>
+            SYS_SECURE // SANDBOX ENGAGED // VERSION 1.3.0
+        </footer>
+
+    </div>
+
+</body>
+</html>
