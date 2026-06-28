@@ -27,6 +27,7 @@ import itertools
 import io
 import contextlib
 import traceback
+import difflib
 from datetime import datetime
 
 # --------------------------------------------------------------------------
@@ -34,7 +35,7 @@ from datetime import datetime
 # --------------------------------------------------------------------------
 
 CONFIG_FILENAME = ".nxclaw_config.json"
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 
 IS_WINDOWS = platform.system().lower().startswith("win")
 IS_MACOS = platform.system().lower() == "darwin"
@@ -123,6 +124,32 @@ def process_file_attachments(user_input, tools_instance):
     if appended_context:
         return user_input + "\n" + appended_context
     return user_input
+
+
+def generate_diff_view(old_content, new_content, file_path, ui):
+    """Generates a Git/GitHub style unified diff with colorful red and green outputs."""
+    old_lines = old_content.splitlines(keepends=True) if old_content else []
+    new_lines = new_content.splitlines(keepends=True) if new_content else []
+    
+    diff = difflib.unified_diff(
+        old_lines, new_lines,
+        fromfile=f"a/{file_path}", tofile=f"b/{file_path}",
+        n=3
+    )
+    
+    colored_lines = []
+    for line in diff:
+        clean_line = line.rstrip('\r\n')
+        if clean_line.startswith('+') and not clean_line.startswith('+++'):
+            colored_lines.append(ui.c(clean_line, ui.GREEN))
+        elif clean_line.startswith('-') and not clean_line.startswith('---'):
+            colored_lines.append(ui.c(clean_line, ui.RED))
+        elif clean_line.startswith('@@'):
+            colored_lines.append(ui.c(clean_line, ui.CYAN))
+        else:
+            colored_lines.append(ui.c(clean_line, ui.GRAY))
+            
+    return "\n".join(colored_lines)
 
 
 # --------------------------------------------------------------------------
@@ -1121,6 +1148,7 @@ class NXClawAgent:
         )
         self.history = []
         self.system_prompt = build_system_prompt(self.tools.workspace_root)
+        self.last_diff = None
 
     def refresh_client(self):
         self.tools = NXClawTools(self.config.workspace)
@@ -1192,6 +1220,37 @@ class NXClawAgent:
                     "Re-run manually if you are confident."
                 )
 
+        # Unified detailed console logging before tool execution
+        log_line = f"[NXClaw] Executing Tool: {name}"
+        if name == "run_command":
+            log_line += f" -> command: \"{params.get('command')}\""
+        elif name == "read_file":
+            log_line += f" -> path: \"{params.get('path')}\""
+        elif name == "write_file":
+            content_len = len(params.get('content', ''))
+            log_line += f" -> path: \"{params.get('path')}\" ({content_len} characters)"
+        elif name == "patch_file":
+            log_line += f" -> path: \"{params.get('path')}\""
+        elif name == "python_eval":
+            code_len = len(params.get('code', ''))
+            log_line += f" -> code length: {code_len} characters"
+        elif name == "browse_web":
+            log_line += f" -> url: \"{params.get('url')}\""
+            
+        print(self.ui.c(log_line, self.ui.CYAN))
+
+        # Check file content before modifications for Git-style diff views
+        old_content = None
+        target_path = None
+        if name in ("write_file", "patch_file") and "path" in params:
+            try:
+                target_path = self.tools._resolve_safe_path(params["path"])
+                if os.path.isfile(target_path):
+                    with open(target_path, "r", encoding="utf-8", errors="replace") as f:
+                        old_content = f.read()
+            except Exception:
+                pass
+
         if not self.config.auto_confirm:
             allowed = self._ask_confirmation(tool_call)
             if not allowed:
@@ -1199,21 +1258,42 @@ class NXClawAgent:
 
         try:
             if name == "run_command":
-                return self.tools.run_command(params["command"])
+                result = self.tools.run_command(params["command"])
             elif name == "write_file":
-                return self.tools.write_file(params["path"], params["content"])
+                result = self.tools.write_file(params["path"], params["content"])
             elif name == "read_file":
-                return self.tools.read_file(params["path"])
+                result = self.tools.read_file(params["path"])
             elif name == "patch_file":
-                return self.tools.patch_file(
+                result = self.tools.patch_file(
                     params["path"], params["search_block"], params["replace_block"]
                 )
             elif name == "python_eval":
-                return self.tools.python_eval(params["code"])
+                result = self.tools.python_eval(params["code"])
             elif name == "browse_web":
-                return self.tools.browse_web(params["url"])
+                result = self.tools.browse_web(params["url"])
         except Exception as e:
             return f"[error] Tool '{name}' raised unexpected exception: {e}"
+
+        # Capture post-modification state and compile diff output
+        if name in ("write_file", "patch_file") and target_path and not result.startswith("[error]"):
+            try:
+                new_content = ""
+                if os.path.isfile(target_path):
+                    with open(target_path, "r", encoding="utf-8", errors="replace") as f:
+                        new_content = f.read()
+                
+                rel_path = os.path.relpath(target_path, self.tools.workspace_root)
+                diff_view = generate_diff_view(old_content, new_content, rel_path, self.ui)
+                if diff_view.strip():
+                    self.last_diff = diff_view
+                else:
+                    self.last_diff = None
+            except Exception:
+                self.last_diff = None
+        else:
+            self.last_diff = None
+
+        return result
 
     def _print_api_error(self, error: "APIError"):
         ui = self.ui
@@ -1319,11 +1399,21 @@ class NXClawAgent:
     def _print_tool_result(self, tool_call, result):
         ui = self.ui
         is_error = isinstance(result, str) and (
-            result.startswith("[error]") or result.startswith("[blocked]")
+            result.startswith("[error]") or result.startswith("[blocked]") or result.startswith("[denied]")
         )
         color = ui.RED if is_error else ui.BRIGHT_CYAN
         title = f"RESULT: {tool_call.name}"
-        ui.box(title, result if result else "(empty)", color=color)
+
+        # Clean display management on tool completions
+        if tool_call.name == "read_file" and not is_error:
+            line_count = len(result.splitlines())
+            char_count = len(result)
+            summary_msg = f"[ok] File '{tool_call.params.get('path')}' successfully loaded ({line_count} lines, {char_count} characters)."
+            ui.box(title, summary_msg, color=color)
+        elif tool_call.name in ("write_file", "patch_file") and not is_error and self.last_diff:
+            ui.box(title, self.last_diff, color=color)
+        else:
+            ui.box(title, result if result else "(empty)", color=color)
 
 
 # --------------------------------------------------------------------------
@@ -1454,7 +1544,7 @@ def run_setup_menu(config: NXClawConfig, ui: NXClawUI, is_reconfigure=False):
     else:
         api_key = prompt_secret("  API Key (Masked Input)", ui=ui)
         if not api_key:
-            print(ui.c("  [!] Warning: Missing API key. Authenticated backends may fail.", ui.YELLOW))
+            print(ui.c("  [!] Warning: Missing API key, subsequent API requests might fail.", ui.YELLOW))
     config.data["api_key"] = api_key
 
     print()
@@ -1661,7 +1751,7 @@ def run_tutorial(config: NXClawConfig, ui: NXClawUI):
             "Instead of writing files, copying scripts, and testing shells manually, "
             "you feed natural language instructions into the interface. NXClaw will "
             "determine steps, generate scripts, run tests, read results, and iterate "
-            "autonomously inside your sandbox root directory."
+            "autonomously inside your sandbox root directory.\n"
             "NXClaw is developed by NeuralNexusLab (https://nxlab.zone.id) with the assistance of Gemini and Claude.",
         ),
         (
