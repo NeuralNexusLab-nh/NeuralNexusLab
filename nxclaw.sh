@@ -1,5 +1,4 @@
-﻿```sh
-#!/usr/bin/env sh
+﻿#!/usr/bin/env sh
 # NXClaw - Shell port (simplified)
 
 # ------------------- Globals -------------------
@@ -295,4 +294,3 @@ HELP
             ;;
     esac
 done
-```
