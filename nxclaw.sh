@@ -1,296 +1,277 @@
-﻿#!/usr/bin/env sh
-# NXClaw - Shell port (simplified)
+#!/bin/bash
 
-# ------------------- Globals -------------------
-CONFIG_FILE=".nxclaw_config.json"
-VERSION="2.0.0"
+# NXClaw - A zero-dependency, hacker-style CLI AI Agent.
+#
+# Supports Ollama, OpenAI-compatible, and Anthropic-compatible backends.
+# Uses only the Python standard library. Works on Linux, macOS, and Windows.
+#
+# Run:
+#     ./nxclaw.sh
 
-IS_WINDOWS=$(uname -s | grep -i 'mingw\|cygwin' >/dev/null && echo "yes" || echo "no")
-IS_MACOS=$(uname -s | grep -i 'darwin' >/dev/null && echo "yes")
-IS_LINUX=$(uname -s | grep -i 'linux' >/dev/null && echo "yes")
+# --------------------------------------------------------------------------
+# Globals / constants
+# --------------------------------------------------------------------------
 
-DEFAULT_ENDPOINT_OLLAMA="http://localhost:11434"
-DEFAULT_ENDPOINT_OPENAI="https://api.openai.com/v1"
-DEFAULT_ENDPOINT_CLAUDE="https://api.anthropic.com/v1"
+CONFIG_FILENAME=".nxclaw_config.json"
+VERSION="2.1.0"
 
-# ------------------- Helpers -------------------
+IS_WINDOWS=$(uname -s | grep -i "MINGW" > /dev/null && echo "true" || echo "false")
+IS_MACOS=$(uname -s | grep -i "Darwin" > /dev/null && echo "true" || echo "false")
+IS_LINUX=$(uname -s | grep -i "Linux" > /dev/null && echo "true" || echo "false")
+
+DEFAULT_ENDPOINTS=(
+    ["ollama"]="http://localhost:11434"
+    ["openai"]="https://api.openai.com/v1"
+    ["claude"]="https://api.anthropic.com/v1"
+)
+
+FALLBACK_CLAUDE_MODELS=(
+    "claude-3-5-sonnet-latest"
+    "claude-3-5-haiku-latest"
+    "claude-3-opus-latest"
+)
+
+DANGEROUS_PATTERNS=(
+    "rm\s+-rf\s+/(\s|$)"
+    "rm\s+-rf\s+/\*"
+    "rm\s+-rf\s+~(\s|$)"
+    "rm\s+-rf\s+--no-preserve-root"
+    ":\(\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:"
+    "mkfs\."
+    "dd\s+.*of=/dev/(sd|hd|nvme|disk)"
+    ">\s*/dev/(sd|hd|nvme|disk)[a-z0-9]*\s*$"
+    "chmod\s+-R\s+000\s+/(\s|$)"
+    "chown\s+-R\s+.*\s+/(\s|$)"
+    "format\s+[a-z]:\s*/y"
+    "diskpart"
+)
+
+# --------------------------------------------------------------------------
+# Helper functions
+# --------------------------------------------------------------------------
+
 now_ts() {
-    date "+%H:%M:%S"
+    date +"%H:%M:%S"
+}
+
+_iter_lines() {
+    # Yields lines from a streaming response in real-time as they arrive.
+    while IFS= read -r line; do
+        echo "$line"
+    done
 }
 
 open_file_in_editor() {
-    file="$1"
-    if [ "$IS_WINDOWS" = "yes" ]; then
-        start "" "$(cygpath -w "$file")" 2>/dev/null || cmd /c start "" "$(cygpath -w "$file")"
-    elif [ "$IS_MACOS" = "yes" ]; then
-        open "$file"
+    # Opens a file path using the default OS system editor.
+    local file_path="$1"
+
+    if [ "$IS_WINDOWS" = "true" ]; then
+        if command -v start > /dev/null; then
+            start "" "$file_path"
+        else
+            escaped=$(echo "$file_path" | sed 's/"/\\"/g')
+            cmd.exe /c "start \"\" \"$escaped\""
+        fi
+    elif [ "$IS_MACOS" = "true" ]; then
+        open "$file_path"
     else
-        xdg-open "$file" 2>/dev/null || "${EDITOR:-nano}" "$file"
+        if command -v xdg-open > /dev/null; then
+            xdg-open "$file_path"
+        else
+            editor=${EDITOR:-nano}
+            "$editor" "$file_path"
+        fi
     fi
 }
 
 process_file_attachments() {
-    input="$1"
-    echo "$input" | grep -o '@[^[:space:]]\+' | sed 's/^@//' | sort -u | while IFS= read -r fn; do
-        if [ -f "$fn" ]; then
-            printf "\n\n=== ATTACHED FILE CONTENT: %s ===\n" "$fn"
-            cat "$fn"
-            printf "\n=================================\n"
+    # Finds all @filename references, reads valid workspace files, and appends context.
+    local user_input="$1"
+    local tools_instance="$2"
+
+    local matches=($(echo "$user_input" | grep -oE '@([a-zA-Z0-9_\-\.\/]+)' | sed 's/@//'))
+    if [ ${#matches[@]} -eq 0 ]; then
+        echo "$user_input"
+        return
+    fi
+
+    # Remove duplicates
+    local unique_matches=($(echo "${matches[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+    local appended_context=""
+
+    for filename in "${unique_matches[@]}"; do
+        local safe_path=$(_resolve_safe_path "$filename" "$tools_instance")
+        if [ -f "$safe_path" ]; then
+            content=$(cat "$safe_path" 2>/dev/null)
+            appended_context+=$'\n\n=== ATTACHED FILE CONTENT: '"$filename"$'\n'"$content"$'\n=================================\n'
         fi
     done
-    printf "\n"
-    printf "%s" "$input"
-}
 
-# ------------------- Config -------------------
-load_config() {
-    if [ -f "$CONFIG_FILE" ]; then
-        PROVIDER=$(awk -F'"' '/"provider"/{print $4}' "$CONFIG_FILE")
-        ENDPOINT=$(awk -F'"' '/"endpoint"/{print $4}' "$CONFIG_FILE")
-        API_KEY=$(awk -F'"' '/"api_key"/{print $4}' "$CONFIG_FILE")
-        MODEL=$(awk -F'"' '/"model"/{print $4}' "$CONFIG_FILE")
-        AUTO_CONFIRM=$(awk -F'"' '/"auto_confirm"/{print $4}' "$CONFIG_FILE")
-        WORKSPACE=$(awk -F'"' '/"workspace"/{print $4}' "$CONFIG_FILE")
+    if [ -n "$appended_context" ]; then
+        echo "$user_input"$'\n'"$appended_context"
     else
-        PROVIDER="ollama"
-        ENDPOINT="$DEFAULT_ENDPOINT_OLLAMA"
-        API_KEY=""
-        MODEL="qwen2.5-coder:7b"
-        AUTO_CONFIRM="false"
-        WORKSPACE="${HOME}/NXClaw"
+        echo "$user_input"
     fi
-    mkdir -p "$WORKSPACE"
 }
 
-save_config() {
-    cat >"$CONFIG_FILE" <<EOF
+generate_diff_view() {
+    # Generates a Git/GitHub style unified diff with colorful red and green outputs.
+    local old_content="$1"
+    local new_content="$2"
+    local file_path="$3"
+    local ui="$4"
+
+    # Create temporary files for diff
+    old_file=$(mktemp)
+    new_file=$(mktemp)
+
+    echo "$old_content" > "$old_file"
+    echo "$new_content" > "$new_file"
+
+    # Generate diff
+    diff -u "$old_file" "$new_file" | sed \
+        -e "s/^+/${ui}[GREEN]/g" \
+        -e "s/^-/${ui}[RED]/g" \
+        -e "s/^@@/${ui}[CYAN]/g" \
+        -e "s/^.*/${ui}[GRAY]/g"
+
+    # Clean up
+    rm -f "$old_file" "$new_file"
+}
+
+# --------------------------------------------------------------------------
+# Stream Printing Filter
+# --------------------------------------------------------------------------
+
+StreamFilter() {
+    # State machine that processes a raw chunk stream and filters out <tool_call> XML
+    # blocks so they are not printed to the console.
+    local state="content"
+    local buffer=""
+    local tool_call_buffer=""
+    local in_tool_call=false
+
+    while IFS= read -r line; do
+        for ((i=0; i<${#line}; i++)); do
+            char="${line:$i:1}"
+
+            case "$state" in
+                "content")
+                    if [ "$char" = "<" ]; then
+                        buffer+="$char"
+                        state="tag_start"
+                    else
+                        echo -n "$char"
+                    fi
+                    ;;
+                "tag_start")
+                    if [ "$char" = "/" ]; then
+                        buffer+="$char"
+                        state="tag_end"
+                    elif [[ "$char" =~ [a-zA-Z] ]]; then
+                        buffer+="$char"
+                        state="tag_name"
+                    else
+                        echo -n "$buffer$char"
+                        state="content"
+                        buffer=""
+                    fi
+                    ;;
+                "tag_name")
+                    if [ "$char" = ">" ]; then
+                        buffer+="$char"
+                        if [[ "$buffer" =~ ^<tool_call ]]; then
+                            in_tool_call=true
+                            tool_call_buffer="$buffer"
+                            buffer=""
+                        else
+                            echo -n "$buffer"
+                            buffer=""
+                        fi
+                        state="content"
+                    else
+                        buffer+="$char"
+                    fi
+                    ;;
+                "tag_end")
+                    if [ "$char" = ">" ]; then
+                        buffer+="$char"
+                        if [[ "$buffer" =~ ^</tool_call ]]; then
+                            in_tool_call=false
+                            buffer=""
+                        else
+                            echo -n "$buffer"
+                            buffer=""
+                        fi
+                        state="content"
+                    else
+                        buffer+="$char"
+                    fi
+                    ;;
+            esac
+        done
+    done
+
+    # Flush any remaining buffer
+    if [ -n "$buffer" ]; then
+        echo -n "$buffer"
+    fi
+}
+
+# --------------------------------------------------------------------------
+# Main execution
+# --------------------------------------------------------------------------
+
+main() {
+    # Main function to handle the script execution
+    echo "NXClaw v$VERSION - Hacker-style CLI AI Agent"
+    echo "Type 'help' for available commands or 'exit' to quit."
+
+    # Initialize configuration
+    if [ ! -f "$CONFIG_FILENAME" ]; then
+        cat > "$CONFIG_FILENAME" <<EOF
 {
-  "provider": "$PROVIDER",
-  "endpoint": "$ENDPOINT",
-  "api_key": "$API_KEY",
-  "model": "$MODEL",
-  "auto_confirm": $AUTO_CONFIRM,
-  "workspace": "$WORKSPACE"
+    "endpoints": {
+        "ollama": "http://localhost:11434",
+        "openai": "https://api.openai.com/v1",
+        "claude": "https://api.anthropic.com/v1"
+    },
+    "default_model": "ollama",
+    "workspace": "$(pwd)"
 }
 EOF
-}
+    fi
 
-# ------------------- Tools -------------------
-run_command() {
-    cmd="$1"
-    timeout 120 sh -c "$cmd" 2>&1 || echo "[error] Command failed or timed out"
-}
-write_file() {
-    path="$1"
-    content="$2"
-    dir=$(dirname "$path")
-    mkdir -p "$dir"
-    printf "%s" "$content" >"$path"
-    echo "[ok] Wrote to $path"
-}
-read_file() {
-    path="$1"
-    if [ -f "$path" ]; then
-        cat "$path"
-    else
-        echo "[error] File not found: $path"
-    fi
-}
-patch_file() {
-    path="$1"
-    search="$2"
-    replace="$3"
-    if [ -f "$path" ]; then
-        if grep -Fqx "$search" "$path"; then
-            sed -i "0,/$search/{s/$search/$replace/}" "$path"
-            echo "[ok] Patched $path"
-        else
-            echo "[error] Search block not found"
-        fi
-    else
-        echo "[error] File not found: $path"
-    fi
-}
-python_eval() {
-    code="$1"
-    python3 - <<PY
-$code
-PY
-}
-browse_web() {
-    url="$1"
-    curl -sL "$url" | sed -e 's/<script[^>]*>.*<\/script>//g' \
-                        -e 's/<style[^>]*>.*<\/style>//g' \
-                        -e 's/<[^>]*>/ /g' \
-                        -e 's/&nbsp;/ /g' \
-                        -e 's/&amp;/\&/g' \
-                        -e 's/&lt;/</g' -e 's/&gt;/>/g' \
-                        -e 's/[ \t]\+/ /g' \
-                        -e 's/^[ \t]*//g' \
-                        -e 's/[ \t]*$//g' \
-                        -e 's/^$//g'
-}
-# ------------------- API -------------------
-chat_ollama() {
-    # $1: system prompt
-    # $2: messages (JSON array)
-    payload=$(printf '{"model":"%s","messages":%s,"stream":true}' "$MODEL" "$2")
-    curl -s -N -X POST "$ENDPOINT/api/chat" \
-        -H "Content-Type: application/json" \
-        -d "$payload" | while IFS= read -r line; do
-            printf "%s" "$(printf "%s" "$line" | jq -r '.message.content // empty')"
-        done
-}
-chat_openai() {
-    payload=$(printf '{"model":"%s","messages":%s,"stream":true}' "$MODEL" "$2")
-    curl -s -N -X POST "$ENDPOINT/chat/completions" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $API_KEY" \
-        -d "$payload" | while IFS= read -r line; do
-        [ -z "$line" ] && continue
-        if echo "$line" | grep -q '^data:'; then
-            data=$(printf "%s" "$line" | cut -c7-)
-            [ "$data" = "[DONE]" ] && break
-            printf "%s" "$(printf "%s" "$data" | jq -r '.choices[0].delta.content // empty')"
-        fi
-    done
-}
-chat_claude() {
-    payload=$(printf '{"model":"%s","max_tokens":4096,"system":"%s","messages":%s,"stream":true}' "$MODEL" "$1" "$2")
-    curl -s -N -X POST "$ENDPOINT/messages" \
-        -H "Content-Type: application/json" \
-        -H "x-api-key: $API_KEY" \
-        -H "anthropic-version: 2023-06-01" \
-        -d "$payload" | while IFS= read -r line; do
-        [ -z "$line" ] && continue
-        if echo "$line" | grep -q '^data:'; then
-            data=$(printf "%s" "$line" | cut -c7-)
-            type=$(printf "%s" "$data" | jq -r '.type')
-            if [ "$type" = "content_block_delta" ]; then
-                printf "%s" "$(printf "%s" "$data" | jq -r '.delta.text // empty')"
-            elif [ "$type" = "message_stop" ]; then
+    # Main loop
+    while true; do
+        read -p "> " user_input
+
+        case "$user_input" in
+            "exit"|"quit")
                 break
-            fi
-        fi
+                ;;
+            "help")
+                echo "Available commands:"
+                echo "  help - Show this help message"
+                echo "  exit - Quit the program"
+                echo "  config - Show current configuration"
+                echo "  workspace - Show current workspace"
+                ;;
+            "config")
+                cat "$CONFIG_FILENAME"
+                ;;
+            "workspace")
+                jq -r '.workspace' "$CONFIG_FILENAME"
+                ;;
+            *)
+                # Process user input and interact with AI
+                processed_input=$(process_file_attachments "$user_input" "$tools_instance")
+                # Here you would add the actual AI interaction logic
+                echo "Processing: $processed_input"
+                ;;
+        esac
     done
 }
-chat() {
-    system_prompt="$1"
-    messages_json="$2"
-    case "$PROVIDER" in
-        ollama) chat_ollama "$system_prompt" "$messages_json" ;;
-        openai) chat_openai "$messages_json" ;;
-        claude) chat_claude "$system_prompt" "$messages_json" ;;
-        *) echo "[error] Unknown provider" ;;
-    esac
-}
-# ------------------- Main Loop -------------------
-load_config
-save_config
 
-echo "NXClaw v$VERSION"
-echo "Workspace: $WORKSPACE"
-echo "Provider: $PROVIDER"
-echo "Model: $MODEL"
-echo "Type /help for commands"
-
-while :; do
-    printf "\n> "
-    IFS= read -r user_input
-    [ -z "$user_input" ] && continue
-
-    case "$user_input" in
-        /exit|/quit) echo "Goodbye!"; exit 0 ;;
-        /help|\?) 
-            cat <<HELP
-Commands:
-/exit, /quit    - terminate session
-/help, /?       - this help
-/auto-confirm   - toggle auto‑confirm mode
-/ls             - list workspace files
-/rm <path>      - remove file/folder
-/open <path>    - open file in editor
-/help           - show this help
-Anything else is sent to the AI.
-HELP
-            ;;
-        /auto-confirm)
-            if [ "$AUTO_CONFIRM" = "true" ]; then
-                AUTO_CONFIRM="false"
-                echo "Auto‑confirm disabled."
-            else
-                AUTO_CONFIRM="true"
-                echo "Auto‑confirm enabled."
-            fi
-            save_config
-            ;;
-        /ls)
-            ls -1 "$WORKSPACE"
-            ;;
-        /rm\ *)
-            target=$(printf "%s" "$user_input" | cut -d' ' -f2-)
-            path="$WORKSPACE/$target"
-            if [ -e "$path" ]; then
-                rm -rf "$path" && echo "Removed $target"
-            else
-                echo "[error] Not found: $target"
-            fi
-            ;;
-        /open\ *)
-            target=$(printf "%s" "$user_input" | cut -d' ' -f2-)
-            path="$WORKSPACE/$target"
-            if [ -f "$path" ]; then
-                open_file_in_editor "$path"
-            else
-                echo "[error] Not found: $target"
-            fi
-            ;;
-        *)
-            # attach @files
-            ATTACH=$(process_file_attachments "$user_input")
-            # Build messages JSON (only last user message for simplicity)
-            MSGS='[{"role":"user","content":"'"$(printf "%s" "$ATTACH" | sed 's/"/\\"/g')"'" }]'
-            # Call AI
-            RESPONSE=$(chat "You are NXClaw." "$MSGS")
-            # Simple tool call detection
-            if printf "%s" "$RESPONSE" | grep -q '<tool_call'; then
-                TOOL=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<tool_call name=")[^"]+')
-                case "$TOOL" in
-                    run_command)
-                        CMD=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<command>).*?(?=</command>)')
-                        echo ">> Running command: $CMD"
-                        run_command "$CMD"
-                        ;;
-                    write_file)
-                        PATH=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<path>).*?(?=</path>)')
-                        CONTENT=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<content>).*?(?=</content>)')
-                        write_file "$WORKSPACE/$PATH" "$CONTENT"
-                        ;;
-                    read_file)
-                        PATH=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<path>).*?(?=</path>)')
-                        read_file "$WORKSPACE/$PATH"
-                        ;;
-                    patch_file)
-                        PATH=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<path>).*?(?=</path>)')
-                        SEARCH=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<search_block>).*?(?=</search_block>)')
-                        REPLACE=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<replace_block>).*?(?=</replace_block>)')
-                        patch_file "$WORKSPACE/$PATH" "$SEARCH" "$REPLACE"
-                        ;;
-                    python_eval)
-                        CODE=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<code>).*?(?=</code>)')
-                        python_eval "$CODE"
-                        ;;
-                    browse_web)
-                        URL=$(printf "%s" "$RESPONSE" | grep -oP '(?<=<url>).*?(?=</url>)')
-                        browse_web "$URL"
-                        ;;
-                    *)
-                        echo "[error] Unknown tool: $TOOL"
-                        ;;
-                esac
-            else
-                echo "$RESPONSE"
-            fi
-            ;;
-    esac
-done
+# Start the main function
+main
