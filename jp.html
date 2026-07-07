@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九州自駕行：鐵道模型、打靶與極致娛樂 7 日之旅</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #4f46e5;
+            --accent-glow: #e0e7ff;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --entertainment: #10b981;
+            --entertainment-bg: #ecfdf5;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Accordion Container */
+        .itinerary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .day-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        /* Accordion Trigger Button */
+        .accordion-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 22px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            outline: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            transition: background-color 0.2s ease;
+        }
+
+        .accordion-btn:hover {
+            background-color: #f8fafc;
+        }
+
+        .accordion-btn .day-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .day-badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .arrow-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .accordion-btn.active .arrow-icon {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+
+        /* Accordion Content Panel */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #ffffff;
+        }
+
+        .accordion-inner-content {
+            padding: 0 28px 28px 28px;
+            border-top: 1px dashed var(--border);
+        }
+
+        /* Timeline / Table Styles */
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            padding: 20px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .time-badge {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .spot-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .spot-intro {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Transport / Warning Tips */
+        .warning-box {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box span {
+            display: block;
+            font-weight: 700;
+            color: #92400e;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+        }
+
+        .warning-box p {
+            color: #b45309;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* Entertainment Section styles */
+        .entertainment-box {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: var(--entertainment-bg);
+            border-left: 4px solid var(--entertainment);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .entertainment-box span {
+            display: block;
+            font-weight: 700;
+            color: #065f46;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .entertainment-box p {
+            color: #047857;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 640px) {
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 15px 0;
+            }
+            .time-badge {
+                margin-bottom: 2px;
+            }
+            .accordion-btn {
+                padding: 18px 20px;
+                font-size: 1.05rem;
+            }
+            .accordion-inner-content {
+                padding: 0 20px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>九州自駕行行程表</h1>
+        <p>🚗 鐵道模型 ‧ 復古打靶 ‧ 溫泉舒緩與極致娛樂 7 日遊</p>
+    </header>
+
+    <div class="itinerary-list">
+
+        <!-- DAY 1 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 1</span>
+                    <span>7/8 (週三) 福岡入境 ✈️ 寧靜啟航日</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">14:10 - 16:10</div>
+                        <div class="details">
+                            <div class="spot-name">桃園機場第二航廈 ‧ D1登機門</div>
+                            <div class="spot-intro">辦理中華航空 CI 116 的行李託運與出境手續。D1登機門位於第二航廈深處，請預留充足步行時間。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>漫步免稅店或在 D1 登機門特色主題候機區拍照小憩。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">16:40 - 20:00</div>
+                        <div class="details">
+                            <div class="spot-name">CI 116 航班 (A330-300 客機)</div>
+                            <div class="spot-intro">搭乘中華航空雙通道中大型客機飛往福岡。經濟艙為經典 2-4-2 配置，機上配有個人影音娛樂。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">21:00 - 21:30</div>
+                        <div class="details">
+                            <div class="spot-name">福岡機場 ➡️ 飯店直達 (計程車)</div>
+                            <div class="spot-intro">為確保行程首日體力完整保留，抵達後直接由機場搭乘計程車直達「Grand STAY 博多北」飯店。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>今晚不排任何行程。辦理入住後，在房內徹底放鬆洗漱、享有充足睡眠。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 2</span>
+                    <span>7/9 (週四) 大分自然動物園 🚗 博多鐵道模型與打靶居酒屋</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">10:00 - 18:00</div>
+                        <div class="details">
+                            <div class="spot-name">九州自然動物園 (自駕往返)</div>
+                            <div class="spot-intro">早上10點取車後自駕前往大分。駕駛自駕車進入猛獸野生動物區，感受極具震撼的野生生態。約於 18:00 前返回博多車站周邊停放車輛。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">18:15 - 19:15</div>
+                        <div class="details">
+                            <div class="spot-name">Popondetta アミュプラザ博多店</div>
+                            <div class="spot-intro">【絕對位置：博多車站 AMU PLAZA 8F】日本極具代表性的鐵道模型老牌專賣店，店內設有重現福岡路網的巨型火車運轉沙盤。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>【高優先級】欣賞精緻鐵道模型。店內可選購豐富的 JR 九州特急車款模型、列車周邊配件、紀念車票及特色小物。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">19:30 之後</div>
+                        <div class="details">
+                            <div class="spot-name">たこやき射的センター (章魚燒射擊中心)</div>
+                            <div class="spot-intro">【絕對位置：〒810-0003 福岡市中央区春吉2-2-11 3F】完美復刻昭和夏日祭典風格的打靶居酒屋，提供自烤章魚燒、串炸、無限量駄菓子。</div>
+                            <div class="warning-box">
+                                <span>⚠️ 體力管理與交通建議</span>
+                                <p>博多車站至春吉店面距離約2公里（步行需25-30分鐘）。<strong>強烈不建議用走路的</strong>以防耗盡體力。請直接在博多車站搭乘計程車（約7-10分鐘，車資約1000日圓上下，4人均分極便宜），或搭乘地鐵七隈線至「渡辺通站」再步行約10分鐘。</p>
+                            </div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>【高優先級】體驗傳統軟木塞槍打靶（射的）遊戲。只要射中架上的精美玩具或古早味零食，即可直接當作戰利品帶走！</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 3</span>
+                    <span>7/10 (週五) 太宰府參拜 ➡️ 開車深入阿蘇山區</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">10:00 - 13:30</div>
+                        <div class="details">
+                            <div class="spot-name">太宰府天滿宮 參道漫步</div>
+                            <div class="spot-intro">辦理退房，自駕前往太宰府。在綠意與古老的神社內感受平靜，並參觀極具設計感的隈研吾木造星巴克。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>品嚐參道旁現烤的名產「梅枝餅」，並在附近享用道地的日式定食午餐。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">13:30 - 16:30</div>
+                        <div class="details">
+                            <div class="spot-name">山路行駛移動 ➡️ 阿蘇</div>
+                            <div class="spot-intro">自駕前往阿蘇山區。後半段彎道增多，建議駕駛保持專注，在光線充足的下午安全抵達溫泉飯店。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">16:30 之後</div>
+                        <div class="details">
+                            <div class="spot-name">阿蘇飯店入住 ‧ 溫泉養生</div>
+                            <div class="spot-intro">辦理入住「Kamenoi Hotel Aso Park Resort」。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>享受舒緩全身疲勞的阿蘇露天溫泉，並在飯店內享用豐盛的晚餐自助餐。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 4</span>
+                    <span>7/11 (週六) 阿蘇壯麗火山 🎯 內牧溫泉復古遊戲屋</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">09:00 - 15:30</div>
+                        <div class="details">
+                            <div class="spot-name">草千里 ‧ 火山口 ‧ 大觀峰</div>
+                            <div class="spot-intro">一覽無垠的草千里大草原。在火山氣體未超標情況下上山觀賞壯觀的火山口。隨後駕車行駛在 Milk Road 並抵達大觀峰，欣賞巨大的外輪山盆地景致。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">15:45 - 16:30</div>
+                        <div class="details">
+                            <div class="spot-name">駄菓子屋 チロリン村 (內牧溫泉)</div>
+                            <div class="spot-intro">【絕對位置：〒869-2301 熊本県阿蘇市内牧253】位於大觀峰下山路線旁的懷舊柑仔店。</div>
+                            <div class="warning-box">
+                                <span>🚗 自駕順路優勢</span>
+                                <p>店家剛好位於大觀峰回飯店的主幹道旁，開車僅需折入5分鐘，備有免費共同停車場，不費額外步行體力。</p>
+                            </div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>【高優先級】體驗富有古早祭典樂趣的軟木塞打靶遊戲！還可以投幣體驗店內可正常運行的「初代太空侵略者」等古董大型街機。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">17:00 之後</div>
+                        <div class="details">
+                            <div class="spot-name">返回飯店 ‧ 泡湯晚餐</div>
+                            <div class="spot-intro">回到「Kamenoi Hotel Aso Park Resort」飯店休息，泡個溫泉緩解一天的駕車疲勞。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 5</span>
+                    <span>7/12 (週日) 高千穗峽仙境 🛶 體力深度保護日</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">08:30 - 17:00</div>
+                        <div class="details">
+                            <div class="spot-name">高千穗峽 🛶 絕景遊船</div>
+                            <div class="spot-intro">開車前往宮崎縣的高千穗峽（單程約 1 小時 15 分鐘）。在兩旁陡峭的黑色斷崖間划船，仰望仙境般的真名井瀑布。隨後參拜神社與天安河原。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>划船觀瀑、沿著峽谷步道漫步、在高千穗街上享用美味的流水麵線或知名的高千穗牛定食。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">17:00 之後</div>
+                        <div class="details">
+                            <div class="spot-name">回飯店泡湯休息</div>
+                            <div class="spot-intro">高千穗健走與划船較耗體力，且自駕山路時間長，今晚回到飯店後應立即泡熱水溫泉，舒緩手臂與背部肌肉。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>今晚不排任何店鋪，吃飽後充分休息，準備明日前往熊本市區。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 6 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 6</span>
+                    <span>7/13 (週一) 熊本市區 🚋 懷舊鐵道迷聖地與極致夾娃娃機</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">10:00 - 14:00</div>
+                        <div class="details">
+                            <div class="spot-name">前往熊本市區 ‧ 飯店入住</div>
+                            <div class="spot-intro">開車下山抵達熊本市區。將行李存放在「Candeo Hotels 熊本新市街」，車輛停於飯店合作停車場。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">14:30 - 16:30</div>
+                        <div class="details">
+                            <div class="spot-name">模型中心 日教社 (水道町)</div>
+                            <div class="spot-intro">【絕對位置：〒860-0844 熊本県熊本市中央区水道町9-28】在南九州鐵道愛好者中極富盛名的 70 年專業模型老舖。</div>
+                            <div class="warning-box">
+                                <span>🚋 熊本特色路面電車體驗</span>
+                                <p>不建議在繁忙的熊本市區自駕找停車位。您可直接從飯店門口搭乘懷舊的「熊本路面電車」至「水道町站」步行2分鐘即可，好玩且體力消耗極低。</p>
+                            </div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>【高優先級】在店內發掘與尋寶各式 N 規列車模型，包含極具熊本特色的聯名限定彩繪列車、路軌設備、以及精緻的造景材料。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">19:30 之後</div>
+                        <div class="details">
+                            <div class="spot-name">GiGO 熊本新市街 (夾娃娃機)</div>
+                            <div class="spot-intro">【絕對位置：〒860-0803 熊本県熊本市中央区新市街3-14】寬敞的大型電子遊藝場，設有大量最新公仔與玩偶景品的 UFO 夾娃娃機。</div>
+                            <div class="warning-box">
+                                <span>🏨 超狂鄰近優勢</span>
+                                <p>這間遊藝場<strong>距離下榻飯店步行僅需 1 分鐘</strong>，徹底實現無痛夾娃娃。夾累了隨時可一分鐘回到飯店洗澡、享受頂樓露天風呂。</p>
+                            </div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>夾娃娃機衝刺！挑戰各種充滿日本與熊本地方特色的布偶、聯名公仔及點心。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAY 7 -->
+        <div class="day-card">
+            <button class="accordion-btn">
+                <span class="day-title-wrapper">
+                    <span class="day-badge">Day 7</span>
+                    <span>7/14 (週二) 熊本城散步 ➡️ A321neo 新機歸國</span>
+                </span>
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner-content">
+                    <div class="timeline-item">
+                        <div class="time-badge">09:30 - 12:30</div>
+                        <div class="details">
+                            <div class="spot-name">水前寺成趣園 或 熊本城散步</div>
+                            <div class="spot-intro">行李上車。在精緻優美的「水前寺成趣園」庭園漫步，或探訪宏偉重生的熊本城天守閣與石牆景觀。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">12:30 - 14:00</div>
+                        <div class="details">
+                            <div class="spot-name">下通/新市街 午餐與採購</div>
+                            <div class="spot-intro">在下通或新市街挑選好吃的黑蒜油拉麵（如桂花拉麵、赤組拉麵）或勝烈亭豬排享用午餐。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>進行藥妝店或熊本限定土產、伴手禮的最終補貨。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">14:30 - 16:30</div>
+                        <div class="details">
+                            <div class="spot-name">熊本機場 (KMJ) ➡️ 還車 & 登機</div>
+                            <div class="spot-intro">開車前往熊本機場（車程約45分鐘）。在機場附近的加油站加滿油、保留好發票，於門市還車後搭乘免費接駁車至航廈。</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="time-badge">18:40 - 19:55</div>
+                        <div class="details">
+                            <div class="spot-name">CI 195 航班 (A321neo 客機)</div>
+                            <div class="spot-intro">熊本機場飛返桃園第二航廈。配有中華航空最新引進的 Airbus A321neo 新客機。</div>
+                            <div class="entertainment-box">
+                                <span>可以去的娛樂</span>
+                                <p>體驗座位的 4K 高畫質大螢幕、用個人藍牙耳機連線追劇，或登入華航機上免費文字 Wi-Fi 與親友分享戰利品照片。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.accordion-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            
+            // Toggle active class on button
+            button.classList.toggle('active');
+            
+            if (content.style.maxHeight) {
+                // If open, close it
+                content.style.maxHeight = null;
+            } else {
+                // If closed, open it and calculate dynamic scroll height
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
