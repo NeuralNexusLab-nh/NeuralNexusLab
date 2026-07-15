@@ -13,16 +13,6 @@
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <!-- Leaflet.js -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
-
-    <!-- Leaflet Routing Machine -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js">
-    </script>
-
     <style>
         /* ===== RESET & BASE ===== */
         *,
@@ -58,7 +48,6 @@
             --transition: 0.25s ease;
             --font: 'Poppins', sans-serif;
             --header-height: 68px;
-            --map-height: 220px;
         }
 
         [data-theme="dark"] {
@@ -727,31 +716,22 @@
             color: var(--text-primary);
             word-break: break-word;
         }
-        .place-detail .detail-item .dvalue button.osm-btn {
-            background: none;
+        .place-detail .detail-item .dvalue .gmaps-btn {
+            background: var(--accent);
             border: none;
-            color: var(--accent);
-            cursor: pointer;
-            text-decoration: underline;
-            font-family: var(--font);
-            font-size: inherit;
-            padding: 0;
-        }
-        .place-detail .detail-item .dvalue button.osm-btn:hover {
-            color: var(--accent-hover);
-        }
-
-        .place-detail .detail-map {
-            width: 100%;
-            height: var(--map-height);
             border-radius: var(--radius-xs);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-top: 8px;
+            padding: 4px 14px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--transition);
+            text-decoration: none;
+            display: inline-block;
         }
-        .place-detail .detail-map .leaflet-container {
-            height: 100%;
-            width: 100%;
+        .place-detail .detail-item .dvalue .gmaps-btn:hover {
+            background: var(--accent-hover);
         }
 
         .place-detail .route-info {
@@ -1133,7 +1113,7 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script>
         // ================================================================
-        //  TraveLegend — Complete Application with all fixes
+        //  TraveLegend — Complete Application (no map)
         // ================================================================
 
         (function() {
@@ -1180,8 +1160,7 @@
                     'detailStatus': 'Currently Open',
                     'detailLat': 'Latitude',
                     'detailLng': 'Longitude',
-                    'detailOsm': 'OpenStreetMap',
-                    'detailNav': 'Navigate',
+                    'detailGmaps': 'Google Maps Route',
                     'detailWalkDist': 'Walking Distance',
                     'detailWalkTime': 'Est. Walking Time',
                     'settingsTitle': 'Settings',
@@ -1201,7 +1180,6 @@
                     'errRoute': 'Could not calculate walking route. Showing straight-line distance.',
                     'errEmpty': 'No places found. Try a larger radius or different categories.',
                     'errOverpassAll': 'All Overpass services are currently overloaded. Please wait a few minutes and try again.',
-                    // Status messages
                     'statusPreparing': 'Preparing search query...',
                     'statusConnecting': 'Connecting to Overpass server (attempt {attempt}/{max})...',
                     'statusFetching': 'Fetching places from Overpass...',
@@ -1249,8 +1227,7 @@
                     'detailStatus': '目前狀態',
                     'detailLat': '緯度',
                     'detailLng': '經度',
-                    'detailOsm': 'OpenStreetMap',
-                    'detailNav': '導航',
+                    'detailGmaps': 'Google 地圖導航',
                     'detailWalkDist': '步行距離',
                     'detailWalkTime': '估計步行時間',
                     'settingsTitle': '設定',
@@ -1416,8 +1393,6 @@
                 searchCooldown: false,
                 results: [],
                 history: [],
-                mapInstances: new Map(),
-                routingControls: new Map(),
                 watchId: null,
                 expandedIds: new Set(),
             };
@@ -1591,7 +1566,6 @@
                 dom.latDisplay.textContent = lat !== null ? lat.toFixed(6) : '--';
                 dom.lngDisplay.textContent = lng !== null ? lng.toFixed(6) : '--';
                 dom.addrDisplay.textContent = address || '--';
-                // Save to localStorage
                 if (lat !== null && lng !== null) {
                     localStorage.setItem('travelegend-last-lat', lat);
                     localStorage.setItem('travelegend-last-lng', lng);
@@ -1666,7 +1640,6 @@
                         }
                         const addr = await fetchAddress(lat, lng);
                         updateLocationUI(lat, lng, addr);
-                        updateAllRoutes();
                     },
                     (err) => console.warn('Watch error:', err), { enableHighAccuracy: true, timeout: 15000 }
                 );
@@ -1691,7 +1664,6 @@
                     updateLocationUI(lat, lng, addr || `Manual (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
                     dom.manualLocPanel.classList.add('hidden');
                     showToast('Location updated manually', 'info');
-                    // Stop watching if active (user manually overrides)
                     if (state.watchId !== null) {
                         navigator.geolocation.clearWatch(state.watchId);
                         state.watchId = null;
@@ -1833,7 +1805,6 @@
                     return;
                 }
 
-                // Build Overpass query
                 const tags = [];
                 categories.forEach(catId => {
                     const cat = CAT_MAP[catId];
@@ -2304,36 +2275,17 @@
                         container.querySelectorAll('.place-card.expanded').forEach(c => {
                             if (c !== card) {
                                 c.classList.remove('expanded');
-                                const cid = c.dataset.id;
-                                if (cid && state.mapInstances.has(cid)) {
-                                    const map = state.mapInstances.get(cid);
-                                    map.remove();
-                                    state.mapInstances.delete(cid);
-                                }
-                                state.expandedIds.delete(cid);
+                                state.expandedIds.delete(c.dataset.id);
                             }
                         });
                         if (expanded) {
                             card.classList.remove('expanded');
-                            if (id && state.mapInstances.has(id)) {
-                                const map = state.mapInstances.get(id);
-                                map.remove();
-                                state.mapInstances.delete(id);
-                            }
                             state.expandedIds.delete(id);
                         } else {
                             card.classList.add('expanded');
                             state.expandedIds.add(id);
-                            setTimeout(() => initDetailMap(id, card), 100);
                         }
                     });
-                });
-
-                container.querySelectorAll('.place-card.expanded').forEach(card => {
-                    const id = card.dataset.id;
-                    if (id && !state.mapInstances.has(id)) {
-                        setTimeout(() => initDetailMap(id, card), 150);
-                    }
                 });
 
                 state.expandedIds = expandedSet;
@@ -2352,6 +2304,9 @@
                 }
 
                 const expandedClass = initiallyExpanded ? 'expanded' : '';
+
+                // Google Maps link
+                const gmapsUrl = place.address ? `https://www.google.com/maps/dir//+${encodeURIComponent(place.address)}` : '#';
 
                 return `
                     <div class="place-card ${expandedClass}" data-id="${place.id}" data-lat="${place.lat}" data-lng="${place.lng}">
@@ -2375,177 +2330,19 @@
                                 ${place.walkingDuration ? `<div class="detail-item"><span class="dlabel">${t('detailWalkTime')}</span><span class="dvalue">${formatDuration(place.walkingDuration)}</span></div>` : ''}
                                 <div class="detail-item"><span class="dlabel">${t('detailLat')}</span><span class="dvalue">${place.lat.toFixed(6)}</span></div>
                                 <div class="detail-item"><span class="dlabel">${t('detailLng')}</span><span class="dvalue">${place.lng.toFixed(6)}</span></div>
-                                <div class="detail-item"><span class="dlabel">${t('detailOsm')}</span><span class="dvalue"><button class="osm-btn" onclick="window.open('https://www.openstreetmap.org/${place.type}/${place.osmId}', '_blank')">OSM #${place.osmId}</button></span></div>
+                                ${place.address ? `<div class="detail-item"><span class="dlabel">${t('detailGmaps')}</span><span class="dvalue"><a href="${gmapsUrl}" target="_blank" rel="noopener" class="gmaps-btn"><i class="fas fa-directions" aria-hidden="true"></i> ${t('detailGmaps')}</a></span></div>` : ''}
                             </div>
                             <div class="route-info">
                                 <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance || place.distance)}</span>
                                 ${place.walkingDuration ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}</span>` : ''}
                             </div>
-                            <div class="detail-map" id="map-${place.id}"></div>
                         </div>
                     </div>
                 `;
             }
 
             // ================================================================
-            // 15. DETAIL MAP
-            // ================================================================
-            function initDetailMap(placeId, cardElement) {
-                const mapContainer = cardElement.querySelector('.detail-map');
-                if (!mapContainer) return;
-                if (state.mapInstances.has(placeId)) {
-                    const existing = state.mapInstances.get(placeId);
-                    existing.invalidateSize();
-                    return;
-                }
-
-                const lat = parseFloat(cardElement.dataset.lat);
-                const lng = parseFloat(cardElement.dataset.lng);
-                if (isNaN(lat) || isNaN(lng)) return;
-
-                const userLat = state.userLat;
-                const userLng = state.userLng;
-                if (userLat === null || userLng === null) return;
-
-                const map = L.map(mapContainer, {
-                    center: [(lat + userLat) / 2, (lng + userLng) / 2],
-                    zoom: 14,
-                });
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors',
-                    maxZoom: 19,
-                }).addTo(map);
-
-                const userIcon = L.divIcon({
-                    html: '<div style="background:#2a7de1;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
-                    iconSize: [16, 16],
-                    iconAnchor: [8, 8],
-                });
-                L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup('Your Location');
-
-                const destIcon = L.divIcon({
-                    html: '<div style="background:#d0314e;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
-                    iconSize: [16, 16],
-                    iconAnchor: [8, 8],
-                });
-                L.marker([lat, lng], { icon: destIcon }).addTo(map).bindPopup(escapeHtml(cardElement.querySelector('.card-name')?.textContent || 'Destination'));
-
-                let routingControl = null;
-                try {
-                    routingControl = L.Routing.control({
-                        waypoints: [
-                            L.latLng(userLat, userLng),
-                            L.latLng(lat, lng)
-                        ],
-                        router: L.Routing.osrmv1({
-                            serviceUrl: 'https://routing.openstreetmap.de/routing-foot/route/v1/',
-                            profile: 'foot',
-                        }),
-                        routeWhileDragging: false,
-                        show: true,
-                        addWaypoints: false,
-                        fitSelectedRoutes: true,
-                        lineOptions: {
-                            styles: [{ color: '#2a7de1', opacity: 0.8, weight: 4 }],
-                            extendToWaypoints: true,
-                            missingRouteStyles: [{ color: '#d0314e', opacity: 0.6, weight: 2, dashArray: '6,6' }],
-                        },
-                    }).addTo(map);
-
-                    routingControl.on('routeselected', function(e) {
-                        const route = e.route;
-                        if (route && route.summary) {
-                            const dist = route.summary.totalDistance || 0;
-                            const dur = route.summary.totalTime || 0;
-                            const routeInfo = cardElement.querySelector('.route-info');
-                            if (routeInfo) {
-                                routeInfo.innerHTML = `
-                                    <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(dist)}</span>
-                                    <span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(dur)}</span>
-                                `;
-                            }
-                            const meta = cardElement.querySelector('.card-meta');
-                            if (meta) {
-                                const distSpan = meta.querySelector('span:first-child');
-                                if (distSpan) distSpan.innerHTML = `<i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(dist)}`;
-                                const timeSpan = meta.querySelector('span:last-child');
-                                if (timeSpan) timeSpan.innerHTML = `<i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(dur)}`;
-                            }
-                        }
-                    });
-
-                    routingControl.on('routingerror', function() {
-                        L.polyline([
-                            [userLat, userLng],
-                            [lat, lng]
-                        ], { color: '#d0314e', dashArray: '6,6', weight: 2 }).addTo(map);
-                    });
-
-                } catch (_) {
-                    L.polyline([
-                        [userLat, userLng],
-                        [lat, lng]
-                    ], { color: '#2a7de1', weight: 3, dashArray: '6,6' }).addTo(map);
-                }
-
-                map.fitBounds([
-                    [userLat, userLng],
-                    [lat, lng]
-                ], { padding: [40, 40], maxZoom: 17 });
-
-                state.mapInstances.set(placeId, map);
-                if (routingControl) {
-                    state.routingControls.set(placeId, routingControl);
-                }
-
-                setTimeout(() => map.invalidateSize(), 300);
-            }
-
-            // ================================================================
-            // 16. UPDATE ALL ROUTES
-            // ================================================================
-            function updateAllRoutes() {
-                const userLat = state.userLat;
-                const userLng = state.userLng;
-                if (userLat === null || userLng === null) return;
-
-                document.querySelectorAll('.place-card.expanded').forEach(card => {
-                    const id = card.dataset.id;
-                    if (!id) return;
-                    const lat = parseFloat(card.dataset.lat);
-                    const lng = parseFloat(card.dataset.lng);
-                    if (isNaN(lat) || isNaN(lng)) return;
-
-                    if (state.mapInstances.has(id)) {
-                        const map = state.mapInstances.get(id);
-                        const routing = state.routingControls.get(id);
-                        if (routing) {
-                            try {
-                                routing.setWaypoints([
-                                    L.latLng(userLat, userLng),
-                                    L.latLng(lat, lng)
-                                ]);
-                            } catch (_) { /* ignore */ }
-                        }
-                        map.eachLayer(layer => {
-                            if (layer instanceof L.Marker) {
-                                const popup = layer.getPopup();
-                                if (popup && popup.getContent() === 'Your Location') {
-                                    layer.setLatLng([userLat, userLng]);
-                                }
-                            }
-                        });
-                        map.fitBounds([
-                            [userLat, userLng],
-                            [lat, lng]
-                        ], { padding: [40, 40], maxZoom: 17 });
-                    }
-                });
-            }
-
-            // ================================================================
-            // 17. SETTINGS
+            // 15. SETTINGS
             // ================================================================
             function clearHistory() {
                 state.history = [];
@@ -2570,7 +2367,6 @@
                 state.selectedCategories = new Set(['restaurant']);
                 localStorage.setItem('travelegend-categories', JSON.stringify(['restaurant']));
                 renderCategories();
-                // Clear location
                 localStorage.removeItem('travelegend-last-lat');
                 localStorage.removeItem('travelegend-last-lng');
                 localStorage.removeItem('travelegend-last-addr');
@@ -2586,7 +2382,7 @@
             }
 
             // ================================================================
-            // 18. TOAST
+            // 16. TOAST
             // ================================================================
             function showToast(message, type) {
                 const existing = document.querySelector('.toast-notification');
@@ -2622,7 +2418,7 @@
             }
 
             // ================================================================
-            // 19. UTILITY
+            // 17. UTILITY
             // ================================================================
             function formatDistance(meters) {
                 if (meters < 1000) return `${Math.round(meters)} m`;
@@ -2653,7 +2449,7 @@
             }
 
             // ================================================================
-            // 20. LOAD STATE
+            // 18. LOAD STATE
             // ================================================================
             function loadState() {
                 const theme = localStorage.getItem('travelegend-theme') || 'light';
@@ -2688,7 +2484,6 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                // Load last location
                 const lastLat = localStorage.getItem('travelegend-last-lat');
                 const lastLng = localStorage.getItem('travelegend-last-lng');
                 const lastAddr = localStorage.getItem('travelegend-last-addr');
@@ -2702,17 +2497,13 @@
             }
 
             // ================================================================
-            // 21. INIT
+            // 19. INIT
             // ================================================================
             function init() {
                 loadState();
                 renderCategories();
                 updateTimeDisplay();
 
-                // 不自動啟動 watch，也不自動觸發定位
-                // 讓使用者點擊「Use Current Location」才會開始
-
-                // Event listeners
                 dom.langToggle.addEventListener('click', toggleLang);
                 dom.themeToggle.addEventListener('click', toggleTheme);
 
@@ -2748,7 +2539,7 @@
 
                 updateI18n();
 
-                console.log('🚀 TraveLegend initialized');
+                console.log('🚀 TraveLegend initialized (no map)');
                 console.log(`📍 Location: ${state.userLat || 'not set'}, ${state.userLng || 'not set'}`);
                 console.log(`🌐 Language: ${state.lang}`);
                 console.log(`🎨 Theme: ${state.theme}`);
