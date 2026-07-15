@@ -642,8 +642,8 @@
             cursor: pointer;
             white-space: nowrap;
             flex-shrink: 0;
-            display: block;   /* 讓點擊區域變大 */
-            padding: 4px 0;    /* 增加點擊區域 */
+            display: block;
+            padding: 4px 0;
             flex: 0 1 auto;
         }
         .place-card .card-name:hover {
@@ -1419,7 +1419,6 @@
                 mapInstances: new Map(),
                 routingControls: new Map(),
                 watchId: null,
-                // Store expanded place IDs for re-render
                 expandedIds: new Set(),
             };
 
@@ -1597,6 +1596,10 @@
                     localStorage.setItem('travelegend-last-lat', lat);
                     localStorage.setItem('travelegend-last-lng', lng);
                     if (address) localStorage.setItem('travelegend-last-addr', address);
+                } else {
+                    localStorage.removeItem('travelegend-last-lat');
+                    localStorage.removeItem('travelegend-last-lng');
+                    localStorage.removeItem('travelegend-last-addr');
                 }
                 if (state.results.length > 0) {
                     sortResultsByDistance(state.results);
@@ -1610,7 +1613,6 @@
                         reject(new Error('Geolocation not supported'));
                         return;
                     }
-                    // 增加超時至 15 秒
                     navigator.geolocation.getCurrentPosition(
                         (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
                         (err) => reject(err), { enableHighAccuracy: true, timeout: 15000 }
@@ -1689,6 +1691,11 @@
                     updateLocationUI(lat, lng, addr || `Manual (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
                     dom.manualLocPanel.classList.add('hidden');
                     showToast('Location updated manually', 'info');
+                    // Stop watching if active (user manually overrides)
+                    if (state.watchId !== null) {
+                        navigator.geolocation.clearWatch(state.watchId);
+                        state.watchId = null;
+                    }
                     return;
                 }
 
@@ -1715,6 +1722,10 @@
                     updateLocationUI(parseFloat(lat), parseFloat(lon), display_name);
                     dom.manualLocPanel.classList.add('hidden');
                     showToast('Location updated via address', 'info');
+                    if (state.watchId !== null) {
+                        navigator.geolocation.clearWatch(state.watchId);
+                        state.watchId = null;
+                    }
                 } catch (_) {
                     showToast('Geocoding failed. Please enter coordinates.', 'error');
                 }
@@ -1791,7 +1802,6 @@
                 'https://z.overpass-api.de/api/interpreter',
             ];
 
-            // fetch with timeout
             function fetchWithTimeout(url, options, timeout = 15000) {
                 return new Promise((resolve, reject) => {
                     const controller = new AbortController();
@@ -1853,10 +1863,8 @@
                 let data = null;
                 let lastError = null;
 
-                // Show preparing status
                 setStatus(t('statusPreparing'), '', '<i class="fas fa-cog fa-spin" aria-hidden="true"></i>');
 
-                // Try each endpoint
                 for (let i = 0; i < OVERPASS_ENDPOINTS.length; i++) {
                     const endpoint = OVERPASS_ENDPOINTS[i];
                     const attempt = i + 1;
@@ -1878,21 +1886,18 @@
                         setStatus(t('statusFetching'), '', '<i class="fas fa-download" aria-hidden="true"></i>');
 
                         const text = await resp.text();
-                        // Check if it's XML error
                         if (text.includes('<html') || text.includes('Error')) {
                             throw new Error('Overpass error response');
                         }
                         data = JSON.parse(text);
-                        break; // success
+                        break;
                     } catch (err) {
                         console.warn(`Endpoint ${endpoint} failed:`, err);
                         lastError = err;
-                        // Continue to next
                     }
                 }
 
                 if (!data) {
-                    // All endpoints failed
                     setStatus(
                         t('statusError', { message: t('errOverpassAll') }),
                         '',
@@ -1911,7 +1916,6 @@
                 const elements = data.elements || [];
                 setStatus(t('statusParsing'), `${elements.length} elements found`, '<i class="fas fa-code" aria-hidden="true"></i>');
 
-                // Process results
                 const places = [];
                 const seen = new Set();
                 elements.forEach(el => {
@@ -1974,10 +1978,8 @@
                     });
                 });
 
-                // Sort by straight-line distance initially
                 places.sort((a, b) => a.distance - b.distance);
 
-                // Compute open status now
                 const now = getSelectedTime();
                 places.forEach(p => {
                     if (p.opening_hours) {
@@ -1989,7 +1991,6 @@
 
                 state.results = places;
 
-                // Save history
                 state.history.push({
                     time: new Date().toISOString(),
                     lat,
@@ -2001,26 +2002,21 @@
                 if (state.history.length > 50) state.history = state.history.slice(-50);
                 localStorage.setItem('travelegend-history', JSON.stringify(state.history));
 
-                // 保存當前展開的 ID（在渲染前）
                 const expandedIds = new Set(state.expandedIds);
 
-                // Render immediately
                 renderResults(places, expandedIds);
 
-                // 滾動到第一個地點（只要有卡片）
                 const firstCard = document.querySelector('.place-card');
                 if (firstCard) {
                     firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
-                // Update status
                 setStatus(
                     t('statusFound', { count: places.length }),
                     t('statusRoute', { current: 0, total: places.length, name: 'Starting...' }),
                     '<i class="fas fa-route" aria-hidden="true"></i>'
                 );
 
-                // ---- Incrementally fetch walking routes one by one ----
                 for (let i = 0; i < places.length; i++) {
                     const p = places[i];
                     setStatus(
@@ -2044,12 +2040,10 @@
                     updatePlaceCard(p.id, p);
                 }
 
-                // After all routes fetched, re-sort by walking distance and re-render
                 const allDone = places.every(p => p.walkingDistance !== undefined);
                 if (allDone) {
                     places.sort((a, b) => (a.walkingDistance || a.distance) - (b.walkingDistance || b.distance));
                     state.results = places;
-                    // 保留展開狀態
                     renderResults(places, expandedIds);
                     setStatus(
                         t('statusDone', { count: places.length }),
@@ -2060,7 +2054,6 @@
                     showToast(`✅ Found ${places.length} places with walking routes`, 'info');
                 }
 
-                // Summary
                 const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
                 dom.searchSummary.innerHTML = `
                     <span>${t('summaryFound', { count: places.length, cats: categories.length })}</span>
@@ -2105,7 +2098,6 @@
                 }, 1000);
             }
 
-            // ---- Update a single card after route fetched ----
             function updatePlaceCard(placeId, place) {
                 const card = document.querySelector(`.place-card[data-id="${placeId}"]`);
                 if (!card) return;
@@ -2240,7 +2232,6 @@
             // ================================================================
             function renderResults(places, preserveExpandedIds) {
                 const container = dom.resultsContainer;
-                // If preserveExpandedIds not provided, use state.expandedIds
                 const expandedSet = preserveExpandedIds || state.expandedIds;
 
                 if (!places || places.length === 0) {
@@ -2289,7 +2280,6 @@
 
                 container.innerHTML = html;
 
-                // 重新初始化事件
                 container.querySelectorAll('.result-group-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const group = header.closest('.result-group');
@@ -2305,14 +2295,12 @@
                     });
                 });
 
-                // 點擊名稱展開
                 container.querySelectorAll('.place-card .card-name').forEach(nameEl => {
                     nameEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         const card = nameEl.closest('.place-card');
                         const id = card.dataset.id;
                         const expanded = card.classList.contains('expanded');
-                        // 關閉其他
                         container.querySelectorAll('.place-card.expanded').forEach(c => {
                             if (c !== card) {
                                 c.classList.remove('expanded');
@@ -2341,7 +2329,6 @@
                     });
                 });
 
-                // 現在重新初始化已展開卡片的地圖
                 container.querySelectorAll('.place-card.expanded').forEach(card => {
                     const id = card.dataset.id;
                     if (id && !state.mapInstances.has(id)) {
@@ -2349,7 +2336,6 @@
                     }
                 });
 
-                // 更新展開狀態記錄
                 state.expandedIds = expandedSet;
             }
 
@@ -2584,7 +2570,7 @@
                 state.selectedCategories = new Set(['restaurant']);
                 localStorage.setItem('travelegend-categories', JSON.stringify(['restaurant']));
                 renderCategories();
-                // Also clear saved location?
+                // Clear location
                 localStorage.removeItem('travelegend-last-lat');
                 localStorage.removeItem('travelegend-last-lng');
                 localStorage.removeItem('travelegend-last-addr');
@@ -2592,6 +2578,10 @@
                 state.userLng = null;
                 state.userAddress = null;
                 updateLocationUI(null, null, null);
+                if (state.watchId !== null) {
+                    navigator.geolocation.clearWatch(state.watchId);
+                    state.watchId = null;
+                }
                 showToast('All settings reset', 'info');
             }
 
@@ -2698,7 +2688,7 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                // 讀取上次位置
+                // Load last location
                 const lastLat = localStorage.getItem('travelegend-last-lat');
                 const lastLng = localStorage.getItem('travelegend-last-lng');
                 const lastAddr = localStorage.getItem('travelegend-last-addr');
@@ -2719,18 +2709,10 @@
                 renderCategories();
                 updateTimeDisplay();
 
-                // 不自動取得位置，僅顯示上次儲存的位置
-                // 如果沒有上次位置，則顯示 --，等待使用者操作
+                // 不自動啟動 watch，也不自動觸發定位
+                // 讓使用者點擊「Use Current Location」才會開始
 
-                // 如果有位置，開始監聽（但監聽會自動更新位置，我們只在使用者按鈕後才啟動監聽？）
-                // 為了即時更新，如果已有位置，我們還是啟動監聽，但不會自動觸發定位請求
-                // 這裡我們不自動呼叫 setCurrentLocation，而是等待使用者點擊按鈕
-                // 但我們可以啟動 watch（如果已有位置）
-                if (state.userLat !== null && state.userLng !== null) {
-                    startWatching();
-                }
-
-                // 事件監聽
+                // Event listeners
                 dom.langToggle.addEventListener('click', toggleLang);
                 dom.themeToggle.addEventListener('click', toggleTheme);
 
