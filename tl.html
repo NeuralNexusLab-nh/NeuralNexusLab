@@ -13,6 +13,11 @@
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
+    <!-- Leaflet.js (only map, no routing) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
     <style>
         /* ===== RESET & BASE ===== */
         *,
@@ -48,6 +53,7 @@
             --transition: 0.25s ease;
             --font: 'Poppins', sans-serif;
             --header-height: 68px;
+            --map-height: 220px;
         }
 
         [data-theme="dark"] {
@@ -720,31 +726,29 @@
             background: var(--accent);
             border: none;
             border-radius: var(--radius-xs);
-            padding: 4px 14px;
+            padding: 4px 12px;
             color: #fff;
+            cursor: pointer;
             font-family: var(--font);
             font-size: 0.8rem;
             font-weight: 500;
-            cursor: pointer;
             transition: background var(--transition);
-            text-decoration: none;
-            display: inline-block;
         }
         .place-detail .detail-item .dvalue .gmaps-btn:hover {
             background: var(--accent-hover);
         }
 
-        .place-detail .route-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 24px;
-            font-size: 0.85rem;
-            padding: 8px 0 4px;
-            color: var(--text-secondary);
+        .place-detail .detail-map {
+            width: 100%;
+            height: var(--map-height);
+            border-radius: var(--radius-xs);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-top: 8px;
         }
-        .place-detail .route-info i {
-            color: var(--accent);
-            margin-right: 4px;
+        .place-detail .detail-map .leaflet-container {
+            height: 100%;
+            width: 100%;
         }
 
         /* ===== EMPTY STATE ===== */
@@ -1113,7 +1117,7 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script>
         // ================================================================
-        //  TraveLegend — Complete Application (no map)
+        //  TraveLegend — Simplified map (no route, no user marker)
         // ================================================================
 
         (function() {
@@ -1160,9 +1164,7 @@
                     'detailStatus': 'Currently Open',
                     'detailLat': 'Latitude',
                     'detailLng': 'Longitude',
-                    'detailGmaps': 'Google Maps Route',
-                    'detailWalkDist': 'Walking Distance',
-                    'detailWalkTime': 'Est. Walking Time',
+                    'detailGmaps': 'Google Map 路線',
                     'settingsTitle': 'Settings',
                     'clearHistoryLabel': 'Search History',
                     'clearHistory': 'Clear History',
@@ -1177,15 +1179,13 @@
                     'errLocUnavailable': 'Location unavailable. Please set a manual location.',
                     'errNetwork': 'Network error. Please check your connection.',
                     'errOverpass': 'Overpass API is currently unavailable. Please try again later.',
-                    'errRoute': 'Could not calculate walking route. Showing straight-line distance.',
                     'errEmpty': 'No places found. Try a larger radius or different categories.',
                     'errOverpassAll': 'All Overpass services are currently overloaded. Please wait a few minutes and try again.',
                     'statusPreparing': 'Preparing search query...',
                     'statusConnecting': 'Connecting to Overpass server (attempt {attempt}/{max})...',
                     'statusFetching': 'Fetching places from Overpass...',
                     'statusParsing': 'Parsing results...',
-                    'statusFound': 'Found {count} places. Calculating walking routes...',
-                    'statusRoute': 'Route {current}/{total}: {name}',
+                    'statusFound': 'Found {count} places. Calculating distances...',
                     'statusDone': '✅ Search complete! Found {count} places.',
                     'statusError': '❌ Error: {message}',
                     'locTimeout': 'Location request timed out. Please set location manually.',
@@ -1227,9 +1227,7 @@
                     'detailStatus': '目前狀態',
                     'detailLat': '緯度',
                     'detailLng': '經度',
-                    'detailGmaps': 'Google 地圖導航',
-                    'detailWalkDist': '步行距離',
-                    'detailWalkTime': '估計步行時間',
+                    'detailGmaps': 'Google 地圖路線',
                     'settingsTitle': '設定',
                     'clearHistoryLabel': '搜尋紀錄',
                     'clearHistory': '清除紀錄',
@@ -1244,15 +1242,13 @@
                     'errLocUnavailable': '無法取得位置。請手動設定位置。',
                     'errNetwork': '網路錯誤。請檢查連線。',
                     'errOverpass': 'Overpass API 暫時無法使用。請稍後再試。',
-                    'errRoute': '無法計算步行路線，顯示直線距離。',
                     'errEmpty': '找不到地點。試著加大半徑或選擇不同分類。',
                     'errOverpassAll': '所有 Overpass 服務目前皆忙碌中，請稍後再試。',
                     'statusPreparing': '正在準備搜尋查詢...',
                     'statusConnecting': '正在連線 Overpass 伺服器 (嘗試 {attempt}/{max})...',
                     'statusFetching': '正在從 Overpass 取得地點資料...',
                     'statusParsing': '正在解析結果...',
-                    'statusFound': '找到 {count} 個地點，正在計算步行路線...',
-                    'statusRoute': '路線 {current}/{total}: {name}',
+                    'statusFound': '找到 {count} 個地點，正在計算距離...',
                     'statusDone': '✅ 搜尋完成！共找到 {count} 個地點。',
                     'statusError': '❌ 錯誤：{message}',
                     'locTimeout': '定位請求超時，請手動設定位置。',
@@ -1393,7 +1389,7 @@
                 searchCooldown: false,
                 results: [],
                 history: [],
-                watchId: null,
+                mapInstances: new Map(), // placeId -> Leaflet map object
                 expandedIds: new Set(),
             };
 
@@ -1610,7 +1606,6 @@
                     const pos = await getCurrentPosition();
                     const addr = await fetchAddress(pos.lat, pos.lng);
                     updateLocationUI(pos.lat, pos.lng, addr);
-                    startWatching();
                     showToast('Location updated', 'info');
                 } catch (err) {
                     console.warn('Location error:', err);
@@ -1622,27 +1617,6 @@
                         showToast(t('errLocUnavailable'), 'error');
                     }
                 }
-            }
-
-            function startWatching() {
-                if (state.watchId !== null) {
-                    navigator.geolocation.clearWatch(state.watchId);
-                    state.watchId = null;
-                }
-                if (!navigator.geolocation) return;
-                state.watchId = navigator.geolocation.watchPosition(
-                    async (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lng = pos.coords.longitude;
-                        if (state.userLat !== null && state.userLng !== null) {
-                            const dist = haversine(state.userLat, state.userLng, lat, lng);
-                            if (dist < 20) return;
-                        }
-                        const addr = await fetchAddress(lat, lng);
-                        updateLocationUI(lat, lng, addr);
-                    },
-                    (err) => console.warn('Watch error:', err), { enableHighAccuracy: true, timeout: 15000 }
-                );
             }
 
             function haversine(lat1, lng1, lat2, lng2) {
@@ -1664,10 +1638,6 @@
                     updateLocationUI(lat, lng, addr || `Manual (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
                     dom.manualLocPanel.classList.add('hidden');
                     showToast('Location updated manually', 'info');
-                    if (state.watchId !== null) {
-                        navigator.geolocation.clearWatch(state.watchId);
-                        state.watchId = null;
-                    }
                     return;
                 }
 
@@ -1694,10 +1664,6 @@
                     updateLocationUI(parseFloat(lat), parseFloat(lon), display_name);
                     dom.manualLocPanel.classList.add('hidden');
                     showToast('Location updated via address', 'info');
-                    if (state.watchId !== null) {
-                        navigator.geolocation.clearWatch(state.watchId);
-                        state.watchId = null;
-                    }
                 } catch (_) {
                     showToast('Geocoding failed. Please enter coordinates.', 'error');
                 }
@@ -1805,6 +1771,7 @@
                     return;
                 }
 
+                // Build Overpass query
                 const tags = [];
                 categories.forEach(catId => {
                     const cat = CAT_MAP[catId];
@@ -1939,8 +1906,6 @@
                         category: category,
                         tags: tags,
                         distance: dist,
-                        walkingDistance: dist,
-                        walkingDuration: dist / 1.4,
                         address: tags['addr:full'] || tags['addr:street'] || null,
                         phone: tags.phone || tags['contact:phone'] || null,
                         website: tags.website || tags.url || null,
@@ -1984,46 +1949,18 @@
 
                 setStatus(
                     t('statusFound', { count: places.length }),
-                    t('statusRoute', { current: 0, total: places.length, name: 'Starting...' }),
+                    '',
                     '<i class="fas fa-route" aria-hidden="true"></i>'
                 );
 
-                for (let i = 0; i < places.length; i++) {
-                    const p = places[i];
-                    setStatus(
-                        t('statusFound', { count: places.length }),
-                        t('statusRoute', { current: i + 1, total: places.length, name: p.name.substring(0, 30) }),
-                        '<i class="fas fa-route" aria-hidden="true"></i>'
-                    );
-                    try {
-                        const route = await getWalkingRoute(lat, lng, p.lat, p.lng);
-                        if (route) {
-                            p.walkingDistance = route.distance;
-                            p.walkingDuration = route.duration;
-                        } else {
-                            p.walkingDistance = p.distance;
-                            p.walkingDuration = p.distance / 1.4;
-                        }
-                    } catch (_) {
-                        p.walkingDistance = p.distance;
-                        p.walkingDuration = p.distance / 1.4;
-                    }
-                    updatePlaceCard(p.id, p);
-                }
-
-                const allDone = places.every(p => p.walkingDistance !== undefined);
-                if (allDone) {
-                    places.sort((a, b) => (a.walkingDistance || a.distance) - (b.walkingDistance || b.distance));
-                    state.results = places;
-                    renderResults(places, expandedIds);
-                    setStatus(
-                        t('statusDone', { count: places.length }),
-                        '',
-                        '<i class="fas fa-check-circle" aria-hidden="true"></i>',
-                        'success'
-                    );
-                    showToast(`✅ Found ${places.length} places with walking routes`, 'info');
-                }
+                // 直接完成
+                setStatus(
+                    t('statusDone', { count: places.length }),
+                    '',
+                    '<i class="fas fa-check-circle" aria-hidden="true"></i>',
+                    'success'
+                );
+                showToast(`✅ Found ${places.length} places`, 'info');
 
                 const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
                 dom.searchSummary.innerHTML = `
@@ -2069,67 +2006,8 @@
                 }, 1000);
             }
 
-            function updatePlaceCard(placeId, place) {
-                const card = document.querySelector(`.place-card[data-id="${placeId}"]`);
-                if (!card) return;
-                const distSpan = card.querySelector('.card-meta span:first-child');
-                if (distSpan) {
-                    distSpan.innerHTML = `<i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance)}`;
-                }
-                const timeSpan = card.querySelector('.card-meta span:last-child');
-                if (timeSpan && place.walkingDuration) {
-                    timeSpan.innerHTML = `<i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}`;
-                }
-                const routeInfo = card.querySelector('.route-info');
-                if (routeInfo) {
-                    routeInfo.innerHTML = `
-                        <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance)}</span>
-                        <span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}</span>
-                    `;
-                }
-                const detailItems = card.querySelectorAll('.detail-item');
-                detailItems.forEach(item => {
-                    const label = item.querySelector('.dlabel');
-                    if (label && label.textContent.includes('Walking Distance')) {
-                        const val = item.querySelector('.dvalue');
-                        if (val) val.textContent = formatDistance(place.walkingDistance);
-                    }
-                    if (label && label.textContent.includes('Est. Walking Time')) {
-                        const val = item.querySelector('.dvalue');
-                        if (val && place.walkingDuration) val.textContent = formatDuration(place.walkingDuration);
-                    }
-                });
-            }
-
             // ================================================================
-            // 12. OSRM WALKING ROUTE
-            // ================================================================
-            async function getWalkingRoute(fromLat, fromLng, toLat, toLng) {
-                try {
-                    const url =
-                        `https://routing.openstreetmap.de/routing-foot/route/v1/foot/${fromLng},${fromLat};${toLng},${toLat}?overview=false&steps=false`;
-                    const resp = await fetch(url);
-                    if (!resp.ok) throw new Error('Route fetch failed');
-                    const data = await resp.json();
-                    if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
-                        throw new Error('No route');
-                    }
-                    const route = data.routes[0];
-                    return {
-                        distance: route.distance,
-                        duration: route.duration,
-                    };
-                } catch (_) {
-                    const dist = haversine(fromLat, fromLng, toLat, toLng);
-                    return {
-                        distance: dist,
-                        duration: dist / 1.4,
-                    };
-                }
-            }
-
-            // ================================================================
-            // 13. OPENING HOURS PARSER
+            // 12. OPENING HOURS PARSER
             // ================================================================
             function isOpenNow(openingHours, date) {
                 if (!openingHours) return null;
@@ -2199,7 +2077,7 @@
             }
 
             // ================================================================
-            // 14. RENDER RESULTS (with expand state preservation)
+            // 13. RENDER RESULTS (with expand state preservation)
             // ================================================================
             function renderResults(places, preserveExpandedIds) {
                 const container = dom.resultsContainer;
@@ -2275,26 +2153,44 @@
                         container.querySelectorAll('.place-card.expanded').forEach(c => {
                             if (c !== card) {
                                 c.classList.remove('expanded');
-                                state.expandedIds.delete(c.dataset.id);
+                                const cid = c.dataset.id;
+                                if (cid && state.mapInstances.has(cid)) {
+                                    const map = state.mapInstances.get(cid);
+                                    map.remove();
+                                    state.mapInstances.delete(cid);
+                                }
+                                state.expandedIds.delete(cid);
                             }
                         });
                         if (expanded) {
                             card.classList.remove('expanded');
+                            if (id && state.mapInstances.has(id)) {
+                                const map = state.mapInstances.get(id);
+                                map.remove();
+                                state.mapInstances.delete(id);
+                            }
                             state.expandedIds.delete(id);
                         } else {
                             card.classList.add('expanded');
                             state.expandedIds.add(id);
+                            setTimeout(() => initDetailMap(id, card), 100);
                         }
                     });
+                });
+
+                container.querySelectorAll('.place-card.expanded').forEach(card => {
+                    const id = card.dataset.id;
+                    if (id && !state.mapInstances.has(id)) {
+                        setTimeout(() => initDetailMap(id, card), 150);
+                    }
                 });
 
                 state.expandedIds = expandedSet;
             }
 
             function renderPlaceCard(place, initiallyExpanded) {
-                const dist = place.walkingDistance !== undefined ? place.walkingDistance : place.distance;
+                const dist = place.distance;
                 const distStr = formatDistance(dist);
-                const timeStr = place.walkingDuration ? formatDuration(place.walkingDuration) : '';
                 const openStatus = place.openNow;
                 let openHtml = '';
                 if (openStatus === true) {
@@ -2305,16 +2201,28 @@
 
                 const expandedClass = initiallyExpanded ? 'expanded' : '';
 
-                // Google Maps link
-                const gmapsUrl = place.address ? `https://www.google.com/maps/dir//+${encodeURIComponent(place.address)}` : '#';
+                // Google Maps link (if address exists)
+                let gmapsHtml = '';
+                if (place.address) {
+                    const url = `https://www.google.com/maps/dir//+${encodeURIComponent(place.address)}`;
+                    gmapsHtml = `
+                        <div class="detail-item">
+                            <span class="dlabel"></span>
+                            <span class="dvalue">
+                                <button class="gmaps-btn" onclick="window.open('${url}', '_blank')">
+                                    <i class="fas fa-map-signs" aria-hidden="true"></i> ${t('detailGmaps')}
+                                </button>
+                            </span>
+                        </div>
+                    `;
+                }
 
                 return `
                     <div class="place-card ${expandedClass}" data-id="${place.id}" data-lat="${place.lat}" data-lng="${place.lng}">
                         <div class="card-row">
                             <span class="card-name">${escapeHtml(place.name)}</span>
                             <span class="card-meta">
-                                <span><i class="fas fa-walking" aria-hidden="true"></i> ${distStr}</span>
-                                ${timeStr ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${timeStr}</span>` : ''}
+                                <span><i class="fas fa-location-dot" aria-hidden="true"></i> ${distStr}</span>
                             </span>
                             ${openHtml}
                         </div>
@@ -2326,19 +2234,55 @@
                                 ${place.website ? `<div class="detail-item"><span class="dlabel">${t('detailWebsite')}</span><span class="dvalue"><a href="${place.website}" target="_blank" rel="noopener">${escapeHtml(place.website)}</a></span></div>` : ''}
                                 ${place.opening_hours ? `<div class="detail-item"><span class="dlabel">${t('detailHours')}</span><span class="dvalue">${escapeHtml(place.opening_hours)}</span></div>` : ''}
                                 ${place.openNow !== null ? `<div class="detail-item"><span class="dlabel">${t('detailStatus')}</span><span class="dvalue">${place.openNow ? '✅ ' + t('openNow') : '❌ ' + t('closed')}</span></div>` : ''}
-                                <div class="detail-item"><span class="dlabel">${t('detailWalkDist')}</span><span class="dvalue">${formatDistance(place.walkingDistance || place.distance)}</span></div>
-                                ${place.walkingDuration ? `<div class="detail-item"><span class="dlabel">${t('detailWalkTime')}</span><span class="dvalue">${formatDuration(place.walkingDuration)}</span></div>` : ''}
                                 <div class="detail-item"><span class="dlabel">${t('detailLat')}</span><span class="dvalue">${place.lat.toFixed(6)}</span></div>
                                 <div class="detail-item"><span class="dlabel">${t('detailLng')}</span><span class="dvalue">${place.lng.toFixed(6)}</span></div>
-                                ${place.address ? `<div class="detail-item"><span class="dlabel">${t('detailGmaps')}</span><span class="dvalue"><a href="${gmapsUrl}" target="_blank" rel="noopener" class="gmaps-btn"><i class="fas fa-directions" aria-hidden="true"></i> ${t('detailGmaps')}</a></span></div>` : ''}
+                                ${gmapsHtml}
                             </div>
-                            <div class="route-info">
-                                <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance || place.distance)}</span>
-                                ${place.walkingDuration ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}</span>` : ''}
-                            </div>
+                            <div class="detail-map" id="map-${place.id}"></div>
                         </div>
                     </div>
                 `;
+            }
+
+            // ================================================================
+            // 14. DETAIL MAP (only destination marker)
+            // ================================================================
+            function initDetailMap(placeId, cardElement) {
+                const mapContainer = cardElement.querySelector('.detail-map');
+                if (!mapContainer) return;
+                if (state.mapInstances.has(placeId)) {
+                    const existing = state.mapInstances.get(placeId);
+                    existing.invalidateSize();
+                    return;
+                }
+
+                const lat = parseFloat(cardElement.dataset.lat);
+                const lng = parseFloat(cardElement.dataset.lng);
+                if (isNaN(lat) || isNaN(lng)) return;
+
+                const map = L.map(mapContainer, {
+                    center: [lat, lng],
+                    zoom: 15,
+                });
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19,
+                }).addTo(map);
+
+                // Destination marker
+                const destIcon = L.divIcon({
+                    html: '<div style="background:#d0314e;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8],
+                });
+                L.marker([lat, lng], { icon: destIcon }).addTo(map).bindPopup(escapeHtml(cardElement.querySelector('.card-name')?.textContent || 'Destination'));
+
+                // Fit to marker
+                map.setView([lat, lng], 15);
+
+                state.mapInstances.set(placeId, map);
+                setTimeout(() => map.invalidateSize(), 300);
             }
 
             // ================================================================
@@ -2374,10 +2318,6 @@
                 state.userLng = null;
                 state.userAddress = null;
                 updateLocationUI(null, null, null);
-                if (state.watchId !== null) {
-                    navigator.geolocation.clearWatch(state.watchId);
-                    state.watchId = null;
-                }
                 showToast('All settings reset', 'info');
             }
 
@@ -2425,13 +2365,6 @@
                 return `${(meters / 1000).toFixed(1)} km`;
             }
 
-            function formatDuration(seconds) {
-                if (seconds < 60) return `${Math.round(seconds)} s`;
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.round(seconds % 60);
-                return `${mins} min${mins > 1 ? 's' : ''}${secs > 0 ? ` ${secs}s` : ''}`;
-            }
-
             function escapeHtml(str) {
                 if (!str) return '';
                 const div = document.createElement('div');
@@ -2440,11 +2373,7 @@
             }
 
             function sortResultsByDistance(places) {
-                places.sort((a, b) => {
-                    const da = a.walkingDistance !== undefined ? a.walkingDistance : a.distance;
-                    const db = b.walkingDistance !== undefined ? b.walkingDistance : b.distance;
-                    return da - db;
-                });
+                places.sort((a, b) => a.distance - b.distance);
                 return places;
             }
 
@@ -2504,6 +2433,7 @@
                 renderCategories();
                 updateTimeDisplay();
 
+                // Event listeners
                 dom.langToggle.addEventListener('click', toggleLang);
                 dom.themeToggle.addEventListener('click', toggleTheme);
 
@@ -2539,11 +2469,7 @@
 
                 updateI18n();
 
-                console.log('🚀 TraveLegend initialized (no map)');
-                console.log(`📍 Location: ${state.userLat || 'not set'}, ${state.userLng || 'not set'}`);
-                console.log(`🌐 Language: ${state.lang}`);
-                console.log(`🎨 Theme: ${state.theme}`);
-                console.log(`📂 Categories: ${[...state.selectedCategories].join(', ')}`);
+                console.log('🚀 TraveLegend initialized (simplified map)');
             }
 
             if (document.readyState === 'loading') {
