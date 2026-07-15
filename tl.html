@@ -642,6 +642,9 @@
             cursor: pointer;
             white-space: nowrap;
             flex-shrink: 0;
+            display: block;   /* 讓點擊區域變大 */
+            padding: 4px 0;    /* 增加點擊區域 */
+            flex: 0 1 auto;
         }
         .place-card .card-name:hover {
             color: var(--accent);
@@ -677,23 +680,6 @@
         .place-card .card-open.closed {
             background: var(--red-bg);
             color: var(--red);
-        }
-        .place-card .card-fav {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 4px;
-            transition: color var(--transition);
-            flex-shrink: 0;
-            margin-left: auto;
-        }
-        .place-card .card-fav.active {
-            color: #f59e0b;
-        }
-        .place-card .card-fav:hover {
-            color: #f59e0b;
         }
 
         /* ===== DETAIL EXPAND ===== */
@@ -1117,12 +1103,6 @@
         <div class="modal-box">
             <h2><i class="fas fa-sliders-h" aria-hidden="true"></i> <span data-i18n="settingsTitle">Settings</span></h2>
             <div class="settings-group">
-                <label data-i18n="clearFavoritesLabel">Favorites</label>
-                <div class="btn-group">
-                    <button class="sett-btn danger" id="clearFavoritesBtn" data-i18n="clearFavorites">Clear Favorites</button>
-                </div>
-            </div>
-            <div class="settings-group">
                 <label data-i18n="clearHistoryLabel">Search History</label>
                 <div class="btn-group">
                     <button class="sett-btn danger" id="clearHistoryBtn" data-i18n="clearHistory">Clear History</button>
@@ -1153,7 +1133,7 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script>
         // ================================================================
-        //  TraveLegend — Complete Application with enhanced status display
+        //  TraveLegend — Complete Application with all fixes
         // ================================================================
 
         (function() {
@@ -1205,8 +1185,6 @@
                     'detailWalkDist': 'Walking Distance',
                     'detailWalkTime': 'Est. Walking Time',
                     'settingsTitle': 'Settings',
-                    'clearFavoritesLabel': 'Favorites',
-                    'clearFavorites': 'Clear Favorites',
                     'clearHistoryLabel': 'Search History',
                     'clearHistory': 'Clear History',
                     'resetThemeLabel': 'Theme',
@@ -1232,6 +1210,7 @@
                     'statusRoute': 'Route {current}/{total}: {name}',
                     'statusDone': '✅ Search complete! Found {count} places.',
                     'statusError': '❌ Error: {message}',
+                    'locTimeout': 'Location request timed out. Please set location manually.',
                 },
                 zh: {
                     'langLabel': '中文',
@@ -1275,8 +1254,6 @@
                     'detailWalkDist': '步行距離',
                     'detailWalkTime': '估計步行時間',
                     'settingsTitle': '設定',
-                    'clearFavoritesLabel': '我的最愛',
-                    'clearFavorites': '清除我的最愛',
                     'clearHistoryLabel': '搜尋紀錄',
                     'clearHistory': '清除紀錄',
                     'resetThemeLabel': '主題',
@@ -1301,6 +1278,7 @@
                     'statusRoute': '路線 {current}/{total}: {name}',
                     'statusDone': '✅ 搜尋完成！共找到 {count} 個地點。',
                     'statusError': '❌ 錯誤：{message}',
+                    'locTimeout': '定位請求超時，請手動設定位置。',
                 }
             };
 
@@ -1437,11 +1415,12 @@
                 isSearching: false,
                 searchCooldown: false,
                 results: [],
-                favorites: [],
                 history: [],
                 mapInstances: new Map(),
                 routingControls: new Map(),
                 watchId: null,
+                // Store expanded place IDs for re-render
+                expandedIds: new Set(),
             };
 
             // ================================================================
@@ -1482,7 +1461,6 @@
                 statusDetail: $('#statusDetail'),
                 searchSummary: $('#searchSummary'),
                 resultsContainer: $('#resultsContainer'),
-                clearFavoritesBtn: $('#clearFavoritesBtn'),
                 clearHistoryBtn: $('#clearHistoryBtn'),
                 resetThemeBtn: $('#resetThemeBtn'),
                 resetLangBtn: $('#resetLangBtn'),
@@ -1614,6 +1592,12 @@
                 dom.latDisplay.textContent = lat !== null ? lat.toFixed(6) : '--';
                 dom.lngDisplay.textContent = lng !== null ? lng.toFixed(6) : '--';
                 dom.addrDisplay.textContent = address || '--';
+                // Save to localStorage
+                if (lat !== null && lng !== null) {
+                    localStorage.setItem('travelegend-last-lat', lat);
+                    localStorage.setItem('travelegend-last-lng', lng);
+                    if (address) localStorage.setItem('travelegend-last-addr', address);
+                }
                 if (state.results.length > 0) {
                     sortResultsByDistance(state.results);
                     renderResults(state.results);
@@ -1626,9 +1610,10 @@
                         reject(new Error('Geolocation not supported'));
                         return;
                     }
+                    // 增加超時至 15 秒
                     navigator.geolocation.getCurrentPosition(
                         (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-                        (err) => reject(err), { enableHighAccuracy: true, timeout: 10000 }
+                        (err) => reject(err), { enableHighAccuracy: true, timeout: 15000 }
                     );
                 });
             }
@@ -1650,10 +1635,13 @@
                     const addr = await fetchAddress(pos.lat, pos.lng);
                     updateLocationUI(pos.lat, pos.lng, addr);
                     startWatching();
+                    showToast('Location updated', 'info');
                 } catch (err) {
                     console.warn('Location error:', err);
                     if (err.code === 1) {
                         showToast(t('errLocDenied'), 'error');
+                    } else if (err.code === 3) {
+                        showToast(t('locTimeout'), 'error');
                     } else {
                         showToast(t('errLocUnavailable'), 'error');
                     }
@@ -1794,7 +1782,7 @@
             }
 
             // ================================================================
-            // 11. SEARCH (Overpass with fallback endpoints)
+            // 11. SEARCH (Overpass with fallback endpoints & timeout)
             // ================================================================
             const OVERPASS_ENDPOINTS = [
                 'https://overpass-api.de/api/interpreter',
@@ -1802,6 +1790,21 @@
                 'https://lz4.overpass-api.de/api/interpreter',
                 'https://z.overpass-api.de/api/interpreter',
             ];
+
+            // fetch with timeout
+            function fetchWithTimeout(url, options, timeout = 15000) {
+                return new Promise((resolve, reject) => {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => {
+                        controller.abort();
+                        reject(new Error('Request timeout'));
+                    }, timeout);
+                    fetch(url, { ...options, signal: controller.signal })
+                        .then(resolve)
+                        .catch(reject)
+                        .finally(() => clearTimeout(timeoutId));
+                });
+            }
 
             async function performSearch() {
                 if (state.isSearching || state.searchCooldown) return;
@@ -1864,11 +1867,11 @@
                     );
 
                     try {
-                        const resp = await fetch(endpoint, {
+                        const resp = await fetchWithTimeout(endpoint, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body: `data=${encodeURIComponent(query)}`
-                        });
+                        }, 15000);
 
                         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
@@ -1998,8 +2001,17 @@
                 if (state.history.length > 50) state.history = state.history.slice(-50);
                 localStorage.setItem('travelegend-history', JSON.stringify(state.history));
 
+                // 保存當前展開的 ID（在渲染前）
+                const expandedIds = new Set(state.expandedIds);
+
                 // Render immediately
-                renderResults(places);
+                renderResults(places, expandedIds);
+
+                // 滾動到第一個地點（只要有卡片）
+                const firstCard = document.querySelector('.place-card');
+                if (firstCard) {
+                    firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
 
                 // Update status
                 setStatus(
@@ -2037,7 +2049,8 @@
                 if (allDone) {
                     places.sort((a, b) => (a.walkingDistance || a.distance) - (b.walkingDistance || b.distance));
                     state.results = places;
-                    renderResults(places);
+                    // 保留展開狀態
+                    renderResults(places, expandedIds);
                     setStatus(
                         t('statusDone', { count: places.length }),
                         '',
@@ -2223,10 +2236,13 @@
             }
 
             // ================================================================
-            // 14. RENDER RESULTS
+            // 14. RENDER RESULTS (with expand state preservation)
             // ================================================================
-            function renderResults(places) {
+            function renderResults(places, preserveExpandedIds) {
                 const container = dom.resultsContainer;
+                // If preserveExpandedIds not provided, use state.expandedIds
+                const expandedSet = preserveExpandedIds || state.expandedIds;
+
                 if (!places || places.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
@@ -2235,6 +2251,7 @@
                             <p>${t('noResultsHint')}</p>
                         </div>
                     `;
+                    state.expandedIds.clear();
                     return;
                 }
 
@@ -2264,7 +2281,7 @@
                                 <span class="group-toggle"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
                             </div>
                             <div class="result-group-body">
-                                ${items.map(p => renderPlaceCard(p)).join('')}
+                                ${items.map(p => renderPlaceCard(p, expandedSet.has(p.id))).join('')}
                             </div>
                         </div>
                     `;
@@ -2272,6 +2289,7 @@
 
                 container.innerHTML = html;
 
+                // 重新初始化事件
                 container.querySelectorAll('.result-group-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const group = header.closest('.result-group');
@@ -2287,12 +2305,14 @@
                     });
                 });
 
+                // 點擊名稱展開
                 container.querySelectorAll('.place-card .card-name').forEach(nameEl => {
                     nameEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         const card = nameEl.closest('.place-card');
                         const id = card.dataset.id;
                         const expanded = card.classList.contains('expanded');
+                        // 關閉其他
                         container.querySelectorAll('.place-card.expanded').forEach(c => {
                             if (c !== card) {
                                 c.classList.remove('expanded');
@@ -2302,6 +2322,7 @@
                                     map.remove();
                                     state.mapInstances.delete(cid);
                                 }
+                                state.expandedIds.delete(cid);
                             }
                         });
                         if (expanded) {
@@ -2311,29 +2332,31 @@
                                 map.remove();
                                 state.mapInstances.delete(id);
                             }
+                            state.expandedIds.delete(id);
                         } else {
                             card.classList.add('expanded');
+                            state.expandedIds.add(id);
                             setTimeout(() => initDetailMap(id, card), 100);
                         }
                     });
                 });
 
-                container.querySelectorAll('.card-fav').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const card = btn.closest('.place-card');
-                        if (card) toggleFavorite(card.dataset.id);
-                    });
+                // 現在重新初始化已展開卡片的地圖
+                container.querySelectorAll('.place-card.expanded').forEach(card => {
+                    const id = card.dataset.id;
+                    if (id && !state.mapInstances.has(id)) {
+                        setTimeout(() => initDetailMap(id, card), 150);
+                    }
                 });
 
-                updateFavoritesUI();
+                // 更新展開狀態記錄
+                state.expandedIds = expandedSet;
             }
 
-            function renderPlaceCard(place) {
+            function renderPlaceCard(place, initiallyExpanded) {
                 const dist = place.walkingDistance !== undefined ? place.walkingDistance : place.distance;
                 const distStr = formatDistance(dist);
                 const timeStr = place.walkingDuration ? formatDuration(place.walkingDuration) : '';
-                const isFav = state.favorites.includes(place.id);
                 const openStatus = place.openNow;
                 let openHtml = '';
                 if (openStatus === true) {
@@ -2342,8 +2365,10 @@
                     openHtml = `<span class="card-open closed"><i class="fas fa-times-circle" aria-hidden="true"></i> ${t('closed')}</span>`;
                 }
 
+                const expandedClass = initiallyExpanded ? 'expanded' : '';
+
                 return `
-                    <div class="place-card" data-id="${place.id}" data-lat="${place.lat}" data-lng="${place.lng}">
+                    <div class="place-card ${expandedClass}" data-id="${place.id}" data-lat="${place.lat}" data-lng="${place.lng}">
                         <div class="card-row">
                             <span class="card-name">${escapeHtml(place.name)}</span>
                             <span class="card-meta">
@@ -2351,9 +2376,6 @@
                                 ${timeStr ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${timeStr}</span>` : ''}
                             </span>
                             ${openHtml}
-                            <button class="card-fav ${isFav ? 'active' : ''}" aria-label="Toggle favorite">
-                                <i class="fas fa-star" aria-hidden="true"></i>
-                            </button>
                         </div>
                         <div class="place-detail">
                             <div class="detail-grid">
@@ -2537,42 +2559,8 @@
             }
 
             // ================================================================
-            // 17. FAVORITES
+            // 17. SETTINGS
             // ================================================================
-            function toggleFavorite(placeId) {
-                const idx = state.favorites.indexOf(placeId);
-                if (idx === -1) {
-                    state.favorites.push(placeId);
-                } else {
-                    state.favorites.splice(idx, 1);
-                }
-                localStorage.setItem('travelegend-favorites', JSON.stringify(state.favorites));
-                updateFavoritesUI();
-            }
-
-            function updateFavoritesUI() {
-                document.querySelectorAll('.place-card .card-fav').forEach(btn => {
-                    const card = btn.closest('.place-card');
-                    if (!card) return;
-                    const id = card.dataset.id;
-                    if (state.favorites.includes(id)) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-            }
-
-            // ================================================================
-            // 18. SETTINGS
-            // ================================================================
-            function clearFavorites() {
-                state.favorites = [];
-                localStorage.setItem('travelegend-favorites', JSON.stringify(state.favorites));
-                updateFavoritesUI();
-                showToast('Favorites cleared', 'info');
-            }
-
             function clearHistory() {
                 state.history = [];
                 localStorage.setItem('travelegend-history', JSON.stringify(state.history));
@@ -2590,18 +2578,25 @@
             }
 
             function resetAll() {
-                clearFavorites();
                 clearHistory();
                 setTheme('light');
                 setLang('en');
                 state.selectedCategories = new Set(['restaurant']);
                 localStorage.setItem('travelegend-categories', JSON.stringify(['restaurant']));
                 renderCategories();
+                // Also clear saved location?
+                localStorage.removeItem('travelegend-last-lat');
+                localStorage.removeItem('travelegend-last-lng');
+                localStorage.removeItem('travelegend-last-addr');
+                state.userLat = null;
+                state.userLng = null;
+                state.userAddress = null;
+                updateLocationUI(null, null, null);
                 showToast('All settings reset', 'info');
             }
 
             // ================================================================
-            // 19. TOAST
+            // 18. TOAST
             // ================================================================
             function showToast(message, type) {
                 const existing = document.querySelector('.toast-notification');
@@ -2637,7 +2632,7 @@
             }
 
             // ================================================================
-            // 20. UTILITY
+            // 19. UTILITY
             // ================================================================
             function formatDistance(meters) {
                 if (meters < 1000) return `${Math.round(meters)} m`;
@@ -2668,7 +2663,7 @@
             }
 
             // ================================================================
-            // 21. LOAD STATE
+            // 20. LOAD STATE
             // ================================================================
             function loadState() {
                 const theme = localStorage.getItem('travelegend-theme') || 'light';
@@ -2687,14 +2682,6 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                const favs = localStorage.getItem('travelegend-favorites');
-                if (favs) {
-                    try {
-                        const parsed = JSON.parse(favs);
-                        if (Array.isArray(parsed)) state.favorites = parsed;
-                    } catch (_) { /* ignore */ }
-                }
-
                 const hist = localStorage.getItem('travelegend-history');
                 if (hist) {
                     try {
@@ -2710,17 +2697,40 @@
                         if (!isNaN(d)) state.selectedTime = d;
                     } catch (_) { /* ignore */ }
                 }
+
+                // 讀取上次位置
+                const lastLat = localStorage.getItem('travelegend-last-lat');
+                const lastLng = localStorage.getItem('travelegend-last-lng');
+                const lastAddr = localStorage.getItem('travelegend-last-addr');
+                if (lastLat !== null && lastLng !== null) {
+                    const lat = parseFloat(lastLat);
+                    const lng = parseFloat(lastLng);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        updateLocationUI(lat, lng, lastAddr || null);
+                    }
+                }
             }
 
             // ================================================================
-            // 22. INIT
+            // 21. INIT
             // ================================================================
             function init() {
                 loadState();
                 renderCategories();
                 updateTimeDisplay();
-                setCurrentLocation();
 
+                // 不自動取得位置，僅顯示上次儲存的位置
+                // 如果沒有上次位置，則顯示 --，等待使用者操作
+
+                // 如果有位置，開始監聽（但監聽會自動更新位置，我們只在使用者按鈕後才啟動監聽？）
+                // 為了即時更新，如果已有位置，我們還是啟動監聽，但不會自動觸發定位請求
+                // 這裡我們不自動呼叫 setCurrentLocation，而是等待使用者點擊按鈕
+                // 但我們可以啟動 watch（如果已有位置）
+                if (state.userLat !== null && state.userLng !== null) {
+                    startWatching();
+                }
+
+                // 事件監聽
                 dom.langToggle.addEventListener('click', toggleLang);
                 dom.themeToggle.addEventListener('click', toggleTheme);
 
@@ -2742,7 +2752,6 @@
 
                 dom.searchBtn.addEventListener('click', performSearch);
 
-                dom.clearFavoritesBtn.addEventListener('click', clearFavorites);
                 dom.clearHistoryBtn.addEventListener('click', clearHistory);
                 dom.resetThemeBtn.addEventListener('click', resetTheme);
                 dom.resetLangBtn.addEventListener('click', resetLang);
@@ -2758,11 +2767,10 @@
                 updateI18n();
 
                 console.log('🚀 TraveLegend initialized');
-                console.log(`📍 Location: ${state.userLat || 'pending'}, ${state.userLng || 'pending'}`);
+                console.log(`📍 Location: ${state.userLat || 'not set'}, ${state.userLng || 'not set'}`);
                 console.log(`🌐 Language: ${state.lang}`);
                 console.log(`🎨 Theme: ${state.theme}`);
                 console.log(`📂 Categories: ${[...state.selectedCategories].join(', ')}`);
-                console.log("v1.0.0");
             }
 
             if (document.readyState === 'loading') {
