@@ -558,7 +558,7 @@
         .result-group-body {
             padding: 0 20px 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: 1fr;  /* 單欄 */
             gap: 14px;
             transition: all 0.3s ease;
         }
@@ -571,59 +571,59 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            padding: 14px 16px;
-            cursor: pointer;
+            padding: 12px 16px;
             transition: all var(--transition);
             box-shadow: var(--shadow-sm);
             position: relative;
         }
         .place-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
             border-color: var(--accent);
         }
-        .place-card .card-top {
+
+        /* 折疊時單行顯示 */
+        .place-card .card-row {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 8px;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+            overflow: hidden;
         }
         .place-card .card-name {
             font-weight: 600;
             font-size: 0.95rem;
             color: var(--text-primary);
-            word-break: break-word;
-        }
-        .place-card .card-distance {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            cursor: pointer;
             white-space: nowrap;
-            font-weight: 400;
-            background: var(--bg-primary);
-            padding: 2px 10px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .place-card .card-name:hover {
+            color: var(--accent);
         }
         .place-card .card-meta {
             display: flex;
-            flex-wrap: wrap;
-            gap: 4px 14px;
-            margin-top: 6px;
+            align-items: center;
+            gap: 12px;
             font-size: 0.78rem;
             color: var(--text-muted);
+            flex-wrap: nowrap;
+            overflow: hidden;
+            white-space: nowrap;
+            flex: 1;
         }
         .place-card .card-meta i {
+            margin-right: 2px;
             width: 14px;
             text-align: center;
-            margin-right: 2px;
         }
         .place-card .card-open {
             font-size: 0.7rem;
             font-weight: 600;
             padding: 2px 10px;
             border-radius: 30px;
-            display: inline-block;
-            margin-top: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .place-card .card-open.open {
             background: var(--green-bg);
@@ -641,8 +641,8 @@
             font-size: 1rem;
             padding: 4px;
             transition: color var(--transition);
-            margin-left: auto;
             flex-shrink: 0;
+            margin-left: auto;
         }
         .place-card .card-fav.active {
             color: #f59e0b;
@@ -696,12 +696,18 @@
             color: var(--text-primary);
             word-break: break-word;
         }
-        .place-detail .detail-item .dvalue a {
+        .place-detail .detail-item .dvalue button.osm-btn {
+            background: none;
+            border: none;
             color: var(--accent);
-            text-decoration: none;
-        }
-        .place-detail .detail-item .dvalue a:hover {
+            cursor: pointer;
             text-decoration: underline;
+            font-family: var(--font);
+            font-size: inherit;
+            padding: 0;
+        }
+        .place-detail .detail-item .dvalue button.osm-btn:hover {
+            color: var(--accent-hover);
         }
 
         .place-detail .detail-map {
@@ -894,6 +900,15 @@
             .modal-box {
                 padding: 20px;
             }
+            /* 手機上卡片內 flex 可能換行，稍微調整 */
+            .place-card .card-row {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .place-card .card-meta {
+                white-space: normal;
+                flex-wrap: wrap;
+            }
         }
 
         @media (max-width: 480px) {
@@ -926,6 +941,9 @@
             }
             .place-card .card-name {
                 font-size: 0.88rem;
+            }
+            .place-card .card-meta {
+                font-size: 0.7rem;
             }
         }
 
@@ -1039,7 +1057,7 @@
                     <select id="radiusSelect" aria-label="Search radius">
                         <option value="500">500 m</option>
                         <option value="1000" selected>1 km</option>
-                        <option value="2000">2 km</option>
+                        <option value="3000">3 km</option>
                         <option value="5000">5 km</option>
                         <option value="10000">10 km</option>
                     </select>
@@ -1112,14 +1130,11 @@
             // ================================================================
             const L10N = {
                 en: {
-                    // Header
                     'langLabel': 'EN',
                     'themeLabel': 'Dark',
-                    // Time
                     'timeTitle': 'Current Time',
                     'timeDesc': 'Your current local time & timezone. Adjust manually to check opening hours.',
                     'resetTime': 'Reset to Now',
-                    // Location
                     'locTitle': 'Your Location',
                     'locDesc': 'Automatically detect or manually set your position.',
                     'latLabel': 'Lat',
@@ -1128,28 +1143,21 @@
                     'useCurrent': 'Use Current Location',
                     'manualLoc': 'Manual Location',
                     'applyLoc': 'Apply',
-                    // Categories
                     'catTitle': 'Categories',
                     'catDesc': 'Select one or more categories to search. Restaurant is selected by default.',
-                    // Search
                     'searchTitle': 'Search Nearby',
                     'searchDesc': 'Find places around you across selected categories.',
                     'radiusLabel': 'Radius',
                     'searchBtn': 'Search Nearby',
                     'searching': 'Searching...',
                     'searchAgain': 'Search Again',
-                    // Summary
                     'summaryFound': 'Found <strong>{count}</strong> places across <strong>{cats}</strong> selected categories',
                     'summaryTime': 'Search time: <strong>{time}s</strong>',
                     'summaryRadius': 'Radius: <strong>{radius}</strong>',
-                    // Results
                     'noResults': 'No places were found nearby.',
                     'noResultsHint': 'Try increasing the search radius or selecting different categories.',
                     'openNow': 'Open Now',
                     'closed': 'Closed',
-                    'walkDist': 'Walking',
-                    'walkTime': 'Est. time',
-                    // Detail
                     'detailCategory': 'Category',
                     'detailAddress': 'Address',
                     'detailPhone': 'Phone',
@@ -1162,7 +1170,6 @@
                     'detailNav': 'Navigate',
                     'detailWalkDist': 'Walking Distance',
                     'detailWalkTime': 'Est. Walking Time',
-                    // Settings
                     'settingsTitle': 'Settings',
                     'clearFavoritesLabel': 'Favorites',
                     'clearFavorites': 'Clear Favorites',
@@ -1175,7 +1182,6 @@
                     'resetAllLabel': 'Reset All',
                     'resetAll': 'Reset All Settings',
                     'close': 'Close',
-                    // Errors
                     'errLocDenied': 'Location permission denied. Please enable location services or set a manual location.',
                     'errLocUnavailable': 'Location unavailable. Please set a manual location.',
                     'errNetwork': 'Network error. Please check your connection.',
@@ -1212,8 +1218,6 @@
                     'noResultsHint': '試著加大搜尋半徑或選擇不同分類。',
                     'openNow': '營業中',
                     'closed': '已關閉',
-                    'walkDist': '步行距離',
-                    'walkTime': '估計時間',
                     'detailCategory': '分類',
                     'detailAddress': '地址',
                     'detailPhone': '電話',
@@ -1371,30 +1375,21 @@
             // 3.  STATE
             // ================================================================
             const state = {
-                lang: 'en', // 'en' or 'zh'
-                theme: 'light', // 'light' or 'dark'
+                lang: 'en',
+                theme: 'light',
                 selectedCategories: new Set(['restaurant']),
                 userLat: null,
                 userLng: null,
                 userAddress: null,
-                // Manual override
-                manualLat: null,
-                manualLng: null,
-                // Time
-                selectedTime: null, // Date object
-                // Search
+                selectedTime: null,
                 isSearching: false,
                 searchCooldown: false,
                 results: [],
                 favorites: [],
                 history: [],
-                // Map instances
-                mapInstances: new Map(), // key: place id, value: map object
+                mapInstances: new Map(),
                 routingControls: new Map(),
                 watchId: null,
-                currentPosMarker: null,
-                // Debounce
-                searchDebounce: null,
             };
 
             // ================================================================
@@ -1432,7 +1427,6 @@
                 searchBtnLabel: $('#searchBtnLabel'),
                 searchSummary: $('#searchSummary'),
                 resultsContainer: $('#resultsContainer'),
-                // Settings
                 clearFavoritesBtn: $('#clearFavoritesBtn'),
                 clearHistoryBtn: $('#clearHistoryBtn'),
                 resetThemeBtn: $('#resetThemeBtn'),
@@ -1464,29 +1458,18 @@
             }
 
             function updateI18n() {
-                // Update all elements with data-i18n
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.dataset.i18n;
                     el.textContent = t(key);
                 });
-                // Special: header labels
                 dom.langLabel.textContent = state.lang === 'en' ? 'EN' : '中文';
                 dom.themeLabel.textContent = state.theme === 'dark' ? t('themeLabel') : 'Light';
                 dom.themeIcon.className = state.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-                // Search button
                 if (!state.isSearching && !state.searchCooldown) {
                     dom.searchBtnLabel.textContent = t('searchBtn');
-                } else if (state.isSearching) {
-                    dom.searchBtnLabel.textContent = t('searching');
-                } else if (state.searchCooldown) {
-                    // will be updated by countdown
                 }
-                // Re-render categories
                 renderCategories();
-                // Re-render results if any
-                if (state.results.length > 0) {
-                    renderResults(state.results);
-                }
+                if (state.results.length > 0) renderResults(state.results);
             }
 
             // ================================================================
@@ -1545,14 +1528,11 @@
                 const { display, tz } = formatTimeDisplay(date);
                 dom.timeDisplay.textContent = display;
                 dom.timezoneDisplay.textContent = tz;
-                // Update picker
                 if (!state.selectedTime) {
                     const now = new Date();
-                    const iso = now.toISOString().slice(0, 16);
-                    dom.timePicker.value = iso;
+                    dom.timePicker.value = now.toISOString().slice(0, 16);
                 } else {
-                    const iso = date.toISOString().slice(0, 16);
-                    dom.timePicker.value = iso;
+                    dom.timePicker.value = date.toISOString().slice(0, 16);
                 }
             }
 
@@ -1564,7 +1544,6 @@
                     if (!isNaN(d)) state.selectedTime = d;
                 }
                 updateTimeDisplay();
-                // Re-evaluate open status if results are shown
                 if (state.results.length > 0) renderResults(state.results);
             }
 
@@ -1584,9 +1563,7 @@
                 dom.latDisplay.textContent = lat !== null ? lat.toFixed(6) : '--';
                 dom.lngDisplay.textContent = lng !== null ? lng.toFixed(6) : '--';
                 dom.addrDisplay.textContent = address || '--';
-                // If we have a map with results, re-render with new location
                 if (state.results.length > 0) {
-                    // Re-sort and re-render
                     sortResultsByDistance(state.results);
                     renderResults(state.results);
                 }
@@ -1621,7 +1598,6 @@
                     const pos = await getCurrentPosition();
                     const addr = await fetchAddress(pos.lat, pos.lng);
                     updateLocationUI(pos.lat, pos.lng, addr);
-                    // Start watching
                     startWatching();
                 } catch (err) {
                     console.warn('Location error:', err);
@@ -1643,14 +1619,12 @@
                     async (pos) => {
                         const lat = pos.coords.latitude;
                         const lng = pos.coords.longitude;
-                        // Only update if significantly changed (> 20m)
                         if (state.userLat !== null && state.userLng !== null) {
                             const dist = haversine(state.userLat, state.userLng, lat, lng);
                             if (dist < 20) return;
                         }
                         const addr = await fetchAddress(lat, lng);
                         updateLocationUI(lat, lng, addr);
-                        // If there's an expanded detail with map, update route
                         updateAllRoutes();
                     },
                     (err) => console.warn('Watch error:', err), { enableHighAccuracy: true, timeout: 15000 }
@@ -1680,7 +1654,6 @@
                 }
 
                 if (addr) {
-                    // Geocode via Nominatim
                     geocodeAddress(addr);
                     return;
                 }
@@ -1734,7 +1707,6 @@
 
             function toggleCategory(catId) {
                 if (state.selectedCategories.has(catId)) {
-                    // Don't allow deselecting the last one
                     if (state.selectedCategories.size <= 1) {
                         showToast('Select at least one category', 'info');
                         return;
@@ -1744,12 +1716,11 @@
                     state.selectedCategories.add(catId);
                 }
                 renderCategories();
-                // Save preference
                 localStorage.setItem('travelegend-categories', JSON.stringify([...state.selectedCategories]));
             }
 
             // ================================================================
-            // 11. SEARCH (Overpass API) — FIXED QUERY SYNTAX
+            // 11. SEARCH (Overpass) + incremental route loading
             // ================================================================
             async function performSearch() {
                 if (state.isSearching || state.searchCooldown) return;
@@ -1768,19 +1739,17 @@
                     return;
                 }
 
-                // Build Overpass query with correct around filter
+                // Build Overpass query
                 const tags = [];
                 categories.forEach(catId => {
                     const cat = CAT_MAP[catId];
                     if (cat) tags.push(...cat.tags);
                 });
-
                 if (tags.length === 0) {
                     showToast('No valid categories selected.', 'error');
                     return;
                 }
 
-                // Build query: each element must have (around:radius,lat,lng)
                 let parts = [];
                 tags.forEach(tag => {
                     const [key, value] = tag.split('=');
@@ -1810,7 +1779,7 @@
                     const data = await resp.json();
                     const elements = data.elements || [];
 
-                    // Process results
+                    // Process results (without walking distances yet)
                     const places = [];
                     const seen = new Set();
                     elements.forEach(el => {
@@ -1822,7 +1791,6 @@
                         const lng2 = el.lon || el.center?.lon || null;
                         if (lat2 === null || lng2 === null) return;
 
-                        // Determine category
                         let category = 'unknown';
                         for (const catId of categories) {
                             const cat = CAT_MAP[catId];
@@ -1837,7 +1805,6 @@
                             if (category !== 'unknown') break;
                         }
                         if (category === 'unknown') {
-                            // fallback: try to match
                             for (const catId of categories) {
                                 const cat = CAT_MAP[catId];
                                 if (!cat) continue;
@@ -1865,42 +1832,22 @@
                             category: category,
                             tags: tags,
                             distance: dist,
+                            walkingDistance: dist, // initial fallback
+                            walkingDuration: dist / 1.4,
                             address: tags['addr:full'] || tags['addr:street'] || null,
                             phone: tags.phone || tags['contact:phone'] || null,
                             website: tags.website || tags.url || null,
                             opening_hours: tags.opening_hours || null,
-                            // derived
-                            openNow: null, // computed later
+                            openNow: null,
                         });
                     });
 
-                    // Sort by walking distance (use OSRM for each? We'll do it lazily)
-                    // Initial sort by straight distance
+                    // Sort by straight-line distance initially
                     places.sort((a, b) => a.distance - b.distance);
 
-                    // Compute walking distance & time via OSRM for each (async)
-                    const withRoutes = await Promise.all(places.map(async (p) => {
-                        try {
-                            const route = await getWalkingRoute(lat, lng, p.lat, p.lng);
-                            if (route) {
-                                p.walkingDistance = route.distance;
-                                p.walkingTime = route.duration;
-                                p.walkingDuration = route.duration;
-                                return p;
-                            }
-                        } catch (_) { /* fallback */ }
-                        p.walkingDistance = p.distance;
-                        p.walkingTime = p.distance / 1.4; // ~1.4 m/s
-                        p.walkingDuration = p.walkingTime;
-                        return p;
-                    }));
-
-                    // Sort by walking distance
-                    withRoutes.sort((a, b) => (a.walkingDistance || a.distance) - (b.walkingDistance || b.distance));
-
-                    // Compute open status
+                    // Compute open status now
                     const now = getSelectedTime();
-                    withRoutes.forEach(p => {
+                    places.forEach(p => {
                         if (p.opening_hours) {
                             p.openNow = isOpenNow(p.opening_hours, now);
                         } else {
@@ -1908,7 +1855,7 @@
                         }
                     });
 
-                    state.results = withRoutes;
+                    state.results = places;
 
                     // Save history
                     state.history.push({
@@ -1917,28 +1864,58 @@
                         lng,
                         radius,
                         categories: [...categories],
-                        count: withRoutes.length
+                        count: places.length
                     });
                     if (state.history.length > 50) state.history = state.history.slice(-50);
                     localStorage.setItem('travelegend-history', JSON.stringify(state.history));
 
-                    // Render
-                    renderResults(withRoutes);
+                    // Render immediately (with straight distances)
+                    renderResults(places);
 
-                    // Summary
+                    // Summary (will update later)
                     const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
-                    const catNames = categories.map(id => getCategoryLabel(id)).join(', ');
                     dom.searchSummary.innerHTML = `
-                        <span>${t('summaryFound', { count: withRoutes.length, cats: categories.length })}</span>
+                        <span>${t('summaryFound', { count: places.length, cats: categories.length })}</span>
                         <span>${t('summaryTime', { time: elapsed })}</span>
                         <span>${t('summaryRadius', { radius: dom.radiusSelect.options[dom.radiusSelect.selectedIndex].text })}</span>
                     `;
                     dom.searchSummary.classList.remove('hidden');
 
-                    if (withRoutes.length === 0) {
+                    if (places.length === 0) {
                         showToast(t('errEmpty'), 'info');
                     } else {
-                        showToast(`Found ${withRoutes.length} places`, 'info');
+                        showToast(`Found ${places.length} places, fetching walking routes...`, 'info');
+                    }
+
+                    // ---- Incrementally fetch walking routes one by one ----
+                    for (let i = 0; i < places.length; i++) {
+                        const p = places[i];
+                        try {
+                            const route = await getWalkingRoute(lat, lng, p.lat, p.lng);
+                            if (route) {
+                                p.walkingDistance = route.distance;
+                                p.walkingDuration = route.duration;
+                            } else {
+                                p.walkingDistance = p.distance;
+                                p.walkingDuration = p.distance / 1.4;
+                            }
+                        } catch (_) {
+                            p.walkingDistance = p.distance;
+                            p.walkingDuration = p.distance / 1.4;
+                        }
+                        // Update the card for this place in the DOM
+                        updatePlaceCard(p.id, p);
+                    }
+
+                    // After all routes fetched, re-sort by walking distance and re-render (losing expand state)
+                    // But to preserve expand state, we would need more complex diffing.
+                    // For simplicity, we re-render fully after all done.
+                    const allDone = places.every(p => p.walkingDistance !== undefined);
+                    if (allDone) {
+                        places.sort((a, b) => (a.walkingDistance || a.distance) - (b.walkingDistance || b.distance));
+                        state.results = places;
+                        renderResults(places);
+                        showToast('All walking routes calculated and sorted.', 'info');
                     }
 
                 } catch (err) {
@@ -1969,8 +1946,46 @@
                     }
                 }, 1000);
 
-                // Save categories selection
                 localStorage.setItem('travelegend-categories', JSON.stringify([...state.selectedCategories]));
+            }
+
+            // ---- Update a single card after route fetched ----
+            function updatePlaceCard(placeId, place) {
+                const card = document.querySelector(`.place-card[data-id="${placeId}"]`);
+                if (!card) return;
+                // Update meta info
+                const distSpan = card.querySelector('.card-meta span:first-child');
+                if (distSpan) {
+                    distSpan.innerHTML = `<i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance)}`;
+                }
+                const timeSpan = card.querySelector('.card-meta span:last-child');
+                if (timeSpan && place.walkingDuration) {
+                    timeSpan.innerHTML = `<i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}`;
+                }
+                // Update route-info inside detail if expanded
+                const routeInfo = card.querySelector('.route-info');
+                if (routeInfo) {
+                    routeInfo.innerHTML = `
+                        <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance)}</span>
+                        <span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(place.walkingDuration)}</span>
+                    `;
+                }
+                // Update detail grid walking distance/time
+                const detailItems = card.querySelectorAll('.detail-item');
+                detailItems.forEach(item => {
+                    const label = item.querySelector('.dlabel');
+                    if (label && label.textContent.includes('Walking Distance')) {
+                        const val = item.querySelector('.dvalue');
+                        if (val) val.textContent = formatDistance(place.walkingDistance);
+                    }
+                    if (label && label.textContent.includes('Est. Walking Time')) {
+                        const val = item.querySelector('.dvalue');
+                        if (val && place.walkingDuration) val.textContent = formatDuration(place.walkingDuration);
+                    }
+                });
+                // Update distance in card-top if present
+                const distTop = card.querySelector('.card-distance');
+                if (distTop) distTop.textContent = formatDistance(place.walkingDistance);
             }
 
             // ================================================================
@@ -1992,11 +2007,10 @@
                         duration: route.duration,
                     };
                 } catch (_) {
-                    // Fallback: straight-line
                     const dist = haversine(fromLat, fromLng, toLat, toLng);
                     return {
                         distance: dist,
-                        duration: dist / 1.4, // ~1.4 m/s walking
+                        duration: dist / 1.4,
                     };
                 }
             }
@@ -2007,17 +2021,13 @@
             function isOpenNow(openingHours, date) {
                 if (!openingHours) return null;
                 try {
-                    // Very basic: check if "24/7" or "Mo-Su" etc.
                     const str = openingHours.toLowerCase();
                     if (str.includes('24/7') || str.includes('24-7') || str.includes('always')) return true;
-                    // Try to parse simple "Mo-Fr 09:00-18:00" style
-                    // This is a simplified parser; for production we'd use a library.
                     const days = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
                     const day = days[date.getDay()];
                     const hours = date.getHours();
                     const mins = date.getMinutes();
 
-                    // Look for day pattern
                     const pattern = new RegExp(`(${day}|${day.toUpperCase()})\\s*(\\d{1,2}:\\d{2})\\s*-\\s*(\\d{1,2}:\\d{2})`);
                     const match = str.match(pattern);
                     if (match) {
@@ -2028,7 +2038,6 @@
                             return now >= start && now <= end;
                         }
                     }
-                    // Check for "Mo-Su" or "Mo-Fr" etc
                     const rangePattern = /(mo|tu|we|th|fr|sa|su)\s*-\s*(mo|tu|we|th|fr|sa|su)/i;
                     const rangeMatch = str.match(rangePattern);
                     if (rangeMatch) {
@@ -2042,7 +2051,6 @@
                                 inRange = dayIndex(day) >= startDay || dayIndex(day) <= endDay;
                             }
                             if (inRange) {
-                                // Try to find time range after the day pattern
                                 const timeMatch = str.match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
                                 if (timeMatch) {
                                     const start = parseTime(timeMatch[1]);
@@ -2052,12 +2060,11 @@
                                         return now >= start && now <= end;
                                     }
                                 }
-                                return true; // day in range, no time specified
+                                return true;
                             }
                             return false;
                         }
                     }
-                    // If no pattern matched, assume open (but we'll return null to hide)
                     return null;
                 } catch (_) {
                     return null;
@@ -2102,7 +2109,6 @@
                     groups[cat].push(p);
                 });
 
-                // Sort categories by count
                 const sortedCats = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
 
                 let html = '';
@@ -2130,7 +2136,7 @@
 
                 container.innerHTML = html;
 
-                // Attach event listeners
+                // Event listeners for group collapse
                 container.querySelectorAll('.result-group-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const group = header.closest('.result-group');
@@ -2146,18 +2152,17 @@
                     });
                 });
 
-                container.querySelectorAll('.place-card').forEach(card => {
-                    const id = card.dataset.id;
-                    // Expand on click
-                    card.addEventListener('click', (e) => {
-                        // Ignore if clicking on fav button
-                        if (e.target.closest('.card-fav')) return;
+                // Card click: only name triggers expand
+                container.querySelectorAll('.place-card .card-name').forEach(nameEl => {
+                    nameEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const card = nameEl.closest('.place-card');
+                        const id = card.dataset.id;
                         const expanded = card.classList.contains('expanded');
                         // Close all others
                         container.querySelectorAll('.place-card.expanded').forEach(c => {
                             if (c !== card) {
                                 c.classList.remove('expanded');
-                                // Destroy map
                                 const cid = c.dataset.id;
                                 if (cid && state.mapInstances.has(cid)) {
                                     const map = state.mapInstances.get(cid);
@@ -2175,29 +2180,27 @@
                             }
                         } else {
                             card.classList.add('expanded');
-                            // Init map after render
                             setTimeout(() => initDetailMap(id, card), 100);
                         }
                     });
-
-                    // Favorite button
-                    const favBtn = card.querySelector('.card-fav');
-                    if (favBtn) {
-                        favBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            toggleFavorite(id);
-                        });
-                    }
                 });
 
-                // Update favorites UI
+                // Favorite button
+                container.querySelectorAll('.card-fav').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const card = btn.closest('.place-card');
+                        if (card) toggleFavorite(card.dataset.id);
+                    });
+                });
+
                 updateFavoritesUI();
             }
 
             function renderPlaceCard(place) {
                 const dist = place.walkingDistance !== undefined ? place.walkingDistance : place.distance;
                 const distStr = formatDistance(dist);
-                const timeStr = place.walkingDuration !== undefined ? formatDuration(place.walkingDuration) : '';
+                const timeStr = place.walkingDuration ? formatDuration(place.walkingDuration) : '';
                 const isFav = state.favorites.includes(place.id);
                 const openStatus = place.openNow;
                 let openHtml = '';
@@ -2207,19 +2210,20 @@
                     openHtml = `<span class="card-open closed"><i class="fas fa-times-circle" aria-hidden="true"></i> ${t('closed')}</span>`;
                 }
 
+                // 所有資訊放在同一行 .card-row
                 return `
                     <div class="place-card" data-id="${place.id}" data-lat="${place.lat}" data-lng="${place.lng}">
-                        <div class="card-top">
+                        <div class="card-row">
                             <span class="card-name">${escapeHtml(place.name)}</span>
+                            <span class="card-meta">
+                                <span><i class="fas fa-walking" aria-hidden="true"></i> ${distStr}</span>
+                                ${timeStr ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${timeStr}</span>` : ''}
+                            </span>
+                            ${openHtml}
                             <button class="card-fav ${isFav ? 'active' : ''}" aria-label="Toggle favorite">
                                 <i class="fas fa-star" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <div class="card-meta">
-                            <span><i class="fas fa-walking" aria-hidden="true"></i> ${distStr}</span>
-                            ${timeStr ? `<span><i class="far fa-clock" aria-hidden="true"></i> ${timeStr}</span>` : ''}
-                        </div>
-                        ${openHtml}
                         <div class="place-detail">
                             <div class="detail-grid">
                                 ${place.category ? `<div class="detail-item"><span class="dlabel">${t('detailCategory')}</span><span class="dvalue">${getCategoryLabel(place.category)}</span></div>` : ''}
@@ -2232,7 +2236,7 @@
                                 ${place.walkingDuration ? `<div class="detail-item"><span class="dlabel">${t('detailWalkTime')}</span><span class="dvalue">${formatDuration(place.walkingDuration)}</span></div>` : ''}
                                 <div class="detail-item"><span class="dlabel">${t('detailLat')}</span><span class="dvalue">${place.lat.toFixed(6)}</span></div>
                                 <div class="detail-item"><span class="dlabel">${t('detailLng')}</span><span class="dvalue">${place.lng.toFixed(6)}</span></div>
-                                <div class="detail-item"><span class="dlabel">${t('detailOsm')}</span><span class="dvalue"><a href="https://www.openstreetmap.org/${place.type}/${place.osmId}" target="_blank" rel="noopener">OSM #${place.osmId}</a></span></div>
+                                <div class="detail-item"><span class="dlabel">${t('detailOsm')}</span><span class="dvalue"><button class="osm-btn" onclick="window.open('https://www.openstreetmap.org/${place.type}/${place.osmId}', '_blank')">OSM #${place.osmId}</button></span></div>
                             </div>
                             <div class="route-info">
                                 <span><i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(place.walkingDistance || place.distance)}</span>
@@ -2245,12 +2249,11 @@
             }
 
             // ================================================================
-            // 15. DETAIL MAP
+            // 15. DETAIL MAP (with route)
             // ================================================================
             function initDetailMap(placeId, cardElement) {
                 const mapContainer = cardElement.querySelector('.detail-map');
                 if (!mapContainer) return;
-                // Check if already initialized
                 if (state.mapInstances.has(placeId)) {
                     const existing = state.mapInstances.get(placeId);
                     existing.invalidateSize();
@@ -2281,8 +2284,7 @@
                     iconSize: [16, 16],
                     iconAnchor: [8, 8],
                 });
-                const userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
-                userMarker.bindPopup('Your Location');
+                L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup('Your Location');
 
                 // Destination marker
                 const destIcon = L.divIcon({
@@ -2290,10 +2292,9 @@
                     iconSize: [16, 16],
                     iconAnchor: [8, 8],
                 });
-                const destMarker = L.marker([lat, lng], { icon: destIcon }).addTo(map);
-                destMarker.bindPopup(escapeHtml(cardElement.querySelector('.card-name')?.textContent || 'Destination'));
+                L.marker([lat, lng], { icon: destIcon }).addTo(map).bindPopup(escapeHtml(cardElement.querySelector('.card-name')?.textContent || 'Destination'));
 
-                // Routing
+                // Routing with OSRM
                 let routingControl = null;
                 try {
                     routingControl = L.Routing.control({
@@ -2306,9 +2307,9 @@
                             profile: 'foot',
                         }),
                         routeWhileDragging: false,
-                        show: false,
+                        show: true, // 顯示路線
                         addWaypoints: false,
-                        fitSelectedRoutes: false,
+                        fitSelectedRoutes: true, // 自動縮放
                         lineOptions: {
                             styles: [{ color: '#2a7de1', opacity: 0.8, weight: 4 }],
                             extendToWaypoints: true,
@@ -2321,7 +2322,6 @@
                         if (route && route.summary) {
                             const dist = route.summary.totalDistance || 0;
                             const dur = route.summary.totalTime || 0;
-                            // Update route info in card
                             const routeInfo = cardElement.querySelector('.route-info');
                             if (routeInfo) {
                                 routeInfo.innerHTML = `
@@ -2329,50 +2329,42 @@
                                     <span><i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(dur)}</span>
                                 `;
                             }
-                            // Update walking distance in card meta
+                            // Update card meta
                             const meta = cardElement.querySelector('.card-meta');
                             if (meta) {
                                 const distSpan = meta.querySelector('span:first-child');
-                                if (distSpan) {
-                                    distSpan.innerHTML = `<i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(dist)}`;
-                                }
+                                if (distSpan) distSpan.innerHTML = `<i class="fas fa-walking" aria-hidden="true"></i> ${formatDistance(dist)}`;
                                 const timeSpan = meta.querySelector('span:last-child');
-                                if (timeSpan) {
-                                    timeSpan.innerHTML = `<i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(dur)}`;
-                                }
+                                if (timeSpan) timeSpan.innerHTML = `<i class="far fa-clock" aria-hidden="true"></i> ${formatDuration(dur)}`;
                             }
                         }
                     });
 
                     routingControl.on('routingerror', function() {
-                        // Fallback: show straight line
-                        const polyline = L.polyline([
+                        // Fallback straight line
+                        L.polyline([
                             [userLat, userLng],
                             [lat, lng]
                         ], { color: '#d0314e', dashArray: '6,6', weight: 2 }).addTo(map);
                     });
 
                 } catch (_) {
-                    // Fallback: straight line
                     L.polyline([
                         [userLat, userLng],
                         [lat, lng]
                     ], { color: '#2a7de1', weight: 3, dashArray: '6,6' }).addTo(map);
                 }
 
-                // Fit bounds
-                const bounds = L.latLngBounds([
+                map.fitBounds([
                     [userLat, userLng],
                     [lat, lng]
-                ]);
-                map.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
+                ], { padding: [40, 40], maxZoom: 17 });
 
                 state.mapInstances.set(placeId, map);
                 if (routingControl) {
                     state.routingControls.set(placeId, routingControl);
                 }
 
-                // Invalidate size after a short delay
                 setTimeout(() => map.invalidateSize(), 300);
             }
 
@@ -2384,7 +2376,6 @@
                 const userLng = state.userLng;
                 if (userLat === null || userLng === null) return;
 
-                // Update all expanded cards with maps
                 document.querySelectorAll('.place-card.expanded').forEach(card => {
                     const id = card.dataset.id;
                     if (!id) return;
@@ -2392,10 +2383,8 @@
                     const lng = parseFloat(card.dataset.lng);
                     if (isNaN(lat) || isNaN(lng)) return;
 
-                    // Update map if exists
                     if (state.mapInstances.has(id)) {
                         const map = state.mapInstances.get(id);
-                        // Update routing
                         const routing = state.routingControls.get(id);
                         if (routing) {
                             try {
@@ -2405,7 +2394,7 @@
                                 ]);
                             } catch (_) { /* ignore */ }
                         }
-                        // Update marker position
+                        // Update user marker
                         map.eachLayer(layer => {
                             if (layer instanceof L.Marker) {
                                 const popup = layer.getPopup();
@@ -2414,12 +2403,10 @@
                                 }
                             }
                         });
-                        // Refit bounds
-                        const bounds = L.latLngBounds([
+                        map.fitBounds([
                             [userLat, userLng],
                             [lat, lng]
-                        ]);
-                        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
+                        ], { padding: [40, 40], maxZoom: 17 });
                     }
                 });
             }
@@ -2546,19 +2533,25 @@
                 return div.innerHTML;
             }
 
+            function sortResultsByDistance(places) {
+                places.sort((a, b) => {
+                    const da = a.walkingDistance !== undefined ? a.walkingDistance : a.distance;
+                    const db = b.walkingDistance !== undefined ? b.walkingDistance : b.distance;
+                    return da - db;
+                });
+                return places;
+            }
+
             // ================================================================
-            // 21. LOAD STATE FROM LOCALSTORAGE
+            // 21. LOAD STATE
             // ================================================================
             function loadState() {
-                // Theme
                 const theme = localStorage.getItem('travelegend-theme') || 'light';
                 setTheme(theme);
 
-                // Language
                 const lang = localStorage.getItem('travelegend-lang') || 'en';
                 setLang(lang);
 
-                // Categories
                 const cats = localStorage.getItem('travelegend-categories');
                 if (cats) {
                     try {
@@ -2569,7 +2562,6 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                // Favorites
                 const favs = localStorage.getItem('travelegend-favorites');
                 if (favs) {
                     try {
@@ -2578,7 +2570,6 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                // History
                 const hist = localStorage.getItem('travelegend-history');
                 if (hist) {
                     try {
@@ -2587,7 +2578,6 @@
                     } catch (_) { /* ignore */ }
                 }
 
-                // Time
                 const savedTime = localStorage.getItem('travelegend-time');
                 if (savedTime) {
                     try {
@@ -2598,59 +2588,29 @@
             }
 
             // ================================================================
-            // 22. SORT RESULTS BY WALKING DISTANCE (re-sort helper)
-            // ================================================================
-            function sortResultsByDistance(places) {
-                // Re-calculate walking distances if location changed
-                // We'll just re-sort by existing walkingDistance or fallback to distance
-                places.sort((a, b) => {
-                    const da = a.walkingDistance !== undefined ? a.walkingDistance : a.distance;
-                    const db = b.walkingDistance !== undefined ? b.walkingDistance : b.distance;
-                    return da - db;
-                });
-                return places;
-            }
-
-            // ================================================================
-            // 23. INIT
+            // 22. INIT
             // ================================================================
             function init() {
                 loadState();
-
-                // Render categories
                 renderCategories();
-
-                // Update time
                 updateTimeDisplay();
-
-                // Try to get location
                 setCurrentLocation();
 
                 // Event listeners
                 dom.langToggle.addEventListener('click', toggleLang);
                 dom.themeToggle.addEventListener('click', toggleTheme);
 
-                dom.settingsToggle.addEventListener('click', () => {
-                    dom.settingsModal.classList.add('open');
-                });
-                dom.settingsClose.addEventListener('click', () => {
-                    dom.settingsModal.classList.remove('open');
-                });
+                dom.settingsToggle.addEventListener('click', () => dom.settingsModal.classList.add('open'));
+                dom.settingsClose.addEventListener('click', () => dom.settingsModal.classList.remove('open'));
                 dom.settingsModal.addEventListener('click', (e) => {
-                    if (e.target === dom.settingsModal) {
-                        dom.settingsModal.classList.remove('open');
-                    }
+                    if (e.target === dom.settingsModal) dom.settingsModal.classList.remove('open');
                 });
 
                 dom.resetTimeBtn.addEventListener('click', resetTimeToNow);
-                dom.timePicker.addEventListener('change', (e) => {
-                    setTimeFromPicker(e.target.value);
-                });
+                dom.timePicker.addEventListener('change', (e) => setTimeFromPicker(e.target.value));
 
                 dom.getCurrentLocBtn.addEventListener('click', setCurrentLocation);
-                dom.manualLocToggle.addEventListener('click', () => {
-                    dom.manualLocPanel.classList.toggle('hidden');
-                });
+                dom.manualLocToggle.addEventListener('click', () => dom.manualLocPanel.classList.toggle('hidden'));
                 dom.applyManualLocBtn.addEventListener('click', applyManualLocation);
                 dom.manualAddressInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') applyManualLocation();
@@ -2658,14 +2618,12 @@
 
                 dom.searchBtn.addEventListener('click', performSearch);
 
-                // Settings
                 dom.clearFavoritesBtn.addEventListener('click', clearFavorites);
                 dom.clearHistoryBtn.addEventListener('click', clearHistory);
                 dom.resetThemeBtn.addEventListener('click', resetTheme);
                 dom.resetLangBtn.addEventListener('click', resetLang);
                 dom.resetAllBtn.addEventListener('click', resetAll);
 
-                // Keyboard shortcut: Ctrl+Enter to search
                 document.addEventListener('keydown', (e) => {
                     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                         e.preventDefault();
@@ -2673,7 +2631,6 @@
                     }
                 });
 
-                // Update i18n after initial render
                 updateI18n();
 
                 console.log('🚀 TraveLegend initialized');
@@ -2681,9 +2638,9 @@
                 console.log(`🌐 Language: ${state.lang}`);
                 console.log(`🎨 Theme: ${state.theme}`);
                 console.log(`📂 Categories: ${[...state.selectedCategories].join(', ')}`);
+                console.log('v1.0.0');
             }
 
-            // Run on DOM ready
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
