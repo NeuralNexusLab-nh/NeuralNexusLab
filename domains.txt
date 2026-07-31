@@ -1,9 +1,0 @@
-nxlab.zone.id
-nxlab.us.ci
-nxlab.cc.cd
-nxlab.isroot.in
-nxlab.cn.mt
-nxlab.bbroot.com
-nxlabweb.netlify.app
-neuralnexuslab.vercel.app
-nxlab.edgeone.app
