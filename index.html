@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="NeuralNexusLab is a Taiwan-based engineering team building dependable web systems, developer tools, and security-tested digital products.">
-  <meta name="theme-color" content="#ffffff">
-  <meta property="og:title" content="NeuralNexusLab — Engineering dependable digital systems">
-  <meta property="og:description" content="Product engineering, web infrastructure, and security validation for teams that value clarity and reliability.">
+  <meta name="description" content="NeuralNexusLab is an independent technology lab from Taiwan creating internet infrastructure, AI experiences, and developer tools.">
+  <meta name="theme-color" content="#080a0f">
+  <meta property="og:title" content="NeuralNexusLab — Independent technology lab">
+  <meta property="og:description" content="Experimental tools for the open internet, human–AI interaction, and developer workflows.">
   <meta property="og:type" content="website">
-  <title>NeuralNexusLab — Engineering dependable digital systems</title>
+  <title>NeuralNexusLab — Independent technology lab</title>
   <style>
     :root {
-      --ink: #0d0d0d;
-      --paper: #ffffff;
-      --line: #e3e3e3;
-      --smoke: #4d4d4d;
-      --ash: #6b6b6b;
-      --carbon: #272727;
-      --violet: #8a05ff;
-      --indigo: #48008c;
+      --ink: #f2f3f5;
+      --paper: #080a0f;
+      --line: #252a35;
+      --smoke: #aeb4c0;
+      --ash: #747d8d;
+      --carbon: #11141b;
+      --violet: #a855f7;
+      --indigo: #6d28d9;
       --marigold: #d67f2e;
-      --mint: #006d4c;
-      --lilac: #f4f0ff;
-      --wash: linear-gradient(120deg, #ffffff 8%, #eee7ff 62%, #f8f5ff 100%);
-      --accent: linear-gradient(90deg, #8a05ff, #d67f2e);
+      --mint: #44d7a3;
+      --lilac: #0e1119;
+      --wash: linear-gradient(135deg, #0c0f17 8%, #171126 62%, #0a0d14 100%);
+      --accent: linear-gradient(90deg, #a855f7, #d67f2e);
       --sans: Inter, "Helvetica Neue", Arial, system-ui, sans-serif;
       --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
       --max: 1200px;
@@ -40,6 +40,16 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      pointer-events: none;
+      opacity: .13;
+      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 3px 4px);
+      animation: scan-flicker 8s steps(2) infinite;
+    }
     body.menu-open { overflow: hidden; }
     a { color: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
@@ -54,7 +64,7 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(255,255,255,.94);
+      background: rgba(8,10,15,.9);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(14px);
     }
@@ -90,6 +100,7 @@
     }
     .brand-mark::before { width: 7px; height: 1px; left: 4px; top: 7px; }
     .brand-mark::after { width: 1px; height: 7px; left: 7px; top: 4px; }
+    .brand-mark { animation: signal-pulse 2.8s ease-in-out infinite; }
     .nav-links {
       display: flex;
       align-items: center;
@@ -107,7 +118,7 @@
     .nav-action {
       justify-self: end;
       padding: 9px 17px;
-      color: #fff;
+      color: var(--paper);
       background: var(--ink);
       border: 1px solid var(--ink);
       border-radius: 999px;
@@ -207,17 +218,18 @@
       transition: transform .2s ease, background .2s ease, color .2s ease;
     }
     .button::after { content: "↗"; font-size: 14px; }
-    .button.primary { color: #fff; background: var(--ink); }
+    .button.primary { color: var(--paper); background: var(--ink); }
     .button.secondary { background: transparent; }
     .button:hover { transform: translateY(-2px); }
-    .button.secondary:hover { color: #fff; background: var(--ink); }
+    .button.secondary:hover { color: var(--paper); background: var(--ink); }
 
     .system-panel {
       position: relative;
       min-height: 500px;
       padding: 32px;
       background: var(--wash);
-      border: 1px solid #ded3f8;
+      border: 1px solid #352a47;
+      animation: panel-breathe 5s ease-in-out infinite;
     }
     .system-panel::before {
       content: "";
@@ -252,7 +264,9 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #16a36e;
+      background: var(--mint);
+      box-shadow: 0 0 12px rgba(68,215,163,.7);
+      animation: signal-pulse 1.8s ease-in-out infinite;
     }
     .service-stack { position: relative; display: grid; gap: 12px; }
     .service-node {
@@ -262,7 +276,7 @@
       gap: 12px;
       align-items: center;
       padding: 18px;
-      background: rgba(255,255,255,.92);
+      background: rgba(12,15,23,.92);
       border: 1px solid var(--line);
     }
     .service-node:nth-child(2) { margin-left: 42px; }
@@ -279,7 +293,7 @@
     .status {
       padding: 5px 9px;
       color: var(--mint);
-      background: #e6f8f1;
+      background: rgba(68,215,163,.1);
       border-radius: 999px;
       font-family: var(--mono);
       font-size: 10px;
@@ -297,7 +311,7 @@
       right: 28px;
       bottom: 27px;
       padding: 8px 12px;
-      color: #fff;
+      color: var(--ink);
       background: var(--carbon);
       border-radius: 2px;
       font-family: var(--mono);
@@ -387,7 +401,7 @@
     }
     .capability p { margin: 0; color: var(--smoke); }
 
-    .work-section { background: #fafafa; border-block: 1px solid var(--line); }
+    .work-section { background: #0a0d13; border-block: 1px solid var(--line); }
     .project-list { border-top: 1px solid var(--line); }
     .project {
       display: grid;
@@ -400,7 +414,7 @@
       text-decoration: none;
       transition: padding .2s ease, background .2s ease;
     }
-    .project:hover { padding-inline: 14px; background: var(--paper); }
+    .project:hover { padding-inline: 14px; background: #0e121a; }
     .project-index {
       color: var(--violet);
       font-family: var(--mono);
@@ -466,8 +480,8 @@
     .principle {
       min-height: 220px;
       padding: 30px;
-      border-right: 1px solid #ded7ec;
-      border-bottom: 1px solid #ded7ec;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
     .principle:nth-child(even) { border-right: 0; }
     .principle:nth-child(n+3) { border-bottom: 0; }
@@ -484,8 +498,9 @@
     .contact-card {
       position: relative;
       padding: clamp(38px, 7vw, 84px);
-      color: #fff;
-      background: var(--ink);
+      color: var(--ink);
+      background: #05070b;
+      border: 1px solid var(--line);
       overflow: hidden;
     }
     .contact-card::after {
@@ -507,19 +522,76 @@
       line-height: 1;
       letter-spacing: -.05em;
     }
-    .contact-card .button { color: var(--ink); background: #fff; border-color: #fff; }
+    .contact-card .button { color: var(--paper); background: var(--ink); border-color: var(--ink); }
     .contact-details {
       display: flex;
       flex-wrap: wrap;
       gap: 12px 34px;
       margin-top: 46px;
       padding-top: 24px;
-      border-top: 1px solid #333;
+      border-top: 1px solid var(--line);
       font-family: var(--mono);
       font-size: 12px;
     }
-    .contact-details a { color: #cfcfcf; text-decoration: none; }
-    .contact-details a:hover { color: #fff; }
+    .contact-details a { color: var(--smoke); text-decoration: none; }
+    .contact-details a:hover { color: var(--ink); }
+
+    .data-stream {
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      color: var(--ash);
+      background: #06080c;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .data-stream-track {
+      display: inline-block;
+      min-width: max-content;
+      padding: 11px 0;
+      animation: data-flow 24s linear infinite;
+    }
+    .data-stream span { margin-right: 56px; }
+    .data-stream b { color: var(--violet); font-weight: 500; }
+    .code-rain { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .code-rain span {
+      position: absolute;
+      top: -48px;
+      color: rgba(168,85,247,.3);
+      font-family: var(--mono);
+      font-size: 10px;
+      line-height: 1.7;
+      writing-mode: vertical-rl;
+      animation: code-drop var(--speed) linear infinite;
+      animation-delay: var(--delay);
+    }
+    .glitch-text { position: relative; display: inline-block; }
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .glitch-text::before { color: #39ffb6; transform: translateX(-2px); }
+    .glitch-text::after { color: var(--violet); transform: translateX(2px); }
+    .glitch-text:hover::before { animation: glitch-slice .48s steps(2) both; }
+    .glitch-text:hover::after { animation: glitch-slice .48s .05s steps(2) reverse both; }
+
+    @keyframes data-flow { to { transform: translateX(-50%); } }
+    @keyframes code-drop { to { transform: translateY(580px); } }
+    @keyframes signal-pulse { 50% { opacity: .52; box-shadow: 0 0 18px rgba(168,85,247,.35); } }
+    @keyframes panel-breathe { 50% { border-color: #59406f; } }
+    @keyframes scan-flicker { 0%, 96%, 100% { opacity: .13; } 97% { opacity: .2; } }
+    @keyframes glitch-slice {
+      0% { opacity: .7; clip-path: inset(8% 0 72% 0); }
+      35% { clip-path: inset(58% 0 14% 0); }
+      70% { clip-path: inset(30% 0 45% 0); }
+      100% { opacity: 0; clip-path: inset(80% 0 5% 0); }
+    }
 
     footer { padding: 0 0 42px; }
     .footer-wrap {
@@ -645,112 +717,69 @@
         <span>NeuralNexusLab</span>
       </a>
       <nav class="nav-links" id="site-nav" aria-label="Main navigation">
-        <a href="#capabilities">Capabilities</a>
-        <a href="#work">Products</a>
-        <a href="#process">Approach</a>
-        <a href="#company">Company</a>
+        <a href="#lab">The Lab</a>
+        <a href="#work">Projects</a>
+        <a href="#process">Process</a>
+        <a href="#company">About</a>
       </nav>
-      <a class="nav-action" href="mailto:service@nxlab.zone.id">Start a conversation</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
-        <span></span>
-      </button>
+      <a class="nav-action" href="#work">Enter the lab</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span></button>
     </div>
   </header>
+
+  <div class="data-stream" aria-hidden="true">
+    <div class="data-stream-track">
+      <span><b>NODE_01</b> WEBTNX / ONLINE</span><span><b>NODE_02</b> ETHERKING / ONLINE</span><span><b>NODE_03</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span><span><b>NODE_01</b> WEBTNX / ONLINE</span><span><b>NODE_02</b> ETHERKING / ONLINE</span><span><b>NODE_03</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span>
+    </div>
+  </div>
 
   <main id="main">
     <section class="hero" id="home">
       <div class="container hero-grid">
         <div data-reveal>
-          <p class="eyebrow">Independent engineering studio · Taiwan</p>
-          <h1>We engineer digital systems that stay <span class="gradient-text">dependable.</span></h1>
-          <p class="hero-copy">NeuralNexusLab helps teams design, build, and validate web products—from production-ready applications to infrastructure and security testing.</p>
+          <p class="eyebrow">Independent technology lab / Taiwan</p>
+          <h1>We build for the <span class="gradient-text glitch-text" data-text="curious.">curious.</span></h1>
+          <p class="hero-copy">NeuralNexusLab is a small independent lab creating internet infrastructure, AI experiences, and developer tools. We explore ideas by turning them into working products.</p>
           <div class="actions">
-            <a class="button primary" href="mailto:service@nxlab.zone.id">Discuss your project</a>
-            <a class="button secondary" href="#work">Explore our work</a>
+            <a class="button primary" href="#work">Explore our projects</a>
+            <a class="button secondary" href="#company">About the lab</a>
           </div>
         </div>
 
-        <div class="system-panel" data-reveal aria-label="NeuralNexusLab delivery system illustration">
-          <div class="panel-head">
-            <span>System overview / 01</span>
-            <span class="live">Operational</span>
+        <div class="system-panel" data-reveal aria-label="NeuralNexusLab project network illustration">
+          <div class="code-rain" aria-hidden="true">
+            <span style="left:8%;--speed:7s;--delay:-2s">01101001</span><span style="left:28%;--speed:9s;--delay:-7s">root::nx</span><span style="left:54%;--speed:8s;--delay:-4s">10110110</span><span style="left:78%;--speed:11s;--delay:-8s">lab/node</span><span style="left:92%;--speed:7s;--delay:-5s">00101101</span>
           </div>
+          <div class="panel-head"><span>Lab network / live map</span><span class="live">Online</span></div>
           <div class="service-stack">
-            <div class="service-node">
-              <div>
-                <div class="node-label">Layer 01</div>
-                <div class="node-name">Product engineering</div>
-              </div>
-              <span class="status">Ready</span>
-              <span class="connector" aria-hidden="true"></span>
-            </div>
-            <div class="service-node">
-              <div>
-                <div class="node-label">Layer 02</div>
-                <div class="node-name">Infrastructure delivery</div>
-              </div>
-              <span class="status">Verified</span>
-              <span class="connector" aria-hidden="true"></span>
-            </div>
-            <div class="service-node">
-              <div>
-                <div class="node-label">Layer 03</div>
-                <div class="node-name">Security validation</div>
-              </div>
-              <span class="status">Monitored</span>
-            </div>
+            <div class="service-node"><div><div class="node-label">Network / 01</div><div class="node-name">WebTNX</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
+            <div class="service-node"><div><div class="node-label">Intelligence / 02</div><div class="node-name">EtherKing</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
+            <div class="service-node"><div><div class="node-label">Developer / 03</div><div class="node-name">NXLAB Console</div></div><span class="status">Active</span></div>
           </div>
-          <span class="terminal">$ build → verify → ship</span>
+          <span class="terminal">$ explore --beyond-known</span>
         </div>
       </div>
     </section>
 
-    <aside class="trust-strip" aria-label="Company highlights">
+    <aside class="trust-strip" aria-label="Lab coordinates">
       <div class="container trust-grid">
-        <div class="trust-item">
-          <p class="trust-label">Our focus</p>
-          <p class="trust-value">Useful systems, built responsibly.</p>
-        </div>
-        <div class="trust-item">
-          <p class="trust-label">01 / Engineering</p>
-          <p class="trust-value">Web & developer tools</p>
-        </div>
-        <div class="trust-item">
-          <p class="trust-label">02 / Security</p>
-          <p class="trust-value">Red-team validation</p>
-        </div>
-        <div class="trust-item">
-          <p class="trust-label">03 / Location</p>
-          <p class="trust-value">Built in Taiwan</p>
-        </div>
+        <div class="trust-item"><p class="trust-label">Signal</p><p class="trust-value">Ideas should become usable things.</p></div>
+        <div class="trust-item"><p class="trust-label">01 / Network</p><p class="trust-value">Open internet tools</p></div>
+        <div class="trust-item"><p class="trust-label">02 / Intelligence</p><p class="trust-value">Human-AI interaction</p></div>
+        <div class="trust-item"><p class="trust-label">03 / Origin</p><p class="trust-value">Taiwan</p></div>
       </div>
     </aside>
 
-    <section class="section" id="capabilities">
+    <section class="section" id="lab">
       <div class="container">
         <div class="section-header" data-reveal>
-          <div>
-            <p class="eyebrow">Capabilities</p>
-            <h2>One team from first architecture to final assurance.</h2>
-          </div>
-          <p class="section-intro">We combine product thinking, disciplined implementation, and adversarial testing so your digital services are clear to use, practical to operate, and prepared for real-world conditions.</p>
+          <div><p class="eyebrow">Inside the lab</p><h2>Three territories. One endless experiment.</h2></div>
+          <p class="section-intro">We follow technical curiosity across boundaries. Every project begins with a question, becomes a prototype, and stays only if it proves useful in the real world.</p>
         </div>
         <div class="capability-grid">
-          <article class="capability" data-reveal>
-            <span class="capability-no">1</span>
-            <h3>Product engineering</h3>
-            <p>Focused web applications and company platforms built around measurable needs—not unnecessary complexity.</p>
-          </article>
-          <article class="capability" data-reveal>
-            <span class="capability-no">2</span>
-            <h3>Infrastructure & tooling</h3>
-            <p>Lightweight services, automation, and developer tools designed for efficient deployment and straightforward maintenance.</p>
-          </article>
-          <article class="capability" data-reveal>
-            <span class="capability-no">3</span>
-            <h3>Security validation</h3>
-            <p>Red-team assessment and practical vulnerability discovery that turns technical findings into actionable improvements.</p>
-          </article>
+          <article class="capability" data-reveal><span class="capability-no">1</span><h3>Open internet</h3><p>Lightweight network tools that make local systems easier to connect, expose, and understand.</p></article>
+          <article class="capability" data-reveal><span class="capability-no">2</span><h3>Machine intelligence</h3><p>Interfaces that explore how people can work, think, and create alongside multiple AI systems.</p></article>
+          <article class="capability" data-reveal><span class="capability-no">3</span><h3>Developer experience</h3><p>Focused utilities that remove friction from the command line and everyday software workflows.</p></article>
         </div>
       </div>
     </section>
@@ -758,37 +787,14 @@
     <section class="section work-section" id="work">
       <div class="container">
         <div class="section-header" data-reveal>
-          <div>
-            <p class="eyebrow">Selected products</p>
-            <h2>Tools made to solve specific problems well.</h2>
-          </div>
-          <p class="section-intro">Our own products keep us close to the operational realities our clients face: reliability, speed, usability, and maintainability.</p>
+          <div><p class="eyebrow">Project archive</p><h2>Things we have released into the wild.</h2></div>
+          <p class="section-intro">Not concepts. Not pitch decks. These are working experiments built to answer a concrete question and available for anyone curious enough to try them.</p>
         </div>
         <div class="project-list">
-          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal>
-            <span class="project-index">01</span>
-            <h3>WebTNX</h3>
-            <p>A stable, lightweight HTTP tunneling service for practical development workflows.</p>
-            <span class="project-arrow" aria-hidden="true">↗</span>
-          </a>
-          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal>
-            <span class="project-index">02</span>
-            <h3>EtherKing</h3>
-            <p>A multi-model AI conversation space designed to make capable tools more accessible.</p>
-            <span class="project-arrow" aria-hidden="true">↗</span>
-          </a>
-          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal>
-            <span class="project-index">03</span>
-            <h3>NXLAB Console</h3>
-            <p>A focused command-line toolkit that helps developers move through routine work faster.</p>
-            <span class="project-arrow" aria-hidden="true">↗</span>
-          </a>
-          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal>
-            <span class="project-index">04</span>
-            <h3>TraveLegand</h3>
-            <p>A practical travel utility built to make planning and decisions easier on the move.</p>
-            <span class="project-arrow" aria-hidden="true">↗</span>
-          </a>
+          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">01</span><h3>WebTNX</h3><p>Stable, lightweight HTTP tunneling for connecting local services to the open web.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">02</span><h3>EtherKing</h3><p>A multi-model AI space for exploring different intelligences in one conversation.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">03</span><h3>NXLAB Console</h3><p>A command-line toolkit built to make repetitive developer work disappear.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">04</span><h3>TraveLegand</h3><p>A practical travel companion for making faster decisions while moving through the world.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
         </div>
       </div>
     </section>
@@ -796,44 +802,25 @@
     <section class="section" id="process">
       <div class="container">
         <div class="section-header" data-reveal>
-          <div>
-            <p class="eyebrow">How we work</p>
-            <h2>A direct path from uncertainty to a working system.</h2>
-          </div>
-          <p class="section-intro">Every engagement is scoped around outcomes. We communicate plainly, make technical trade-offs visible, and leave teams with systems they can confidently own.</p>
+          <div><p class="eyebrow">Experiment protocol</p><h2>Question everything. Ship something.</h2></div>
+          <p class="section-intro">Our process is deliberately simple: investigate an interesting edge, build the smallest honest version, then learn from what happens outside the lab.</p>
         </div>
         <div class="process-grid">
-          <article class="process-step" data-reveal>
-            <div class="step-meta"><span>01</span><span>Define</span></div>
-            <h3>Clarify the real constraint.</h3>
-            <p>We align on users, risks, technical context, and the smallest valuable outcome before implementation begins.</p>
-          </article>
-          <article class="process-step" data-reveal>
-            <div class="step-meta"><span>02</span><span>Build</span></div>
-            <h3>Engineer for operation.</h3>
-            <p>We create the product with maintainable architecture, observable behavior, and clear delivery checkpoints.</p>
-          </article>
-          <article class="process-step" data-reveal>
-            <div class="step-meta"><span>03</span><span>Verify</span></div>
-            <h3>Test what matters in practice.</h3>
-            <p>We validate functionality, resilience, and security, then document what the team needs to run and evolve it.</p>
-          </article>
+          <article class="process-step" data-reveal><div class="step-meta"><span>01</span><span>Observe</span></div><h3>Find the friction.</h3><p>We look for technical problems people have accepted for too long and ask whether they can be made simpler.</p></article>
+          <article class="process-step" data-reveal><div class="step-meta"><span>02</span><span>Prototype</span></div><h3>Make it real.</h3><p>We learn through code, assembling focused experiments that expose both the potential and the limits of an idea.</p></article>
+          <article class="process-step" data-reveal><div class="step-meta"><span>03</span><span>Release</span></div><h3>Open the loop.</h3><p>We put useful work into the world, observe how it behaves, and keep evolving what earns a reason to exist.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section" id="company">
       <div class="container about-grid" data-reveal>
-        <div class="about-copy">
-          <p class="eyebrow">About NeuralNexusLab</p>
-          <h2>Small by design. Serious about the details.</h2>
-          <p>We are an independent DevSecOps-minded engineering team from Taiwan. Our size keeps communication direct and gives senior attention to the systems we build, test, and maintain.</p>
-        </div>
+        <div class="about-copy"><p class="eyebrow">NeuralNexusLab / NXLAB</p><h2>Independent by nature. Connected by curiosity.</h2><p>We are a technology lab from Taiwan. We build across networking, artificial intelligence, security, and developer tooling because the most interesting ideas rarely stay inside one category.</p></div>
         <div class="principles">
-          <div class="principle"><strong>01</strong><span>Purpose before complexity</span></div>
-          <div class="principle"><strong>02</strong><span>Security throughout delivery</span></div>
-          <div class="principle"><strong>03</strong><span>Clear, documented decisions</span></div>
-          <div class="principle"><strong>04</strong><span>Ownership beyond launch</span></div>
+          <div class="principle"><strong>01</strong><span>Build before explaining</span></div>
+          <div class="principle"><strong>02</strong><span>Useful beats impressive</span></div>
+          <div class="principle"><strong>03</strong><span>Security is part of craft</span></div>
+          <div class="principle"><strong>04</strong><span>Curiosity has no roadmap</span></div>
         </div>
       </div>
     </section>
@@ -841,24 +828,17 @@
     <section class="contact-section" id="contact">
       <div class="container">
         <div class="contact-card" data-reveal>
-          <p class="eyebrow">Start a conversation</p>
-          <h2>Have a system to build—or one that needs a closer look?</h2>
-          <a class="button" href="mailto:service@nxlab.zone.id">Tell us what you need</a>
-          <div class="contact-details">
-            <a href="mailto:service@nxlab.zone.id">service@nxlab.zone.id</a>
-            <a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a>
-            <a href="mailto:neuralnexuslab@hotmail.com">neuralnexuslab@hotmail.com</a>
-          </div>
+          <p class="eyebrow">Open channel</p>
+          <h2>Found something interesting? Send a signal.</h2>
+          <a class="button" href="mailto:mail@nxlab.zone.id">Contact the lab</a>
+          <div class="contact-details"><a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a><a href="mailto:neuralnexuslab@hotmail.com">neuralnexuslab@hotmail.com</a><span>23.6978 N / 120.9605 E</span></div>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="container footer-wrap">
-      <span>© <span id="year"></span> NeuralNexusLab. All rights reserved.</span>
-      <span>Engineering / Infrastructure / Security</span>
-    </div>
+    <div class="container footer-wrap"><span>(c) <span id="year"></span> NeuralNexusLab.</span><span>OPEN INTERNET / AI / DEVELOPER TOOLS</span></div>
   </footer>
 
   <script>
