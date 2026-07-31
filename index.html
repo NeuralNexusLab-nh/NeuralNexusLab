@@ -1,420 +1,907 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeuralNexusLab</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NeuralNexusLab is a Taiwan-based engineering team building dependable web systems, developer tools, and security-tested digital products.">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:title" content="NeuralNexusLab — Engineering dependable digital systems">
+  <meta property="og:description" content="Product engineering, web infrastructure, and security validation for teams that value clarity and reliability.">
+  <meta property="og:type" content="website">
+  <title>NeuralNexusLab — Engineering dependable digital systems</title>
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --paper: #ffffff;
+      --line: #e3e3e3;
+      --smoke: #4d4d4d;
+      --ash: #6b6b6b;
+      --carbon: #272727;
+      --violet: #8a05ff;
+      --indigo: #48008c;
+      --marigold: #d67f2e;
+      --mint: #006d4c;
+      --lilac: #f4f0ff;
+      --wash: linear-gradient(120deg, #ffffff 8%, #eee7ff 62%, #f8f5ff 100%);
+      --accent: linear-gradient(90deg, #8a05ff, #d67f2e);
+      --sans: Inter, "Helvetica Neue", Arial, system-ui, sans-serif;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      --max: 1200px;
+    }
 
-<style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    ::selection { color: #fff; background: var(--violet); }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Consolas,monospace;
-scroll-behavior:smooth;
-}
+    .topline {
+      height: 3px;
+      background: var(--accent);
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .nav-wrap {
+      width: min(calc(100% - 40px), var(--max));
+      min-height: 72px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: -.025em;
+    }
+    .brand-mark {
+      position: relative;
+      width: 17px;
+      height: 17px;
+      border: 1px solid var(--ink);
+    }
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      background: var(--violet);
+    }
+    .brand-mark::before { width: 7px; height: 1px; left: 4px; top: 7px; }
+    .brand-mark::after { width: 1px; height: 7px; left: 7px; top: 4px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    .nav-links a {
+      color: var(--smoke);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus-visible { color: var(--ink); }
+    .nav-action {
+      justify-self: end;
+      padding: 9px 17px;
+      color: #fff;
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .nav-action:hover { transform: translateY(-1px); background: var(--carbon); }
+    .menu-toggle {
+      display: none;
+      justify-self: end;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      cursor: pointer;
+    }
+    .menu-toggle span,
+    .menu-toggle::before,
+    .menu-toggle::after {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 1px;
+      margin: 5px auto;
+      background: var(--ink);
+      transition: transform .2s ease, opacity .2s ease;
+    }
 
-body{
-background:#05070d;
-color:#00ffe5;
-overflow-x:hidden;
-}
+    .container { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 20px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 16px;
+      height: 2px;
+      background: var(--violet);
+    }
 
-/* HEADER */
+    .hero {
+      padding: 96px 0 88px;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.03fr) minmax(430px, .97fr);
+      align-items: center;
+      gap: 76px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 720px;
+      margin-bottom: 28px;
+      font-size: clamp(54px, 6.2vw, 82px);
+      font-weight: 300;
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+    .gradient-text {
+      color: transparent;
+      background: var(--accent);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+    .hero-copy {
+      max-width: 610px;
+      margin-bottom: 34px;
+      color: var(--smoke);
+      font-size: clamp(17px, 1.6vw, 20px);
+      line-height: 1.55;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      min-height: 46px;
+      padding: 10px 20px;
+      border: 1px solid var(--ink);
+      border-radius: 2px;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: transform .2s ease, background .2s ease, color .2s ease;
+    }
+    .button::after { content: "↗"; font-size: 14px; }
+    .button.primary { color: #fff; background: var(--ink); }
+    .button.secondary { background: transparent; }
+    .button:hover { transform: translateY(-2px); }
+    .button.secondary:hover { color: #fff; background: var(--ink); }
 
-header{
-position:fixed;
-top:0;
-width:100%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:clamp(12px,1.5vw,22px) clamp(20px,4vw,60px);
-background:rgba(0,0,0,0.6);
-backdrop-filter:blur(10px);
-border-bottom:1px solid #00ff88;
-z-index:999;
-}
+    .system-panel {
+      position: relative;
+      min-height: 500px;
+      padding: 32px;
+      background: var(--wash);
+      border: 1px solid #ded3f8;
+    }
+    .system-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .3;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .panel-head {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 74px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--mint);
+    }
+    .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #16a36e;
+    }
+    .service-stack { position: relative; display: grid; gap: 12px; }
+    .service-node {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 18px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+    }
+    .service-node:nth-child(2) { margin-left: 42px; }
+    .service-node:nth-child(3) { margin-left: 84px; }
+    .node-label {
+      margin-bottom: 5px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .node-name { font-size: 15px; font-weight: 500; }
+    .status {
+      padding: 5px 9px;
+      color: var(--mint);
+      background: #e6f8f1;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+    .connector {
+      position: absolute;
+      left: 20px;
+      bottom: -13px;
+      width: 1px;
+      height: 13px;
+      background: var(--violet);
+    }
+    .terminal {
+      position: absolute;
+      right: 28px;
+      bottom: 27px;
+      padding: 8px 12px;
+      color: #fff;
+      background: var(--carbon);
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
 
-.logo{
-font-size:clamp(16px,1.3vw,24px);
-font-weight:bold;
-}
+    .trust-strip { border-block: 1px solid var(--line); }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, 1fr);
+      align-items: stretch;
+    }
+    .trust-item {
+      min-height: 112px;
+      padding: 28px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--line);
+    }
+    .trust-item:first-child { padding-left: 0; }
+    .trust-item:last-child { border-right: 0; }
+    .trust-label {
+      margin: 0 0 7px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .trust-value { margin: 0; font-size: 16px; font-weight: 500; }
 
-nav a{
-margin-left:clamp(15px,2vw,40px);
-text-decoration:none;
-color:#00ffe5;
-font-size:clamp(14px,1vw,18px);
-transition:.3s;
-}
+    .section { padding: 120px 0; }
+    .section-header {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 48px;
+      margin-bottom: 64px;
+    }
+    .section-header h2 {
+      max-width: 650px;
+      margin: 0;
+      font-size: clamp(38px, 4.6vw, 62px);
+      font-weight: 300;
+      line-height: 1.03;
+      letter-spacing: -.045em;
+    }
+    .section-intro {
+      max-width: 560px;
+      margin: 8px 0 0 auto;
+      color: var(--smoke);
+      font-size: 18px;
+      line-height: 1.6;
+    }
 
-nav a:hover{
-color:#00ff88;
-text-shadow:0 0 8px #00ff88;
-}
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+    .capability {
+      min-height: 315px;
+      padding: 30px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .capability-no {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 76px;
+      color: #fff;
+      background: var(--violet);
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .capability h3 {
+      margin-bottom: 14px;
+      font-size: 25px;
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+    }
+    .capability p { margin: 0; color: var(--smoke); }
 
-/* SECTIONS */
+    .work-section { background: #fafafa; border-block: 1px solid var(--line); }
+    .project-list { border-top: 1px solid var(--line); }
+    .project {
+      display: grid;
+      grid-template-columns: 70px 1.2fr 1.6fr auto;
+      gap: 28px;
+      align-items: center;
+      min-height: 126px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      transition: padding .2s ease, background .2s ease;
+    }
+    .project:hover { padding-inline: 14px; background: var(--paper); }
+    .project-index {
+      color: var(--violet);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .project h3 { margin: 0; font-size: 25px; font-weight: 400; letter-spacing: -.025em; }
+    .project p { margin: 0; color: var(--smoke); }
+    .project-arrow {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--ink);
+      font-size: 15px;
+    }
 
-section{
-padding:clamp(120px,10vw,160px) clamp(20px,10vw,200px);
-min-height:100vh;
-}
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+    .process-step { padding-top: 24px; border-top: 1px solid var(--ink); }
+    .step-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .step-meta span:first-child { color: var(--violet); }
+    .process-step h3 {
+      margin-bottom: 16px;
+      font-size: 30px;
+      font-weight: 300;
+      letter-spacing: -.03em;
+    }
+    .process-step p { color: var(--smoke); }
 
-/* HOME */
+    .about-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      border: 1px solid var(--line);
+    }
+    .about-copy { padding: clamp(36px, 6vw, 78px); }
+    .about-copy h2 {
+      max-width: 520px;
+      margin-bottom: 28px;
+      font-size: clamp(38px, 4.5vw, 60px);
+      font-weight: 300;
+      line-height: 1.04;
+      letter-spacing: -.045em;
+    }
+    .about-copy p { max-width: 520px; color: var(--smoke); font-size: 18px; }
+    .principles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--lilac);
+      border-left: 1px solid var(--line);
+    }
+    .principle {
+      min-height: 220px;
+      padding: 30px;
+      border-right: 1px solid #ded7ec;
+      border-bottom: 1px solid #ded7ec;
+    }
+    .principle:nth-child(even) { border-right: 0; }
+    .principle:nth-child(n+3) { border-bottom: 0; }
+    .principle strong {
+      display: block;
+      margin-bottom: 65px;
+      color: var(--violet);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .principle span { font-size: 20px; line-height: 1.3; }
 
-#home{
-position:relative;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-overflow:hidden;
-}
+    .contact-section { padding: 120px 0 72px; }
+    .contact-card {
+      position: relative;
+      padding: clamp(38px, 7vw, 84px);
+      color: #fff;
+      background: var(--ink);
+      overflow: hidden;
+    }
+    .contact-card::after {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 1px;
+      right: -60px;
+      top: 58px;
+      background: var(--accent);
+      transform: rotate(-24deg);
+    }
+    .contact-card .eyebrow { color: #bdbdbd; }
+    .contact-card h2 {
+      max-width: 780px;
+      margin-bottom: 36px;
+      font-size: clamp(42px, 5.5vw, 72px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+    .contact-card .button { color: var(--ink); background: #fff; border-color: #fff; }
+    .contact-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 34px;
+      margin-top: 46px;
+      padding-top: 24px;
+      border-top: 1px solid #333;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .contact-details a { color: #cfcfcf; text-decoration: none; }
+    .contact-details a:hover { color: #fff; }
 
-/* MATRIX CANVAS */
+    footer { padding: 0 0 42px; }
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--ash);
+      font-size: 12px;
+    }
+    .footer-wrap span:last-child { font-family: var(--mono); }
 
-#matrix{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-1;
-}
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    [data-reveal].visible { opacity: 1; transform: none; }
+    .skip-link {
+      position: fixed;
+      z-index: 99;
+      top: 8px;
+      left: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--ink);
+      transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: none; }
 
-/* GLITCH */
+    @media (max-width: 900px) {
+      .nav-wrap { grid-template-columns: 1fr auto; min-height: 66px; }
+      .menu-toggle { display: block; }
+      .nav-action { display: none; }
+      .nav-links {
+        position: fixed;
+        inset: 69px 0 auto;
+        display: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        padding: 12px 20px 28px;
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 17px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+      .menu-toggle[aria-expanded="true"] span { opacity: 0; }
+      .menu-toggle[aria-expanded="true"]::before { transform: translateY(6px) rotate(45deg); }
+      .menu-toggle[aria-expanded="true"]::after { transform: translateY(-6px) rotate(-45deg); }
+      .hero { padding-top: 72px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 58px; }
+      .system-panel { min-height: 460px; }
+      .trust-grid { grid-template-columns: 1fr 1fr; }
+      .trust-item { border-bottom: 1px solid var(--line); }
+      .trust-item:nth-child(2) { border-right: 0; }
+      .trust-item:nth-child(n+3) { border-bottom: 0; }
+      .trust-item:first-child { padding-left: 30px; }
+      .section { padding: 92px 0; }
+      .section-header { grid-template-columns: 1fr; gap: 18px; margin-bottom: 48px; }
+      .section-intro { margin-left: 0; }
+      .capability-grid, .process-grid { grid-template-columns: 1fr; }
+      .capability { min-height: auto; }
+      .capability-no { margin-bottom: 42px; }
+      .process-grid { gap: 54px; }
+      .project { grid-template-columns: 42px 1fr auto; }
+      .project p { grid-column: 2; }
+      .project-arrow { grid-column: 3; grid-row: 1 / span 2; }
+      .about-grid { grid-template-columns: 1fr; }
+      .principles { border-left: 0; border-top: 1px solid var(--line); }
+    }
 
-.glitch{
-font-size:clamp(40px,6vw,90px);
-font-weight:bold;
-position:relative;
-color:#00ffe5;
-}
+    @media (max-width: 600px) {
+      .container, .nav-wrap { width: min(calc(100% - 28px), var(--max)); }
+      h1 { font-size: clamp(48px, 15vw, 66px); }
+      .hero-copy { font-size: 17px; }
+      .actions { align-items: stretch; flex-direction: column; }
+      .button { width: 100%; justify-content: space-between; }
+      .system-panel { min-height: 420px; padding: 22px; }
+      .panel-head { margin-bottom: 50px; }
+      .service-node { padding: 15px; }
+      .service-node:nth-child(2) { margin-left: 20px; }
+      .service-node:nth-child(3) { margin-left: 40px; }
+      .terminal { right: 20px; bottom: 20px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-item, .trust-item:nth-child(2), .trust-item:nth-child(n+3) {
+        min-height: 92px;
+        padding: 22px 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .trust-item:first-child { padding-left: 0; }
+      .trust-item:last-child { border-bottom: 0; }
+      .project { grid-template-columns: 32px 1fr auto; gap: 16px; }
+      .project p { font-size: 14px; }
+      .principles { grid-template-columns: 1fr; }
+      .principle, .principle:nth-child(even), .principle:nth-child(n+3) {
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid #ded7ec;
+      }
+      .principle:last-child { border-bottom: 0; }
+      .principle strong { margin-bottom: 34px; }
+      .contact-section { padding-top: 84px; }
+      .footer-wrap { flex-direction: column; }
+    }
 
-.glitch::before,
-.glitch::after{
-content:attr(data-text);
-position:absolute;
-left:0;
-}
-
-.glitch::before{
-color:#00ff88;
-animation:glitch1 2s infinite;
-}
-
-.glitch::after{
-color:#00f0ff;
-animation:glitch2 2s infinite;
-}
-
-@keyframes glitch1{
-0%{clip-path:inset(0 0 80% 0)}
-50%{clip-path:inset(40% 0 40% 0)}
-100%{clip-path:inset(0 0 80% 0)}
-}
-
-@keyframes glitch2{
-0%{clip-path:inset(80% 0 0 0)}
-50%{clip-path:inset(20% 0 60% 0)}
-100%{clip-path:inset(80% 0 0 0)}
-}
-
-/* TITLES */
-
-h2{
-font-size:clamp(26px,3vw,40px);
-margin-bottom:60px;
-}
-
-/* PROJECT GRID */
-
-.projects{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:clamp(20px,2vw,40px);
-}
-
-/* CARD */
-
-.card{
-background:#0b0f18;
-border:1px solid #00ff88;
-padding:clamp(20px,2vw,35px);
-border-radius:12px;
-transition:.3s;
-opacity:0;
-transform:translateY(30px);
-}
-
-.card.show{
-opacity:1;
-transform:translateY(0);
-}
-
-.card:hover{
-box-shadow:0 0 20px #00ff88;
-transform:translateY(-6px);
-}
-
-.card h3{
-font-size:clamp(18px,1.5vw,24px);
-color:#00ff88;
-margin-bottom:10px;
-}
-
-.card p{
-font-size:clamp(14px,1vw,16px);
-margin-bottom:15px;
-opacity:.8;
-}
-
-.btn{
-display:inline-block;
-padding:8px 16px;
-border:1px solid #00ff88;
-color:#00ff88;
-text-decoration:none;
-font-size:clamp(13px,1vw,16px);
-transition:.3s;
-}
-
-.btn:hover{
-background:#00ff88;
-color:black;
-}
-
-/* FAQ */
-
-.faq-item{
-margin-bottom:50px;
-opacity:0;
-transform:translateY(30px);
-}
-
-.faq-item.show{
-opacity:1;
-transform:translateY(0);
-}
-
-.faq-item h3{
-color:#00ff88;
-font-size:clamp(18px,1.4vw,24px);
-margin-bottom:10px;
-}
-
-.faq-item p{
-font-size:clamp(14px,1vw,17px);
-}
-
-/* CONTACT */
-
-.contact-box a{
-display:block;
-color:#00ff88;
-font-size:clamp(15px,1vw,18px);
-text-decoration:none;
-margin-bottom:10px;
-}
-
-.contact-box a:hover{
-text-shadow:0 0 8px #00ff88;
-}
-
-footer{
-text-align:center;
-padding:40px;
-opacity:.6;
-font-size:clamp(13px,1vw,15px);
-}
-
-</style>
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      [data-reveal] { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
-
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="topline" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#home" aria-label="NeuralNexusLab home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>NeuralNexusLab</span>
+      </a>
+      <nav class="nav-links" id="site-nav" aria-label="Main navigation">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#work">Products</a>
+        <a href="#process">Approach</a>
+        <a href="#company">Company</a>
+      </nav>
+      <a class="nav-action" href="mailto:service@nxlab.zone.id">Start a conversation</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+        <span></span>
+      </button>
+    </div>
+  </header>
 
-<header>
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div data-reveal>
+          <p class="eyebrow">Independent engineering studio · Taiwan</p>
+          <h1>We engineer digital systems that stay <span class="gradient-text">dependable.</span></h1>
+          <p class="hero-copy">NeuralNexusLab helps teams design, build, and validate web products—from production-ready applications to infrastructure and security testing.</p>
+          <div class="actions">
+            <a class="button primary" href="mailto:service@nxlab.zone.id">Discuss your project</a>
+            <a class="button secondary" href="#work">Explore our work</a>
+          </div>
+        </div>
 
-<div class="logo">NeuralNexusLab</div>
+        <div class="system-panel" data-reveal aria-label="NeuralNexusLab delivery system illustration">
+          <div class="panel-head">
+            <span>System overview / 01</span>
+            <span class="live">Operational</span>
+          </div>
+          <div class="service-stack">
+            <div class="service-node">
+              <div>
+                <div class="node-label">Layer 01</div>
+                <div class="node-name">Product engineering</div>
+              </div>
+              <span class="status">Ready</span>
+              <span class="connector" aria-hidden="true"></span>
+            </div>
+            <div class="service-node">
+              <div>
+                <div class="node-label">Layer 02</div>
+                <div class="node-name">Infrastructure delivery</div>
+              </div>
+              <span class="status">Verified</span>
+              <span class="connector" aria-hidden="true"></span>
+            </div>
+            <div class="service-node">
+              <div>
+                <div class="node-label">Layer 03</div>
+                <div class="node-name">Security validation</div>
+              </div>
+              <span class="status">Monitored</span>
+            </div>
+          </div>
+          <span class="terminal">$ build → verify → ship</span>
+        </div>
+      </div>
+    </section>
 
-<nav>
-<a href="#home">Home</a>
-<a href="#projects">Projects</a>
-<a href="#service">Service</a>
-<a href="#faq">FAQ</a>
-<a href="#contact">Contact</a>
-</nav>
+    <aside class="trust-strip" aria-label="Company highlights">
+      <div class="container trust-grid">
+        <div class="trust-item">
+          <p class="trust-label">Our focus</p>
+          <p class="trust-value">Useful systems, built responsibly.</p>
+        </div>
+        <div class="trust-item">
+          <p class="trust-label">01 / Engineering</p>
+          <p class="trust-value">Web & developer tools</p>
+        </div>
+        <div class="trust-item">
+          <p class="trust-label">02 / Security</p>
+          <p class="trust-value">Red-team validation</p>
+        </div>
+        <div class="trust-item">
+          <p class="trust-label">03 / Location</p>
+          <p class="trust-value">Built in Taiwan</p>
+        </div>
+      </div>
+    </aside>
 
-</header>
+    <section class="section" id="capabilities">
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <div>
+            <p class="eyebrow">Capabilities</p>
+            <h2>One team from first architecture to final assurance.</h2>
+          </div>
+          <p class="section-intro">We combine product thinking, disciplined implementation, and adversarial testing so your digital services are clear to use, practical to operate, and prepared for real-world conditions.</p>
+        </div>
+        <div class="capability-grid">
+          <article class="capability" data-reveal>
+            <span class="capability-no">1</span>
+            <h3>Product engineering</h3>
+            <p>Focused web applications and company platforms built around measurable needs—not unnecessary complexity.</p>
+          </article>
+          <article class="capability" data-reveal>
+            <span class="capability-no">2</span>
+            <h3>Infrastructure & tooling</h3>
+            <p>Lightweight services, automation, and developer tools designed for efficient deployment and straightforward maintenance.</p>
+          </article>
+          <article class="capability" data-reveal>
+            <span class="capability-no">3</span>
+            <h3>Security validation</h3>
+            <p>Red-team assessment and practical vulnerability discovery that turns technical findings into actionable improvements.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<section id="home">
+    <section class="section work-section" id="work">
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <div>
+            <p class="eyebrow">Selected products</p>
+            <h2>Tools made to solve specific problems well.</h2>
+          </div>
+          <p class="section-intro">Our own products keep us close to the operational realities our clients face: reliability, speed, usability, and maintainability.</p>
+        </div>
+        <div class="project-list">
+          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal>
+            <span class="project-index">01</span>
+            <h3>WebTNX</h3>
+            <p>A stable, lightweight HTTP tunneling service for practical development workflows.</p>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal>
+            <span class="project-index">02</span>
+            <h3>EtherKing</h3>
+            <p>A multi-model AI conversation space designed to make capable tools more accessible.</p>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal>
+            <span class="project-index">03</span>
+            <h3>NXLAB Console</h3>
+            <p>A focused command-line toolkit that helps developers move through routine work faster.</p>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal>
+            <span class="project-index">04</span>
+            <h3>TraveLegand</h3>
+            <p>A practical travel utility built to make planning and decisions easier on the move.</p>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
-<canvas id="matrix"></canvas>
+    <section class="section" id="process">
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <div>
+            <p class="eyebrow">How we work</p>
+            <h2>A direct path from uncertainty to a working system.</h2>
+          </div>
+          <p class="section-intro">Every engagement is scoped around outcomes. We communicate plainly, make technical trade-offs visible, and leave teams with systems they can confidently own.</p>
+        </div>
+        <div class="process-grid">
+          <article class="process-step" data-reveal>
+            <div class="step-meta"><span>01</span><span>Define</span></div>
+            <h3>Clarify the real constraint.</h3>
+            <p>We align on users, risks, technical context, and the smallest valuable outcome before implementation begins.</p>
+          </article>
+          <article class="process-step" data-reveal>
+            <div class="step-meta"><span>02</span><span>Build</span></div>
+            <h3>Engineer for operation.</h3>
+            <p>We create the product with maintainable architecture, observable behavior, and clear delivery checkpoints.</p>
+          </article>
+          <article class="process-step" data-reveal>
+            <div class="step-meta"><span>03</span><span>Verify</span></div>
+            <h3>Test what matters in practice.</h3>
+            <p>We validate functionality, resilience, and security, then document what the team needs to run and evolve it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<div class="glitch" data-text="NeuralNexusLab">
-NeuralNexusLab
-</div>
+    <section class="section" id="company">
+      <div class="container about-grid" data-reveal>
+        <div class="about-copy">
+          <p class="eyebrow">About NeuralNexusLab</p>
+          <h2>Small by design. Serious about the details.</h2>
+          <p>We are an independent DevSecOps-minded engineering team from Taiwan. Our size keeps communication direct and gives senior attention to the systems we build, test, and maintain.</p>
+        </div>
+        <div class="principles">
+          <div class="principle"><strong>01</strong><span>Purpose before complexity</span></div>
+          <div class="principle"><strong>02</strong><span>Security throughout delivery</span></div>
+          <div class="principle"><strong>03</strong><span>Clear, documented decisions</span></div>
+          <div class="principle"><strong>04</strong><span>Ownership beyond launch</span></div>
+        </div>
+      </div>
+    </section>
 
-</section>
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="contact-card" data-reveal>
+          <p class="eyebrow">Start a conversation</p>
+          <h2>Have a system to build—or one that needs a closer look?</h2>
+          <a class="button" href="mailto:service@nxlab.zone.id">Tell us what you need</a>
+          <div class="contact-details">
+            <a href="mailto:service@nxlab.zone.id">service@nxlab.zone.id</a>
+            <a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a>
+            <a href="mailto:neuralnexuslab@hotmail.com">neuralnexuslab@hotmail.com</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-<section id="projects">
+  <footer>
+    <div class="container footer-wrap">
+      <span>© <span id="year"></span> NeuralNexusLab. All rights reserved.</span>
+      <span>Engineering / Infrastructure / Security</span>
+    </div>
+  </footer>
 
-<h2>Projects</h2>
+  <script>
+    const menuButton = document.querySelector(".menu-toggle");
+    const navigation = document.querySelector(".nav-links");
 
-<div class="projects">
+    function closeMenu() {
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "Open navigation");
+      navigation.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
 
-<div class="card">
-<h3>WebTNX</h3>
-<p>Stable & Lightweight HTTP Tunnel</p>
-<a class="btn" href="https://webtnx.zone.id" target="_blank">Open</a>
-</div>
-<div class="card">
-<h3>EtherKing</h3>
-<p>A multi-AI chat space for all people.</p>
-<a class="btn" href="https://etherking.zone.id" target="_blank">Open</a>
-</div>
-<div class="card">
-<h3>NXLAB Console</h3>
-<p>A CLI tools for code developers.</p>
-<a class="btn" href="https://nxlab.nett.to" target="_blank">Open</a>
-</div>
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isOpen));
+      menuButton.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
+      navigation.classList.toggle("open", !isOpen);
+      document.body.classList.toggle("menu-open", !isOpen);
+    });
 
+    navigation.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) closeMenu();
+    });
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const revealItems = document.querySelectorAll("[data-reveal]");
+    if (reducedMotion || !("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    } else {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      revealItems.forEach((item) => observer.observe(item));
+    }
 
-  <div class="card">
-<h3>TraveLegand</h3>
-<p>A useful tool for traveling.</p>
-<a class="btn" href="/tl.html" target="_blank">Open</a>
-</div>
-
-
-</div>
-
-</section>
-
-  <section id="service">
-
-<h2>Service</h2>
-
-<div class="projects">
-
-<div class="card">
-<h3>Website Development</h3>
-<p>We help build small company websites using Node.js, Express and frontend HTML. Lightweight, fast and easy to maintain.</p>
-</div>
-
-<div class="card">
-<h3>Security Red Team</h3>
-<p>We can act as a red team for existing websites and help identify potential security vulnerabilities.</p>
-</div>
-
-<div class="card">
-<h3>Contact for Service</h3>
-<p>If you need development or security testing services, please contact:</p>
-<a class="btn" href="mailto:service@nxlab.zone.id">service@nxlab.zone.id</a>
-</div>
-
-</div>
-
-</section>
-
-<section id="faq">
-
-<h2>FAQ</h2>
-
-<div class="faq-item">
-<h3>What do you do?</h3>
-<p>We build servers using Python Flask and Node Express and operate as a cybersecurity red team, We are the DevSecOps team.</p>
-</div>
-
-<div class="faq-item">
-<h3>Where are you from?</h3>
-<p>We're from Taiwan.</p>
-</div>
-
-</section>
-
-<section id="contact">
-
-<h2>Contact</h2>
-
-<div class="contact-box">
-
-<a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a>
-<a href="mailto:neuralnexuslab@hotmail.com">neuralnexuslab@hotmail.com</a>
-
-</div>
-
-</section>
-
-<footer>
-
-© NeuralNexusLab
-
-</footer>
-
-<script>
-
-/* MATRIX (HOME ONLY) */
-
-const canvas=document.getElementById("matrix");
-const ctx=canvas.getContext("2d");
-
-canvas.height=window.innerHeight;
-canvas.width=window.innerWidth;
-
-const letters="01";
-const fontSize=10; /* smaller */
-const columns=canvas.width/fontSize;
-
-const drops=[];
-
-for(let i=0;i<columns;i++) drops[i]=1;
-
-function draw(){
-
-ctx.fillStyle="rgba(5,7,13,0.08)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-ctx.fillStyle="#00ff88";
-ctx.font=fontSize+"px monospace";
-
-for(let i=0;i<drops.length;i++){
-
-const text=letters[Math.floor(Math.random()*letters.length)];
-
-ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-
-if(drops[i]*fontSize>canvas.height && Math.random()>0.98){
-drops[i]=0;
-}
-
-drops[i]++;
-
-}
-
-}
-
-setInterval(draw,40);
-
-/* SCROLL REVEAL */
-
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("show");
-}
-});
-});
-
-document.querySelectorAll(".card,.faq-item").forEach(el=>{
-observer.observe(el);
-});
-
-</script>
-
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
