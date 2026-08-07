@@ -115,6 +115,29 @@
     }
     .nav-links a:hover,
     .nav-links a:focus-visible { color: var(--ink); }
+    .header-tools {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .language-select {
+      height: 38px;
+      padding: 0 30px 0 12px;
+      color: var(--smoke);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .language-select:hover,
+    .language-select:focus-visible {
+      color: var(--ink);
+      border-color: var(--ash);
+      outline: none;
+    }
     .nav-action {
       justify-self: end;
       padding: 9px 17px;
@@ -281,6 +304,7 @@
     }
     .service-node:nth-child(2) { margin-left: 42px; }
     .service-node:nth-child(3) { margin-left: 84px; }
+    .service-node:nth-child(4) { margin-left: 126px; }
     .node-label {
       margin-bottom: 5px;
       color: var(--ash);
@@ -625,8 +649,10 @@
 
     @media (max-width: 900px) {
       .nav-wrap { grid-template-columns: 1fr auto; min-height: 66px; }
+      .header-tools { gap: 8px; }
       .menu-toggle { display: block; }
       .nav-action { display: none; }
+      .language-select { height: 42px; border-radius: 0; }
       .nav-links {
         position: fixed;
         inset: 69px 0 auto;
@@ -667,6 +693,7 @@
 
     @media (max-width: 600px) {
       .container, .nav-wrap { width: min(calc(100% - 28px), var(--max)); }
+      .language-select { max-width: 118px; padding-left: 9px; padding-right: 22px; }
       h1 { font-size: clamp(48px, 15vw, 66px); }
       .hero-copy { font-size: 17px; }
       .actions { align-items: stretch; flex-direction: column; }
@@ -676,6 +703,7 @@
       .service-node { padding: 15px; }
       .service-node:nth-child(2) { margin-left: 20px; }
       .service-node:nth-child(3) { margin-left: 40px; }
+      .service-node:nth-child(4) { margin-left: 60px; }
       .terminal { right: 20px; bottom: 20px; }
       .trust-grid { grid-template-columns: 1fr; }
       .trust-item, .trust-item:nth-child(2), .trust-item:nth-child(n+3) {
@@ -722,14 +750,21 @@
         <a href="#process">Process</a>
         <a href="#company">About</a>
       </nav>
-      <a class="nav-action" href="#work">Enter the lab</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span></button>
+      <div class="header-tools">
+        <select class="language-select" id="language-select" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh-TW">繁體中文</option>
+          <option value="ja">日本語</option>
+        </select>
+        <a class="nav-action" href="#work">Enter the lab</a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span></button>
+      </div>
     </div>
   </header>
 
   <div class="data-stream" aria-hidden="true">
     <div class="data-stream-track">
-      <span><b>NODE_01</b> WEBTNX / ONLINE</span><span><b>NODE_02</b> ETHERKING / ONLINE</span><span><b>NODE_03</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span><span><b>NODE_01</b> WEBTNX / ONLINE</span><span><b>NODE_02</b> ETHERKING / ONLINE</span><span><b>NODE_03</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span>
+      <span><b>NODE_01</b> NEXACAPTCHA / ONLINE</span><span><b>NODE_02</b> WEBTNX / ONLINE</span><span><b>NODE_03</b> ETHERKING / ONLINE</span><span><b>NODE_04</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span><span><b>NODE_01</b> NEXACAPTCHA / ONLINE</span><span><b>NODE_02</b> WEBTNX / ONLINE</span><span><b>NODE_03</b> ETHERKING / ONLINE</span><span><b>NODE_04</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span>
     </div>
   </div>
 
@@ -752,9 +787,10 @@
           </div>
           <div class="panel-head"><span>Lab network / live map</span><span class="live">Online</span></div>
           <div class="service-stack">
-            <div class="service-node"><div><div class="node-label">Network / 01</div><div class="node-name">WebTNX</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
-            <div class="service-node"><div><div class="node-label">Intelligence / 02</div><div class="node-name">EtherKing</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
-            <div class="service-node"><div><div class="node-label">Developer / 03</div><div class="node-name">NXLAB Console</div></div><span class="status">Active</span></div>
+            <div class="service-node"><div><div class="node-label">Security / 01</div><div class="node-name">NexaCAPTCHA</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
+            <div class="service-node"><div><div class="node-label">Network / 02</div><div class="node-name">WebTNX</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
+            <div class="service-node"><div><div class="node-label">Intelligence / 03</div><div class="node-name">EtherKing</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
+            <div class="service-node"><div><div class="node-label">Developer / 04</div><div class="node-name">NXLAB Console</div></div><span class="status">Active</span></div>
           </div>
           <span class="terminal">$ explore --beyond-known</span>
         </div>
@@ -791,10 +827,11 @@
           <p class="section-intro">Not concepts. Not pitch decks. These are working experiments built to answer a concrete question and available for anyone curious enough to try them.</p>
         </div>
         <div class="project-list">
-          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">01</span><h3>WebTNX</h3><p>Stable, lightweight HTTP tunneling for connecting local services to the open web.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">02</span><h3>EtherKing</h3><p>A multi-model AI space for exploring different intelligences in one conversation.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">03</span><h3>NXLAB Console</h3><p>A command-line toolkit built to make repetitive developer work disappear.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">04</span><h3>TraveLegand</h3><p>A practical travel companion for making faster decisions while moving through the world.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://nexacaptcha.zone.id/" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">01</span><h3>NexaCAPTCHA</h3><p>Motion-based human verification designed to stay fast for people while making automated solving substantially more expensive.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">02</span><h3>WebTNX</h3><p>Stable, lightweight HTTP tunneling for connecting local services to the open web.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">03</span><h3>EtherKing</h3><p>A multi-model AI space for exploring different intelligences in one conversation.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">04</span><h3>NXLAB Console</h3><p>A command-line toolkit built to make repetitive developer work disappear.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
+          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">05</span><h3>TraveLegand</h3><p>A practical travel companion for making faster decisions while moving through the world.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
         </div>
       </div>
     </section>
@@ -844,10 +881,11 @@
   <script>
     const menuButton = document.querySelector(".menu-toggle");
     const navigation = document.querySelector(".nav-links");
+    const languageSelect = document.getElementById("language-select");
 
     function closeMenu() {
       menuButton.setAttribute("aria-expanded", "false");
-      menuButton.setAttribute("aria-label", "Open navigation");
+      menuButton.setAttribute("aria-label", currentLanguage === "zh-TW" ? "開啟導覽選單" : currentLanguage === "ja" ? "ナビゲーションを開く" : "Open navigation");
       navigation.classList.remove("open");
       document.body.classList.remove("menu-open");
     }
@@ -855,7 +893,9 @@
     menuButton.addEventListener("click", () => {
       const isOpen = menuButton.getAttribute("aria-expanded") === "true";
       menuButton.setAttribute("aria-expanded", String(!isOpen));
-      menuButton.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
+      menuButton.setAttribute("aria-label", isOpen
+        ? (currentLanguage === "zh-TW" ? "開啟導覽選單" : currentLanguage === "ja" ? "ナビゲーションを開く" : "Open navigation")
+        : (currentLanguage === "zh-TW" ? "關閉導覽選單" : currentLanguage === "ja" ? "ナビゲーションを閉じる" : "Close navigation"));
       navigation.classList.toggle("open", !isOpen);
       document.body.classList.toggle("menu-open", !isOpen);
     });
@@ -864,6 +904,293 @@
     window.addEventListener("resize", () => {
       if (window.innerWidth > 900) closeMenu();
     });
+
+    const translations = {
+      en: {
+        title: "NeuralNexusLab — Independent technology lab",
+        description: "NeuralNexusLab is an independent technology lab from Taiwan creating internet infrastructure, AI experiences, and developer tools.",
+        ogDescription: "Experimental tools for the open internet, human–AI interaction, and developer workflows.",
+        text: [
+          [".skip-link", "Skip to content"],
+          [".nav-links a:nth-child(1)", "The Lab"],
+          [".nav-links a:nth-child(2)", "Projects"],
+          [".nav-links a:nth-child(3)", "Process"],
+          [".nav-links a:nth-child(4)", "About"],
+          [".nav-action", "Enter the lab"],
+          [".hero .eyebrow", "Independent technology lab / Taiwan"],
+          [".hero h1", 'We build for the <span class="gradient-text glitch-text" data-text="curious.">curious.</span>'],
+          [".hero-copy", "NeuralNexusLab is a small independent lab creating internet infrastructure, AI experiences, and developer tools. We explore ideas by turning them into working products."],
+          [".actions .primary", "Explore our projects"],
+          [".actions .secondary", "About the lab"],
+          [".panel-head > span:first-child", "Lab network / live map"],
+          [".panel-head .live", "Online"],
+          [".service-node:nth-child(1) .node-label", "Security / 01"],
+          [".service-node:nth-child(2) .node-label", "Network / 02"],
+          [".service-node:nth-child(3) .node-label", "Intelligence / 03"],
+          [".service-node:nth-child(4) .node-label", "Developer / 04"],
+          [".service-node:nth-child(1) .status", "Online"],
+          [".service-node:nth-child(2) .status", "Online"],
+          [".service-node:nth-child(3) .status", "Online"],
+          [".service-node:nth-child(4) .status", "Active"],
+          [".trust-item:nth-child(1) .trust-label", "Signal"],
+          [".trust-item:nth-child(1) .trust-value", "Ideas should become usable things."],
+          [".trust-item:nth-child(2) .trust-label", "01 / Network"],
+          [".trust-item:nth-child(2) .trust-value", "Open internet tools"],
+          [".trust-item:nth-child(3) .trust-label", "02 / Intelligence"],
+          [".trust-item:nth-child(3) .trust-value", "Human-AI interaction"],
+          [".trust-item:nth-child(4) .trust-label", "03 / Origin"],
+          [".trust-item:nth-child(4) .trust-value", "Taiwan"],
+          ["#lab .section-header .eyebrow", "Inside the lab"],
+          ["#lab .section-header h2", "Three territories. One endless experiment."],
+          ["#lab .section-intro", "We follow technical curiosity across boundaries. Every project begins with a question, becomes a prototype, and stays only if it proves useful in the real world."],
+          [".capability:nth-child(1) h3", "Open internet"],
+          [".capability:nth-child(1) p", "Lightweight network tools that make local systems easier to connect, expose, and understand."],
+          [".capability:nth-child(2) h3", "Machine intelligence"],
+          [".capability:nth-child(2) p", "Interfaces that explore how people can work, think, and create alongside multiple AI systems."],
+          [".capability:nth-child(3) h3", "Developer experience"],
+          [".capability:nth-child(3) p", "Focused utilities that remove friction from the command line and everyday software workflows."],
+          ["#work .section-header .eyebrow", "Project archive"],
+          ["#work .section-header h2", "Things we have released into the wild."],
+          ["#work .section-intro", "Not concepts. Not pitch decks. These are working experiments built to answer a concrete question and available for anyone curious enough to try them."],
+          [".project:nth-child(1) p", "Motion-based human verification designed to stay fast for people while making automated solving substantially more expensive."],
+          [".project:nth-child(2) p", "Stable, lightweight HTTP tunneling for connecting local services to the open web."],
+          [".project:nth-child(3) p", "A multi-model AI space for exploring different intelligences in one conversation."],
+          [".project:nth-child(4) p", "A command-line toolkit built to make repetitive developer work disappear."],
+          [".project:nth-child(5) p", "A practical travel companion for making faster decisions while moving through the world."],
+          ["#process .section-header .eyebrow", "Experiment protocol"],
+          ["#process .section-header h2", "Question everything. Ship something."],
+          ["#process .section-intro", "Our process is deliberately simple: investigate an interesting edge, build the smallest honest version, then learn from what happens outside the lab."],
+          [".process-step:nth-child(1) .step-meta span:last-child", "Observe"],
+          [".process-step:nth-child(1) h3", "Find the friction."],
+          [".process-step:nth-child(1) p", "We look for technical problems people have accepted for too long and ask whether they can be made simpler."],
+          [".process-step:nth-child(2) .step-meta span:last-child", "Prototype"],
+          [".process-step:nth-child(2) h3", "Make it real."],
+          [".process-step:nth-child(2) p", "We learn through code, assembling focused experiments that expose both the potential and the limits of an idea."],
+          [".process-step:nth-child(3) .step-meta span:last-child", "Release"],
+          [".process-step:nth-child(3) h3", "Open the loop."],
+          [".process-step:nth-child(3) p", "We put useful work into the world, observe how it behaves, and keep evolving what earns a reason to exist."],
+          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
+          [".about-copy h2", "Independent by nature. Connected by curiosity."],
+          [".about-copy p", "We are a technology lab from Taiwan. We build across networking, artificial intelligence, security, and developer tooling because the most interesting ideas rarely stay inside one category."],
+          [".principle:nth-child(1) span", "Build before explaining"],
+          [".principle:nth-child(2) span", "Useful beats impressive"],
+          [".principle:nth-child(3) span", "Security is part of craft"],
+          [".principle:nth-child(4) span", "Curiosity has no roadmap"],
+          [".contact-card .eyebrow", "Open channel"],
+          [".contact-card h2", "Found something interesting? Send a signal."],
+          [".contact-card .button", "Contact the lab"],
+          [".footer-wrap > span:last-child", "OPEN INTERNET / AI / DEVELOPER TOOLS"]
+        ]
+      },
+      "zh-TW": {
+        title: "NeuralNexusLab — 獨立科技實驗室",
+        description: "NeuralNexusLab 是來自台灣的獨立科技實驗室，專注打造網際網路基礎設施、AI 體驗與開發者工具。",
+        ogDescription: "探索開放網際網路、人機 AI 互動與開發者工作流程的實驗性工具。",
+        text: [
+          [".skip-link", "跳到主要內容"],
+          [".nav-links a:nth-child(1)", "實驗室"],
+          [".nav-links a:nth-child(2)", "專案"],
+          [".nav-links a:nth-child(3)", "流程"],
+          [".nav-links a:nth-child(4)", "關於"],
+          [".nav-action", "進入實驗室"],
+          [".hero .eyebrow", "獨立科技實驗室 / 台灣"],
+          [".hero h1", '我們為<span class="gradient-text glitch-text" data-text="好奇的人。">好奇的人。</span>而打造。'],
+          [".hero-copy", "NeuralNexusLab 是一間小型獨立實驗室，打造網際網路基礎設施、AI 體驗與開發者工具。我們透過把想法做成真正可運作的產品來探索它們。"],
+          [".actions .primary", "探索我們的專案"],
+          [".actions .secondary", "關於實驗室"],
+          [".panel-head > span:first-child", "實驗室網路 / 即時地圖"],
+          [".panel-head .live", "線上"],
+          [".service-node:nth-child(1) .node-label", "安全 / 01"],
+          [".service-node:nth-child(2) .node-label", "網路 / 02"],
+          [".service-node:nth-child(3) .node-label", "智慧 / 03"],
+          [".service-node:nth-child(4) .node-label", "開發者 / 04"],
+          [".service-node:nth-child(1) .status", "線上"],
+          [".service-node:nth-child(2) .status", "線上"],
+          [".service-node:nth-child(3) .status", "線上"],
+          [".service-node:nth-child(4) .status", "運作中"],
+          [".trust-item:nth-child(1) .trust-label", "訊號"],
+          [".trust-item:nth-child(1) .trust-value", "想法應該成為真正可用的東西。"],
+          [".trust-item:nth-child(2) .trust-label", "01 / 網路"],
+          [".trust-item:nth-child(2) .trust-value", "開放網際網路工具"],
+          [".trust-item:nth-child(3) .trust-label", "02 / 智慧"],
+          [".trust-item:nth-child(3) .trust-value", "人類與 AI 互動"],
+          [".trust-item:nth-child(4) .trust-label", "03 / 起源"],
+          [".trust-item:nth-child(4) .trust-value", "台灣"],
+          ["#lab .section-header .eyebrow", "實驗室內部"],
+          ["#lab .section-header h2", "三個領域。一場沒有終點的實驗。"],
+          ["#lab .section-intro", "我們讓技術好奇心跨越領域。每個專案都從一個問題開始，成為原型，並且只有在真實世界證明有用後才留下來。"],
+          [".capability:nth-child(1) h3", "開放網際網路"],
+          [".capability:nth-child(1) p", "輕量化網路工具，讓本地系統更容易連線、公開與理解。"],
+          [".capability:nth-child(2) h3", "機器智慧"],
+          [".capability:nth-child(2) p", "探索人們如何與多種 AI 系統一起工作、思考與創作的介面。"],
+          [".capability:nth-child(3) h3", "開發者體驗"],
+          [".capability:nth-child(3) p", "專注的實用工具，減少命令列與日常軟體工作流程中的阻力。"],
+          ["#work .section-header .eyebrow", "專案檔案庫"],
+          ["#work .section-header h2", "我們已經放進真實世界的東西。"],
+          ["#work .section-intro", "不是概念，也不是簡報。這些是為了回答具體問題而打造、真正可運作的實驗，任何夠好奇的人都能親自試試。"],
+          [".project:nth-child(1) p", "以動態機制進行人類驗證，讓真人保持快速操作，同時大幅提高自動化解題的成本。"],
+          [".project:nth-child(2) p", "穩定、輕量的 HTTP 隧道，讓本地服務連接到開放網路。"],
+          [".project:nth-child(3) p", "多模型 AI 空間，讓不同智慧在同一場對話中被探索。"],
+          [".project:nth-child(4) p", "命令列工具組，讓重複性的開發工作直接消失。"],
+          [".project:nth-child(5) p", "實用的旅遊助手，幫助你在移動途中更快做出決定。"],
+          ["#process .section-header .eyebrow", "實驗協定"],
+          ["#process .section-header h2", "質疑一切。然後做出東西。"],
+          ["#process .section-intro", "我們的流程刻意保持簡單：研究有趣的邊界、做出最小但誠實的版本，再從實驗室之外真正發生的事情中學習。"],
+          [".process-step:nth-child(1) .step-meta span:last-child", "觀察"],
+          [".process-step:nth-child(1) h3", "找到摩擦點。"],
+          [".process-step:nth-child(1) p", "我們尋找那些人們已經忍受太久的技術問題，並問它們是否能變得更簡單。"],
+          [".process-step:nth-child(2) .step-meta span:last-child", "原型"],
+          [".process-step:nth-child(2) h3", "把它做出來。"],
+          [".process-step:nth-child(2) p", "我們透過程式碼學習，組裝聚焦的實驗，同時揭露一個想法的潛力與限制。"],
+          [".process-step:nth-child(3) .step-meta span:last-child", "發布"],
+          [".process-step:nth-child(3) h3", "打開回饋迴路。"],
+          [".process-step:nth-child(3) p", "我們把有用的成果放進世界，觀察它如何運作，並持續演化那些值得存在的東西。"],
+          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
+          [".about-copy h2", "天生獨立。因好奇而相連。"],
+          [".about-copy p", "我們是來自台灣的科技實驗室。我們橫跨網路、人工智慧、安全與開發者工具，因為最有趣的想法很少乖乖待在單一分類裡。"],
+          [".principle:nth-child(1) span", "先做，再解釋"],
+          [".principle:nth-child(2) span", "有用勝過看起來厲害"],
+          [".principle:nth-child(3) span", "安全是工藝的一部分"],
+          [".principle:nth-child(4) span", "好奇心沒有路線圖"],
+          [".contact-card .eyebrow", "開放頻道"],
+          [".contact-card h2", "發現有趣的東西？傳個訊號過來。"],
+          [".contact-card .button", "聯絡實驗室"],
+          [".footer-wrap > span:last-child", "開放網際網路 / AI / 開發者工具"]
+        ]
+      },
+      ja: {
+        title: "NeuralNexusLab — 独立系テクノロジーラボ",
+        description: "NeuralNexusLab は台湾発の独立系テクノロジーラボです。インターネット基盤、AI 体験、開発者向けツールを開発しています。",
+        ogDescription: "オープンインターネット、人間と AI の協働、開発者ワークフローを探究する実験的なツール。",
+        text: [
+          [".skip-link", "メインコンテンツへ"],
+          [".nav-links a:nth-child(1)", "ラボ"],
+          [".nav-links a:nth-child(2)", "プロジェクト"],
+          [".nav-links a:nth-child(3)", "プロセス"],
+          [".nav-links a:nth-child(4)", "概要"],
+          [".nav-action", "ラボに入る"],
+          [".hero .eyebrow", "独立系テクノロジーラボ / 台湾"],
+          [".hero h1", '私たちは<span class="gradient-text glitch-text" data-text="好奇心ある人へ。">好奇心ある人へ。</span>つくる。'],
+          [".hero-copy", "NeuralNexusLab は、インターネット基盤、AI 体験、開発者向けツールをつくる小さな独立系ラボです。アイデアを実際に動くプロダクトへ変えることで探究します。"],
+          [".actions .primary", "プロジェクトを見る"],
+          [".actions .secondary", "ラボについて"],
+          [".panel-head > span:first-child", "ラボネットワーク / ライブマップ"],
+          [".panel-head .live", "オンライン"],
+          [".service-node:nth-child(1) .node-label", "セキュリティ / 01"],
+          [".service-node:nth-child(2) .node-label", "ネットワーク / 02"],
+          [".service-node:nth-child(3) .node-label", "インテリジェンス / 03"],
+          [".service-node:nth-child(4) .node-label", "開発者 / 04"],
+          [".service-node:nth-child(1) .status", "オンライン"],
+          [".service-node:nth-child(2) .status", "オンライン"],
+          [".service-node:nth-child(3) .status", "オンライン"],
+          [".service-node:nth-child(4) .status", "稼働中"],
+          [".trust-item:nth-child(1) .trust-label", "シグナル"],
+          [".trust-item:nth-child(1) .trust-value", "アイデアは使えるものになるべきだ。"],
+          [".trust-item:nth-child(2) .trust-label", "01 / ネットワーク"],
+          [".trust-item:nth-child(2) .trust-value", "オープンインターネットツール"],
+          [".trust-item:nth-child(3) .trust-label", "02 / インテリジェンス"],
+          [".trust-item:nth-child(3) .trust-value", "人間と AI のインタラクション"],
+          [".trust-item:nth-child(4) .trust-label", "03 / Origin"],
+          [".trust-item:nth-child(4) .trust-value", "台湾"],
+          ["#lab .section-header .eyebrow", "ラボの内側"],
+          ["#lab .section-header h2", "3つの領域。終わりのない1つの実験。"],
+          ["#lab .section-intro", "私たちは技術的な好奇心を境界の外まで追いかけます。すべてのプロジェクトは問いから始まり、プロトタイプになり、現実世界で役立つと証明されたものだけが残ります。"],
+          [".capability:nth-child(1) h3", "オープンインターネット"],
+          [".capability:nth-child(1) p", "ローカルシステムをより簡単につなぎ、公開し、理解するための軽量なネットワークツール。"],
+          [".capability:nth-child(2) h3", "マシンインテリジェンス"],
+          [".capability:nth-child(2) p", "複数の AI システムと人がどのように働き、考え、創造できるかを探るインターフェース。"],
+          [".capability:nth-child(3) h3", "開発者体験"],
+          [".capability:nth-child(3) p", "コマンドラインや日々のソフトウェア開発から摩擦を減らす、目的を絞ったユーティリティ。"],
+          ["#work .section-header .eyebrow", "プロジェクトアーカイブ"],
+          ["#work .section-header h2", "私たちが世界へ放ったもの。"],
+          ["#work .section-intro", "コンセプトでもピッチ資料でもありません。具体的な問いに答えるためにつくった、実際に動く実験です。興味があれば誰でも試せます。"],
+          [".project:nth-child(1) p", "人には素早く解ける操作感を保ちながら、自動化された解答のコストを大幅に高める動的な人間認証。"],
+          [".project:nth-child(2) p", "ローカルサービスをオープンウェブへ接続する、安定した軽量 HTTP トンネリング。"],
+          [".project:nth-child(3) p", "1つの会話の中で異なる知性を探れる、マルチモデル AI スペース。"],
+          [".project:nth-child(4) p", "反復的な開発作業を消していくためにつくられたコマンドラインツールキット。"],
+          [".project:nth-child(5) p", "移動中の意思決定をより速くするための実用的な旅行コンパニオン。"],
+          ["#process .section-header .eyebrow", "実験プロトコル"],
+          ["#process .section-header h2", "すべてを疑う。何かを出す。"],
+          ["#process .section-intro", "私たちのプロセスは意図的にシンプルです。面白い境界を調べ、最小限で誠実な形をつくり、ラボの外で起きることから学びます。"],
+          [".process-step:nth-child(1) .step-meta span:last-child", "観察"],
+          [".process-step:nth-child(1) h3", "摩擦を見つける。"],
+          [".process-step:nth-child(1) p", "人々が長く受け入れてしまっている技術的な問題を探し、もっと単純にできないかを考えます。"],
+          [".process-step:nth-child(2) .step-meta span:last-child", "試作"],
+          [".process-step:nth-child(2) h3", "現実にする。"],
+          [".process-step:nth-child(2) p", "コードを通じて学び、アイデアの可能性と限界の両方を明らかにする、焦点を絞った実験を組み立てます。"],
+          [".process-step:nth-child(3) .step-meta span:last-child", "公開"],
+          [".process-step:nth-child(3) h3", "ループを開く。"],
+          [".process-step:nth-child(3) p", "役立つものを世界へ出し、その振る舞いを観察し、存在する理由を得たものを進化させ続けます。"],
+          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
+          [".about-copy h2", "本質は独立。好奇心でつながる。"],
+          [".about-copy p", "私たちは台湾発のテクノロジーラボです。ネットワーク、人工知能、セキュリティ、開発者向けツールを横断してつくります。最も面白いアイデアは、たいてい1つのカテゴリーには収まらないからです。"],
+          [".principle:nth-child(1) span", "説明する前につくる"],
+          [".principle:nth-child(2) span", "見栄えより実用性"],
+          [".principle:nth-child(3) span", "セキュリティも技術の一部"],
+          [".principle:nth-child(4) span", "好奇心にロードマップはない"],
+          [".contact-card .eyebrow", "オープンチャンネル"],
+          [".contact-card h2", "面白いものを見つけた？ シグナルを送ってください。"],
+          [".contact-card .button", "ラボに連絡"],
+          [".footer-wrap > span:last-child", "OPEN INTERNET / AI / DEVELOPER TOOLS"]
+        ]
+      }
+    };
+
+    let currentLanguage = localStorage.getItem("nxlab-language") || "en";
+    if (!translations[currentLanguage]) currentLanguage = "en";
+
+    function applyLanguage(language) {
+      const pack = translations[language];
+      currentLanguage = language;
+      document.documentElement.lang = language;
+      document.title = pack.title;
+      document.querySelector('meta[name="description"]').setAttribute("content", pack.description);
+      document.querySelector('meta[property="og:title"]').setAttribute("content", pack.title);
+      document.querySelector('meta[property="og:description"]').setAttribute("content", pack.ogDescription);
+
+      pack.text.forEach(([selector, value]) => {
+        const element = document.querySelector(selector);
+        if (!element) return;
+        if (selector === ".hero h1") {
+          element.innerHTML = value;
+        } else {
+          element.textContent = value;
+        }
+      });
+
+      document.querySelector(".brand").setAttribute("aria-label",
+        language === "zh-TW" ? "NeuralNexusLab 首頁" :
+        language === "ja" ? "NeuralNexusLab ホーム" :
+        "NeuralNexusLab home"
+      );
+      navigation.setAttribute("aria-label",
+        language === "zh-TW" ? "主要導覽" :
+        language === "ja" ? "メインナビゲーション" :
+        "Main navigation"
+      );
+      languageSelect.setAttribute("aria-label",
+        language === "zh-TW" ? "語言" :
+        language === "ja" ? "言語" :
+        "Language"
+      );
+      document.querySelector(".system-panel").setAttribute("aria-label",
+        language === "zh-TW" ? "NeuralNexusLab 專案網路示意圖" :
+        language === "ja" ? "NeuralNexusLab プロジェクトネットワーク図" :
+        "NeuralNexusLab project network illustration"
+      );
+      document.querySelector(".trust-strip").setAttribute("aria-label",
+        language === "zh-TW" ? "實驗室座標" :
+        language === "ja" ? "ラボ座標" :
+        "Lab coordinates"
+      );
+
+      closeMenu();
+      languageSelect.value = language;
+      localStorage.setItem("nxlab-language", language);
+    }
+
+    languageSelect.addEventListener("change", (event) => applyLanguage(event.target.value));
+    applyLanguage(currentLanguage);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const revealItems = document.querySelectorAll("[data-reveal]");
