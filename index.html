@@ -3,731 +3,242 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="NeuralNexusLab is an independent technology lab from Taiwan creating internet infrastructure, AI experiences, and developer tools.">
-  <meta name="theme-color" content="#080a0f">
-  <meta property="og:title" content="NeuralNexusLab — Independent technology lab">
-  <meta property="og:description" content="Experimental tools for the open internet, human–AI interaction, and developer workflows.">
+  <meta name="description" content="NeuralNexusLab is an independent engineering studio in Taiwan building dependable internet infrastructure, applied AI systems, and developer tools.">
+  <meta name="theme-color" content="#090909">
+  <meta property="og:title" content="NeuralNexusLab — Engineering beyond the expected">
+  <meta property="og:description" content="Independent engineering for the open internet, applied intelligence, and better developer workflows.">
   <meta property="og:type" content="website">
-  <title>NeuralNexusLab — Independent technology lab</title>
+  <title>NeuralNexusLab — Engineering beyond the expected</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #f2f3f5;
-      --paper: #080a0f;
-      --line: #252a35;
-      --smoke: #aeb4c0;
-      --ash: #747d8d;
-      --carbon: #11141b;
-      --violet: #a855f7;
-      --indigo: #6d28d9;
-      --marigold: #d67f2e;
-      --mint: #44d7a3;
-      --lilac: #0e1119;
-      --wash: linear-gradient(135deg, #0c0f17 8%, #171126 62%, #0a0d14 100%);
-      --accent: linear-gradient(90deg, #a855f7, #d67f2e);
-      --sans: Inter, "Helvetica Neue", Arial, system-ui, sans-serif;
-      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      --void: #090909;
+      --paper: #f7f9fa;
+      --soft: #f0f0f0;
+      --steel: #9a9b9d;
+      --ash: #6b6b6b;
+      --line: rgba(247,249,250,.2);
+      --line-soft: rgba(247,249,250,.11);
+      --violet: #af50ff;
+      --lavender: #e1bdff;
+      --sans: Inter, ui-sans-serif, system-ui, sans-serif;
+      --serif: Newsreader, Georgia, serif;
+      --mono: "DM Mono", ui-monospace, monospace;
       --max: 1200px;
+      --radius: 19.2px;
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--void); }
     body {
       margin: 0;
-      color: var(--ink);
-      background: var(--paper);
+      color: var(--paper);
+      background: transparent;
       font-family: var(--sans);
       font-size: 16px;
-      line-height: 1.5;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    body::before {
-      content: "";
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; }
+    button, select { font: inherit; }
+    ::selection { color: white; background: var(--violet); }
+
+    #sky {
+      position: fixed;
+      z-index: -3;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 76% 20%, rgba(255,248,218,.95), transparent 12%),
+        linear-gradient(#348ed3 0%, #86c7ef 46%, #d5effb 66%, #090909 100%);
+    }
+    .sky-shade {
+      position: fixed;
+      z-index: -2;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(3,7,14,.78) 0%, rgba(3,7,14,.36) 46%, rgba(3,7,14,.08) 72%, rgba(3,7,14,.27) 100%),
+        linear-gradient(180deg, rgba(9,9,9,.1) 0%, transparent 52%, #090909 96%);
+    }
+    .noise {
       position: fixed;
       z-index: 100;
       inset: 0;
       pointer-events: none;
-      opacity: .13;
-      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 3px 4px);
-      animation: scan-flicker 8s steps(2) infinite;
+      opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
     }
-    body.menu-open { overflow: hidden; }
-    a { color: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    button { font: inherit; }
-    ::selection { color: #fff; background: var(--violet); }
+    .container { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; }
+    .skip-link { position: fixed; z-index: 200; top: 8px; left: 8px; padding: 10px 14px; color: var(--void); background: white; transform: translateY(-160%); }
+    .skip-link:focus { transform: none; }
 
-    .topline {
-      height: 3px;
-      background: var(--accent);
-    }
     .site-header {
-      position: sticky;
+      position: fixed;
+      z-index: 50;
       top: 0;
-      z-index: 20;
-      background: rgba(8,10,15,.9);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(14px);
+      left: 0;
+      right: 0;
+      background: rgba(51,50,72,.66);
+      border-bottom: 1px solid rgba(247,249,250,.18);
+      backdrop-filter: blur(16px) saturate(115%);
     }
     .nav-wrap {
-      width: min(calc(100% - 40px), var(--max));
       min-height: 72px;
-      margin: auto;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 24px;
-    }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      text-decoration: none;
-      font-weight: 600;
-      letter-spacing: -.025em;
-    }
-    .brand-mark {
-      position: relative;
-      width: 17px;
-      height: 17px;
-      border: 1px solid var(--ink);
-    }
-    .brand-mark::before,
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      background: var(--violet);
-    }
-    .brand-mark::before { width: 7px; height: 1px; left: 4px; top: 7px; }
-    .brand-mark::after { width: 1px; height: 7px; left: 7px; top: 4px; }
-    .brand-mark { animation: signal-pulse 2.8s ease-in-out infinite; }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-    }
-    .nav-links a {
-      color: var(--smoke);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color .2s ease;
-    }
-    .nav-links a:hover,
-    .nav-links a:focus-visible { color: var(--ink); }
-    .header-tools {
-      justify-self: end;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .language-select {
-      height: 38px;
-      padding: 0 30px 0 12px;
-      color: var(--smoke);
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
-    }
-    .language-select:hover,
-    .language-select:focus-visible {
-      color: var(--ink);
-      border-color: var(--ash);
-      outline: none;
-    }
-    .nav-action {
-      justify-self: end;
-      padding: 9px 17px;
-      color: var(--paper);
-      background: var(--ink);
-      border: 1px solid var(--ink);
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: transform .2s ease, background .2s ease;
-    }
-    .nav-action:hover { transform: translateY(-1px); background: var(--carbon); }
-    .menu-toggle {
-      display: none;
-      justify-self: end;
-      width: 42px;
-      height: 42px;
-      padding: 0;
-      border: 1px solid var(--line);
-      background: var(--paper);
-      cursor: pointer;
-    }
-    .menu-toggle span,
-    .menu-toggle::before,
-    .menu-toggle::after {
-      content: "";
-      display: block;
-      width: 18px;
-      height: 1px;
-      margin: 5px auto;
-      background: var(--ink);
-      transition: transform .2s ease, opacity .2s ease;
-    }
-
-    .container { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
-    .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0 0 20px;
-      color: var(--ash);
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .11em;
-      text-transform: uppercase;
-    }
-    .eyebrow::before {
-      content: "";
-      width: 16px;
-      height: 2px;
-      background: var(--violet);
-    }
-
-    .hero {
-      padding: 96px 0 88px;
-      overflow: hidden;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.03fr) minmax(430px, .97fr);
-      align-items: center;
-      gap: 76px;
-    }
-    h1, h2, h3, p { margin-top: 0; }
-    h1 {
-      max-width: 720px;
-      margin-bottom: 28px;
-      font-size: clamp(54px, 6.2vw, 82px);
-      font-weight: 300;
-      line-height: .98;
-      letter-spacing: -.055em;
-    }
-    .gradient-text {
-      color: transparent;
-      background: var(--accent);
-      background-clip: text;
-      -webkit-background-clip: text;
-    }
-    .hero-copy {
-      max-width: 610px;
-      margin-bottom: 34px;
-      color: var(--smoke);
-      font-size: clamp(17px, 1.6vw, 20px);
-      line-height: 1.55;
-    }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 22px;
-      min-height: 46px;
-      padding: 10px 20px;
-      border: 1px solid var(--ink);
-      border-radius: 2px;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
-      transition: transform .2s ease, background .2s ease, color .2s ease;
-    }
-    .button::after { content: "↗"; font-size: 14px; }
-    .button.primary { color: var(--paper); background: var(--ink); }
-    .button.secondary { background: transparent; }
-    .button:hover { transform: translateY(-2px); }
-    .button.secondary:hover { color: var(--paper); background: var(--ink); }
-
-    .system-panel {
-      position: relative;
-      min-height: 500px;
-      padding: 32px;
-      background: var(--wash);
-      border: 1px solid #352a47;
-      animation: panel-breathe 5s ease-in-out infinite;
-    }
-    .system-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: .3;
-      background-image:
-        linear-gradient(var(--line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--line) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-    }
-    .panel-head {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 74px;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .live {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--mint);
-    }
-    .live::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 12px rgba(68,215,163,.7);
-      animation: signal-pulse 1.8s ease-in-out infinite;
-    }
-    .service-stack { position: relative; display: grid; gap: 12px; }
-    .service-node {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 18px;
-      background: rgba(12,15,23,.92);
-      border: 1px solid var(--line);
-    }
-    .service-node:nth-child(2) { margin-left: 42px; }
-    .service-node:nth-child(3) { margin-left: 84px; }
-    .service-node:nth-child(4) { margin-left: 126px; }
-    .node-label {
-      margin-bottom: 5px;
-      color: var(--ash);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .node-name { font-size: 15px; font-weight: 500; }
-    .status {
-      padding: 5px 9px;
-      color: var(--mint);
-      background: rgba(68,215,163,.1);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 10px;
-    }
-    .connector {
-      position: absolute;
-      left: 20px;
-      bottom: -13px;
-      width: 1px;
-      height: 13px;
-      background: var(--violet);
-    }
-    .terminal {
-      position: absolute;
-      right: 28px;
-      bottom: 27px;
-      padding: 8px 12px;
-      color: var(--ink);
-      background: var(--carbon);
-      border-radius: 2px;
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: .02em;
-    }
-
-    .trust-strip { border-block: 1px solid var(--line); }
-    .trust-grid {
-      display: grid;
-      grid-template-columns: 1.2fr repeat(3, 1fr);
-      align-items: stretch;
-    }
-    .trust-item {
-      min-height: 112px;
-      padding: 28px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-right: 1px solid var(--line);
-    }
-    .trust-item:first-child { padding-left: 0; }
-    .trust-item:last-child { border-right: 0; }
-    .trust-label {
-      margin: 0 0 7px;
-      color: var(--ash);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .trust-value { margin: 0; font-size: 16px; font-weight: 500; }
-
-    .section { padding: 120px 0; }
-    .section-header {
-      display: grid;
-      grid-template-columns: .8fr 1.2fr;
-      gap: 48px;
-      margin-bottom: 64px;
-    }
-    .section-header h2 {
-      max-width: 650px;
-      margin: 0;
-      font-size: clamp(38px, 4.6vw, 62px);
-      font-weight: 300;
-      line-height: 1.03;
-      letter-spacing: -.045em;
-    }
-    .section-intro {
-      max-width: 560px;
-      margin: 8px 0 0 auto;
-      color: var(--smoke);
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    .capability-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid var(--line);
-      border-left: 1px solid var(--line);
-    }
-    .capability {
-      min-height: 315px;
-      padding: 30px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-    .capability-no {
-      display: inline-grid;
-      place-items: center;
-      width: 24px;
-      height: 24px;
-      margin-bottom: 76px;
-      color: #fff;
-      background: var(--violet);
-      border-radius: 2px;
-      font-family: var(--mono);
-      font-size: 11px;
-    }
-    .capability h3 {
-      margin-bottom: 14px;
-      font-size: 25px;
-      font-weight: 400;
-      line-height: 1.15;
-      letter-spacing: -.025em;
-    }
-    .capability p { margin: 0; color: var(--smoke); }
-
-    .work-section { background: #0a0d13; border-block: 1px solid var(--line); }
-    .project-list { border-top: 1px solid var(--line); }
-    .project {
-      display: grid;
-      grid-template-columns: 70px 1.2fr 1.6fr auto;
       gap: 28px;
-      align-items: center;
-      min-height: 126px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--line);
-      text-decoration: none;
-      transition: padding .2s ease, background .2s ease;
     }
-    .project:hover { padding-inline: 14px; background: #0e121a; }
-    .project-index {
-      color: var(--violet);
-      font-family: var(--mono);
-      font-size: 12px;
-    }
-    .project h3 { margin: 0; font-size: 25px; font-weight: 400; letter-spacing: -.025em; }
-    .project p { margin: 0; color: var(--smoke); }
-    .project-arrow {
-      display: grid;
-      place-items: center;
-      width: 38px;
-      height: 38px;
-      border: 1px solid var(--ink);
-      font-size: 15px;
-    }
+    .brand { display: inline-flex; align-items: center; gap: 11px; width: fit-content; text-decoration: none; font-weight: 500; letter-spacing: -.03em; }
+    .brand-mark { position: relative; width: 18px; height: 18px; border: 1px solid var(--paper); transform: rotate(45deg); }
+    .brand-mark::before { content: ""; position: absolute; inset: 5px; background: var(--violet); box-shadow: 0 0 20px 5px rgba(175,80,255,.7); animation: beacon 2.8s ease-in-out infinite; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a { color: rgba(247,249,250,.76); text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; transition: color .2s; }
+    .nav-links a:hover, .nav-links a:focus-visible { color: white; }
+    .header-tools { justify-self: end; display: flex; align-items: center; gap: 10px; }
+    .language-select { height: 40px; padding: 0 30px 0 12px; color: var(--paper); background: rgba(9,9,9,.26); border: 1px solid var(--line); border-radius: 6px; font-family: var(--mono); font-size: 10px; letter-spacing: .05em; }
+    .nav-action, .button { display: inline-flex; align-items: center; justify-content: center; gap: 18px; min-height: 44px; padding: 11px 17px; border: 1px solid var(--paper); border-radius: 8px; color: var(--paper); background: rgba(9,9,9,.4); text-decoration: none; font-size: 14px; transition: background .2s, color .2s, transform .2s; }
+    .nav-action:hover, .button:hover { color: var(--void); background: var(--paper); transform: translateY(-1px); }
+    .menu-toggle { display: none; width: 42px; height: 42px; padding: 0; color: white; background: transparent; border: 1px solid var(--line); border-radius: 6px; }
+    .menu-toggle span, .menu-toggle::before, .menu-toggle::after { content: ""; display: block; width: 17px; height: 1px; margin: 5px auto; background: currentColor; transition: transform .2s, opacity .2s; }
 
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px;
-    }
-    .process-step { padding-top: 24px; border-top: 1px solid var(--ink); }
-    .step-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 48px;
-      color: var(--ash);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .step-meta span:first-child { color: var(--violet); }
-    .process-step h3 {
-      margin-bottom: 16px;
-      font-size: 30px;
-      font-weight: 300;
-      letter-spacing: -.03em;
-    }
-    .process-step p { color: var(--smoke); }
+    .hero { min-height: 100svh; display: grid; align-items: end; padding: 150px 0 58px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(370px,.8fr); gap: 84px; align-items: end; }
+    .eyebrow { margin: 0 0 22px; color: rgba(247,249,250,.72); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
+    .eyebrow::before { content: "+"; display: inline-block; margin-right: 12px; color: var(--lavender); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 780px; margin-bottom: 28px; font-size: clamp(66px, 9vw, 132px); font-weight: 300; line-height: .76; letter-spacing: -.055em; text-wrap: balance; }
+    h1 em { display: block; margin-left: .25em; color: var(--paper); font-family: var(--serif); font-weight: 300; letter-spacing: -.045em; text-shadow: 0 0 44px rgba(175,80,255,.15); }
+    .hero-copy { max-width: 610px; margin-bottom: 34px; color: rgba(247,249,250,.78); font-size: clamp(16px, 1.5vw, 20px); font-weight: 300; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button::after { content: "↗"; }
+    .button.primary { color: white; background: var(--violet); border-color: var(--violet); }
+    .button.primary:hover { color: white; background: #983ce7; }
 
-    .about-grid {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      border: 1px solid var(--line);
-    }
-    .about-copy { padding: clamp(36px, 6vw, 78px); }
-    .about-copy h2 {
-      max-width: 520px;
-      margin-bottom: 28px;
-      font-size: clamp(38px, 4.5vw, 60px);
-      font-weight: 300;
-      line-height: 1.04;
-      letter-spacing: -.045em;
-    }
-    .about-copy p { max-width: 520px; color: var(--smoke); font-size: 18px; }
-    .principles {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: var(--lilac);
-      border-left: 1px solid var(--line);
-    }
-    .principle {
-      min-height: 220px;
-      padding: 30px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-    .principle:nth-child(even) { border-right: 0; }
-    .principle:nth-child(n+3) { border-bottom: 0; }
-    .principle strong {
-      display: block;
-      margin-bottom: 65px;
-      color: var(--violet);
-      font-family: var(--mono);
-      font-size: 11px;
-    }
-    .principle span { font-size: 20px; line-height: 1.3; }
+    .flight-card { position: relative; padding: 34px; overflow: hidden; background: rgba(237,195,196,.055); border: 1px solid rgba(247,249,250,.28); border-radius: var(--radius); backdrop-filter: blur(14px); }
+    .flight-card::after { content: ""; position: absolute; right: -70px; bottom: -100px; width: 230px; height: 230px; border-radius: 50%; background: var(--violet); filter: blur(70px); opacity: .45; }
+    .flight-head { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 52px; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+    .flight-status { display: inline-flex; align-items: center; gap: 8px; }
+    .flight-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 16px 5px rgba(175,80,255,.55); }
+    .route { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; margin-bottom: 22px; }
+    .route strong { font-size: 22px; font-weight: 400; }
+    .route-line { position: relative; height: 1px; background: rgba(247,249,250,.38); }
+    .route-line::before { content: ""; position: absolute; top: -3px; left: 46%; width: 7px; height: 7px; border-radius: 50%; background: var(--violet); }
+    .flight-card h2 { position: relative; z-index: 1; max-width: 410px; margin-bottom: 28px; font-size: clamp(30px,3vw,42px); font-weight: 300; line-height: 1.05; letter-spacing: -.04em; }
+    .flight-meta { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3,1fr); padding-top: 22px; border-top: 1px solid var(--line); }
+    .flight-meta div + div { padding-left: 15px; border-left: 1px solid var(--line); }
+    .flight-meta span { display: block; color: var(--steel); font-family: var(--mono); font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
+    .flight-meta strong { display: block; margin-top: 6px; font-size: 12px; font-weight: 400; }
 
-    .contact-section { padding: 120px 0 72px; }
-    .contact-card {
-      position: relative;
-      padding: clamp(38px, 7vw, 84px);
-      color: var(--ink);
-      background: #05070b;
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .contact-card::after {
-      content: "";
-      position: absolute;
-      width: 320px;
-      height: 1px;
-      right: -60px;
-      top: 58px;
-      background: var(--accent);
-      transform: rotate(-24deg);
-    }
-    .contact-card .eyebrow { color: #bdbdbd; }
-    .contact-card h2 {
-      max-width: 780px;
-      margin-bottom: 36px;
-      font-size: clamp(42px, 5.5vw, 72px);
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: -.05em;
-    }
-    .contact-card .button { color: var(--paper); background: var(--ink); border-color: var(--ink); }
-    .contact-details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 34px;
-      margin-top: 46px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      font-family: var(--mono);
-      font-size: 12px;
-    }
-    .contact-details a { color: var(--smoke); text-decoration: none; }
-    .contact-details a:hover { color: var(--ink); }
+    .altitude-strip { border-block: 1px solid var(--line); background: rgba(9,9,9,.48); backdrop-filter: blur(14px); }
+    .altitude-grid { display: grid; grid-template-columns: 1.2fr repeat(3,1fr); }
+    .altitude-item { min-height: 104px; padding: 26px 28px; border-right: 1px solid var(--line); }
+    .altitude-item:first-child { padding-left: 0; }
+    .altitude-item:last-child { border-right: 0; }
+    .altitude-item span { display: block; color: var(--steel); font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+    .altitude-item strong { display: block; margin-top: 8px; font-size: 14px; font-weight: 400; }
 
-    .data-stream {
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      color: var(--ash);
-      background: #06080c;
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .data-stream-track {
-      display: inline-block;
-      min-width: max-content;
-      padding: 11px 0;
-      animation: data-flow 24s linear infinite;
-    }
-    .data-stream span { margin-right: 56px; }
-    .data-stream b { color: var(--violet); font-weight: 500; }
-    .code-rain { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-    .code-rain span {
-      position: absolute;
-      top: -48px;
-      color: rgba(168,85,247,.3);
-      font-family: var(--mono);
-      font-size: 10px;
-      line-height: 1.7;
-      writing-mode: vertical-rl;
-      animation: code-drop var(--speed) linear infinite;
-      animation-delay: var(--delay);
-    }
-    .glitch-text { position: relative; display: inline-block; }
-    .glitch-text::before,
-    .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-    }
-    .glitch-text::before { color: #39ffb6; transform: translateX(-2px); }
-    .glitch-text::after { color: var(--violet); transform: translateX(2px); }
-    .glitch-text:hover::before { animation: glitch-slice .48s steps(2) both; }
-    .glitch-text:hover::after { animation: glitch-slice .48s .05s steps(2) reverse both; }
+    .void { position: relative; background: var(--void); }
+    .void::before { content: ""; position: absolute; left: 50%; top: 0; width: min(900px,90vw); height: 400px; transform: translateX(-50%); background: radial-gradient(ellipse, rgba(175,80,255,.11), transparent 66%); pointer-events: none; }
+    .section { position: relative; padding: 140px 0; }
+    .stamp { margin: 0 0 84px; overflow-wrap: anywhere; color: var(--soft); font-family: var(--mono); font-size: clamp(32px,6vw,74px); font-weight: 400; line-height: .95; letter-spacing: .16em; text-transform: uppercase; }
+    .section-lead { display: grid; grid-template-columns: .8fr 1.2fr; gap: 60px; margin-bottom: 74px; }
+    .section-lead h2 { max-width: 580px; margin: 0; font-size: clamp(38px,5vw,64px); font-weight: 300; line-height: 1; letter-spacing: -.05em; }
+    .section-lead h2 em { font-family: var(--serif); font-weight: 300; }
+    .section-lead p { max-width: 550px; margin: 4px 0 0 auto; color: var(--steel); font-size: 18px; font-weight: 300; }
 
-    @keyframes data-flow { to { transform: translateX(-50%); } }
-    @keyframes code-drop { to { transform: translateY(580px); } }
-    @keyframes signal-pulse { 50% { opacity: .52; box-shadow: 0 0 18px rgba(168,85,247,.35); } }
-    @keyframes panel-breathe { 50% { border-color: #59406f; } }
-    @keyframes scan-flicker { 0%, 96%, 100% { opacity: .13; } 97% { opacity: .2; } }
-    @keyframes glitch-slice {
-      0% { opacity: .7; clip-path: inset(8% 0 72% 0); }
-      35% { clip-path: inset(58% 0 14% 0); }
-      70% { clip-path: inset(30% 0 45% 0); }
-      100% { opacity: 0; clip-path: inset(80% 0 5% 0); }
-    }
+    .capability-list { border-top: 1px solid var(--line); }
+    .capability { display: grid; grid-template-columns: 80px .75fr 1.25fr auto; gap: 30px; align-items: start; padding: 34px 0; border-bottom: 1px solid var(--line-soft); }
+    .index { color: var(--lavender); font-family: var(--mono); font-size: 11px; }
+    .capability h3 { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: -.03em; }
+    .capability p { max-width: 560px; margin: 0; color: var(--steel); }
+    .status-pill { padding: 7px 11px; color: var(--paper); background: rgba(247,249,250,.08); border: 1px solid var(--line); border-radius: 99px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 
-    footer { padding: 0 0 42px; }
-    .footer-wrap {
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      color: var(--ash);
-      font-size: 12px;
-    }
-    .footer-wrap span:last-child { font-family: var(--mono); }
+    .signal-card { margin-top: 86px; padding: 42px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; background: var(--violet); border-radius: var(--radius); overflow: hidden; }
+    .signal-card small { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+    .signal-card h3 { max-width: 760px; margin: 28px 0 0; font-size: clamp(36px,5vw,66px); font-weight: 300; line-height: .98; letter-spacing: -.05em; }
+    .signal-card a { width: 72px; height: 72px; display: grid; place-items: center; border: 1px solid white; border-radius: 50%; text-decoration: none; font-size: 24px; transition: background .2s, color .2s; }
+    .signal-card a:hover { color: var(--violet); background: white; }
 
-    [data-reveal] {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity .65s ease, transform .65s ease;
-    }
+    .project-list { border-top: 1px solid var(--line); }
+    .project { position: relative; display: grid; grid-template-columns: 80px .8fr 1.3fr auto; gap: 30px; align-items: center; min-height: 132px; padding: 26px 0; border-bottom: 1px solid var(--line-soft); text-decoration: none; overflow: hidden; }
+    .project::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(175,80,255,.1)); transform: translateX(-102%); transition: transform .4s ease; }
+    .project:hover::before { transform: none; }
+    .project h3, .project p, .project span { position: relative; }
+    .project h3 { margin: 0; font-size: 26px; font-weight: 400; letter-spacing: -.03em; }
+    .project p { margin: 0; color: var(--steel); }
+    .project-arrow { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
+
+    .principle-grid { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+    .principle { min-height: 310px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .principle strong { color: var(--lavender); font-family: var(--mono); font-size: 11px; font-weight: 400; }
+    .principle h3 { margin: 0 0 16px; font-size: 23px; font-weight: 400; line-height: 1.1; }
+    .principle p { margin: 0; color: var(--steel); font-size: 14px; }
+
+    .contact { padding: 140px 0 70px; }
+    .contact-panel { padding: clamp(38px,7vw,84px); background: rgba(247,249,250,.045); border: 1px solid var(--line); border-radius: var(--radius); }
+    .contact-panel h2 { max-width: 850px; margin-bottom: 36px; font-size: clamp(48px,7vw,88px); font-weight: 300; line-height: .88; letter-spacing: -.055em; }
+    .contact-panel h2 em { font-family: var(--serif); font-weight: 300; }
+    .contact-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 28px; margin-top: 70px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--steel); font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+    .contact-meta a { text-decoration: none; }
+    .contact-meta a:hover { color: white; }
+
+    footer { padding: 0 0 38px; background: var(--void); }
+    .footer-wrap { display: flex; justify-content: space-between; gap: 20px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--steel); font-size: 12px; }
+    .footer-coordinate { font-family: var(--mono); }
+    [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
     [data-reveal].visible { opacity: 1; transform: none; }
-    .skip-link {
-      position: fixed;
-      z-index: 99;
-      top: 8px;
-      left: 8px;
-      padding: 10px 14px;
-      color: #fff;
-      background: var(--ink);
-      transform: translateY(-150%);
-    }
-    .skip-link:focus { transform: none; }
+    @keyframes beacon { 50% { opacity: .45; transform: scale(.7); } }
 
     @media (max-width: 900px) {
+      .container { width: min(calc(100% - 32px), var(--max)); }
       .nav-wrap { grid-template-columns: 1fr auto; min-height: 66px; }
-      .header-tools { gap: 8px; }
       .menu-toggle { display: block; }
       .nav-action { display: none; }
-      .language-select { height: 42px; border-radius: 0; }
-      .nav-links {
-        position: fixed;
-        inset: 69px 0 auto;
-        display: none;
-        align-items: stretch;
-        flex-direction: column;
-        gap: 0;
-        padding: 12px 20px 28px;
-        background: var(--paper);
-        border-bottom: 1px solid var(--line);
-      }
+      .nav-links { position: fixed; inset: 67px 0 auto; display: none; flex-direction: column; gap: 0; padding: 12px 18px 28px; background: rgba(9,9,9,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
       .nav-links.open { display: flex; }
-      .nav-links a { padding: 17px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+      .nav-links a { padding: 18px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
       .menu-toggle[aria-expanded="true"] span { opacity: 0; }
       .menu-toggle[aria-expanded="true"]::before { transform: translateY(6px) rotate(45deg); }
       .menu-toggle[aria-expanded="true"]::after { transform: translateY(-6px) rotate(-45deg); }
-      .hero { padding-top: 72px; }
+      .hero { min-height: auto; padding-top: 150px; }
       .hero-grid { grid-template-columns: 1fr; gap: 58px; }
-      .system-panel { min-height: 460px; }
-      .trust-grid { grid-template-columns: 1fr 1fr; }
-      .trust-item { border-bottom: 1px solid var(--line); }
-      .trust-item:nth-child(2) { border-right: 0; }
-      .trust-item:nth-child(n+3) { border-bottom: 0; }
-      .trust-item:first-child { padding-left: 30px; }
-      .section { padding: 92px 0; }
-      .section-header { grid-template-columns: 1fr; gap: 18px; margin-bottom: 48px; }
-      .section-intro { margin-left: 0; }
-      .capability-grid, .process-grid { grid-template-columns: 1fr; }
-      .capability { min-height: auto; }
-      .capability-no { margin-bottom: 42px; }
-      .process-grid { gap: 54px; }
-      .project { grid-template-columns: 42px 1fr auto; }
-      .project p { grid-column: 2; }
-      .project-arrow { grid-column: 3; grid-row: 1 / span 2; }
-      .about-grid { grid-template-columns: 1fr; }
-      .principles { border-left: 0; border-top: 1px solid var(--line); }
+      h1 { font-size: clamp(62px,18vw,104px); }
+      .flight-card { max-width: 580px; }
+      .altitude-grid { grid-template-columns: 1fr 1fr; }
+      .altitude-item { border-bottom: 1px solid var(--line); }
+      .altitude-item:first-child { padding-left: 28px; }
+      .section { padding: 100px 0; }
+      .stamp { margin-bottom: 62px; }
+      .section-lead { grid-template-columns: 1fr; gap: 26px; }
+      .section-lead p { margin-left: 0; }
+      .capability, .project { grid-template-columns: 50px 1fr auto; }
+      .capability p, .project p { grid-column: 2 / -1; }
+      .status-pill { grid-column: 3; grid-row: 1; }
+      .project-arrow { grid-column: 3; grid-row: 1; }
+      .principle-grid { grid-template-columns: 1fr 1fr; }
     }
-
-    @media (max-width: 600px) {
-      .container, .nav-wrap { width: min(calc(100% - 28px), var(--max)); }
-      .language-select { max-width: 118px; padding-left: 9px; padding-right: 22px; }
-      h1 { font-size: clamp(48px, 15vw, 66px); }
-      .hero-copy { font-size: 17px; }
-      .actions { align-items: stretch; flex-direction: column; }
-      .button { width: 100%; justify-content: space-between; }
-      .system-panel { min-height: 420px; padding: 22px; }
-      .panel-head { margin-bottom: 50px; }
-      .service-node { padding: 15px; }
-      .service-node:nth-child(2) { margin-left: 20px; }
-      .service-node:nth-child(3) { margin-left: 40px; }
-      .service-node:nth-child(4) { margin-left: 60px; }
-      .terminal { right: 20px; bottom: 20px; }
-      .trust-grid { grid-template-columns: 1fr; }
-      .trust-item, .trust-item:nth-child(2), .trust-item:nth-child(n+3) {
-        min-height: 92px;
-        padding: 22px 0;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-      .trust-item:first-child { padding-left: 0; }
-      .trust-item:last-child { border-bottom: 0; }
-      .project { grid-template-columns: 32px 1fr auto; gap: 16px; }
-      .project p { font-size: 14px; }
-      .principles { grid-template-columns: 1fr; }
-      .principle, .principle:nth-child(even), .principle:nth-child(n+3) {
-        min-height: auto;
-        border-right: 0;
-        border-bottom: 1px solid #ded7ec;
-      }
-      .principle:last-child { border-bottom: 0; }
-      .principle strong { margin-bottom: 34px; }
-      .contact-section { padding-top: 84px; }
+    @media (max-width: 560px) {
+      .brand span:last-child { font-size: 14px; }
+      .language-select { width: 74px; }
+      .hero { padding-bottom: 40px; }
+      h1 { line-height: .82; }
+      .flight-card { padding: 26px; }
+      .flight-head { margin-bottom: 38px; }
+      .altitude-grid { grid-template-columns: 1fr; }
+      .altitude-item { border-right: 0; }
+      .capability, .project { grid-template-columns: 38px 1fr auto; gap: 18px; }
+      .signal-card { grid-template-columns: 1fr; padding: 30px; }
+      .principle-grid { grid-template-columns: 1fr; }
+      .principle { min-height: 240px; }
       .footer-wrap { flex-direction: column; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -736,479 +247,208 @@
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="topline" aria-hidden="true"></div>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="sky-shade" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+
   <header class="site-header">
-    <div class="nav-wrap">
-      <a class="brand" href="#home" aria-label="NeuralNexusLab home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>NeuralNexusLab</span>
-      </a>
+    <div class="container nav-wrap">
+      <a class="brand" href="#home" aria-label="NeuralNexusLab home"><span class="brand-mark" aria-hidden="true"></span><span>NeuralNexusLab</span></a>
       <nav class="nav-links" id="site-nav" aria-label="Main navigation">
-        <a href="#lab">The Lab</a>
-        <a href="#work">Projects</a>
-        <a href="#process">Process</a>
-        <a href="#company">About</a>
+        <a href="#expertise" data-i18n="navExpertise">Expertise</a>
+        <a href="#work" data-i18n="navWork">Selected work</a>
+        <a href="#principles" data-i18n="navPrinciples">Principles</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
       </nav>
       <div class="header-tools">
         <select class="language-select" id="language-select" aria-label="Language">
-          <option value="en">English</option>
-          <option value="zh-TW">繁體中文</option>
-          <option value="ja">日本語</option>
+          <option value="en">EN</option><option value="zh-TW">繁中</option><option value="ja">日本語</option>
         </select>
-        <a class="nav-action" href="#work">Enter the lab</a>
+        <a class="nav-action" href="#contact" data-i18n="navAction">Start a conversation</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span></button>
       </div>
     </div>
   </header>
 
-  <div class="data-stream" aria-hidden="true">
-    <div class="data-stream-track">
-      <span><b>NODE_01</b> NEXACAPTCHA / ONLINE</span><span><b>NODE_02</b> WEBTNX / ONLINE</span><span><b>NODE_03</b> ETHERKING / ONLINE</span><span><b>NODE_04</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span><span><b>NODE_01</b> NEXACAPTCHA / ONLINE</span><span><b>NODE_02</b> WEBTNX / ONLINE</span><span><b>NODE_03</b> ETHERKING / ONLINE</span><span><b>NODE_04</b> NXLAB_CONSOLE / ACTIVE</span><span><b>ORIGIN</b> TAIWAN / 23.6978N</span>
-    </div>
-  </div>
-
   <main id="main">
     <section class="hero" id="home">
       <div class="container hero-grid">
         <div data-reveal>
-          <p class="eyebrow">Independent technology lab / Taiwan</p>
-          <h1>We build for the <span class="gradient-text glitch-text" data-text="curious.">curious.</span></h1>
-          <p class="hero-copy">NeuralNexusLab is a small independent lab creating internet infrastructure, AI experiences, and developer tools. We explore ideas by turning them into working products.</p>
-          <div class="actions">
-            <a class="button primary" href="#work">Explore our projects</a>
-            <a class="button secondary" href="#company">About the lab</a>
-          </div>
+          <p class="eyebrow" data-i18n="heroEyebrow">Independent engineering studio / Taiwan / 10,000 M</p>
+          <h1><span data-i18n="heroLine">We engineer</span> <em data-i18n="heroEm">above the expected.</em></h1>
+          <p class="hero-copy" data-i18n="heroCopy">NeuralNexusLab turns ambitious ideas into dependable systems—across internet infrastructure, applied AI, security, and developer experience.</p>
+          <div class="actions"><a class="button primary" href="#work" data-i18n="heroPrimary">Explore selected work</a><a class="button" href="#expertise" data-i18n="heroSecondary">Meet the lab</a></div>
         </div>
-
-        <div class="system-panel" data-reveal aria-label="NeuralNexusLab project network illustration">
-          <div class="code-rain" aria-hidden="true">
-            <span style="left:8%;--speed:7s;--delay:-2s">01101001</span><span style="left:28%;--speed:9s;--delay:-7s">root::nx</span><span style="left:54%;--speed:8s;--delay:-4s">10110110</span><span style="left:78%;--speed:11s;--delay:-8s">lab/node</span><span style="left:92%;--speed:7s;--delay:-5s">00101101</span>
+        <aside class="flight-card" data-reveal aria-label="NeuralNexusLab flight card">
+          <div class="flight-head"><span data-i18n="flightLabel">Engineering flight / NXL-01</span><span class="flight-status" data-i18n="flightStatus">Operational</span></div>
+          <div class="route"><strong>TPE</strong><span class="route-line" aria-hidden="true"></span><strong>∞</strong></div>
+          <h2 data-i18n="flightTitle">From hard questions to systems people can trust.</h2>
+          <div class="flight-meta">
+            <div><span data-i18n="metaAltitude">Altitude</span><strong>10,000 M</strong></div>
+            <div><span data-i18n="metaFocus">Focus</span><strong>BUILD</strong></div>
+            <div><span data-i18n="metaOrigin">Origin</span><strong>TAIWAN</strong></div>
           </div>
-          <div class="panel-head"><span>Lab network / live map</span><span class="live">Online</span></div>
-          <div class="service-stack">
-            <div class="service-node"><div><div class="node-label">Security / 01</div><div class="node-name">NexaCAPTCHA</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
-            <div class="service-node"><div><div class="node-label">Network / 02</div><div class="node-name">WebTNX</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
-            <div class="service-node"><div><div class="node-label">Intelligence / 03</div><div class="node-name">EtherKing</div></div><span class="status">Online</span><span class="connector" aria-hidden="true"></span></div>
-            <div class="service-node"><div><div class="node-label">Developer / 04</div><div class="node-name">NXLAB Console</div></div><span class="status">Active</span></div>
-          </div>
-          <span class="terminal">$ explore --beyond-known</span>
-        </div>
+        </aside>
       </div>
     </section>
 
-    <aside class="trust-strip" aria-label="Lab coordinates">
-      <div class="container trust-grid">
-        <div class="trust-item"><p class="trust-label">Signal</p><p class="trust-value">Ideas should become usable things.</p></div>
-        <div class="trust-item"><p class="trust-label">01 / Network</p><p class="trust-value">Open internet tools</p></div>
-        <div class="trust-item"><p class="trust-label">02 / Intelligence</p><p class="trust-value">Human-AI interaction</p></div>
-        <div class="trust-item"><p class="trust-label">03 / Origin</p><p class="trust-value">Taiwan</p></div>
+    <aside class="altitude-strip" aria-label="Lab coordinates">
+      <div class="container altitude-grid">
+        <div class="altitude-item"><span data-i18n="stripSignal">Signal</span><strong data-i18n="stripSignalValue">Precision over noise.</strong></div>
+        <div class="altitude-item"><span data-i18n="stripNetwork">01 / Network</span><strong data-i18n="stripNetworkValue">Open by design</strong></div>
+        <div class="altitude-item"><span data-i18n="stripIntelligence">02 / Intelligence</span><strong data-i18n="stripIntelligenceValue">Applied with purpose</strong></div>
+        <div class="altitude-item"><span data-i18n="stripOrigin">03 / Origin</span><strong data-i18n="stripOriginValue">Taiwan, built for the world</strong></div>
       </div>
     </aside>
 
-    <section class="section" id="lab">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <div><p class="eyebrow">Inside the lab</p><h2>Three territories. One endless experiment.</h2></div>
-          <p class="section-intro">We follow technical curiosity across boundaries. Every project begins with a question, becomes a prototype, and stays only if it proves useful in the real world.</p>
+    <div class="void">
+      <section class="section" id="expertise">
+        <div class="container">
+          <p class="stamp" data-i18n="expertiseStamp" data-reveal>Core systems</p>
+          <div class="section-lead" data-reveal>
+            <h2 data-i18n-html="expertiseTitle">Engineering that holds up <em>in the real world.</em></h2>
+            <p data-i18n="expertiseIntro">We combine research discipline with product judgment. Every engagement is shaped around measurable utility, responsible architecture, and a clear path from prototype to operation.</p>
+          </div>
+          <div class="capability-list">
+            <article class="capability" data-reveal><span class="index">01</span><h3 data-i18n="cap1Title">Internet infrastructure</h3><p data-i18n="cap1Copy">Resilient networking tools and delivery layers that make services easier to connect, expose, and operate.</p><span class="status-pill" data-i18n="capStatus">Production minded</span></article>
+            <article class="capability" data-reveal><span class="index">02</span><h3 data-i18n="cap2Title">Applied intelligence</h3><p data-i18n="cap2Copy">Purpose-built AI experiences that augment judgment, make complexity legible, and respect human control.</p><span class="status-pill" data-i18n="capStatus">Production minded</span></article>
+            <article class="capability" data-reveal><span class="index">03</span><h3 data-i18n="cap3Title">Security engineering</h3><p data-i18n="cap3Copy">Security designed into the system from its first boundary—not added after the product is already exposed.</p><span class="status-pill" data-i18n="capStatus">Production minded</span></article>
+            <article class="capability" data-reveal><span class="index">04</span><h3 data-i18n="cap4Title">Developer experience</h3><p data-i18n="cap4Copy">Focused interfaces and automation that reduce friction without hiding the mechanics engineers need to trust.</p><span class="status-pill" data-i18n="capStatus">Production minded</span></article>
+          </div>
+          <div class="signal-card" data-reveal><div><small data-i18n="signalLabel">The NeuralNexus standard</small><h3 data-i18n="signalTitle">Useful enough to adopt. Rigorous enough to depend on.</h3></div><a href="#principles" aria-label="Our principles">↓</a></div>
         </div>
-        <div class="capability-grid">
-          <article class="capability" data-reveal><span class="capability-no">1</span><h3>Open internet</h3><p>Lightweight network tools that make local systems easier to connect, expose, and understand.</p></article>
-          <article class="capability" data-reveal><span class="capability-no">2</span><h3>Machine intelligence</h3><p>Interfaces that explore how people can work, think, and create alongside multiple AI systems.</p></article>
-          <article class="capability" data-reveal><span class="capability-no">3</span><h3>Developer experience</h3><p>Focused utilities that remove friction from the command line and everyday software workflows.</p></article>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section work-section" id="work">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <div><p class="eyebrow">Project archive</p><h2>Things we have released into the wild.</h2></div>
-          <p class="section-intro">Not concepts. Not pitch decks. These are working experiments built to answer a concrete question and available for anyone curious enough to try them.</p>
+      <section class="section" id="work">
+        <div class="container">
+          <p class="stamp" data-i18n="workStamp" data-reveal>Selected work</p>
+          <div class="section-lead" data-reveal><h2 data-i18n-html="workTitle">Working products, <em>not theatre.</em></h2><p data-i18n="workIntro">Each project is a focused answer to a real technical constraint. We release, observe, and improve what earns its place in the world.</p></div>
+          <div class="project-list">
+            <a class="project" href="https://nexacaptcha.zone.id/" target="_blank" rel="noopener noreferrer" data-reveal><span class="index">01</span><h3>NexaCAPTCHA</h3><p data-i18n="project1">Motion-based human verification that remains effortless for people while raising the cost of automation.</p><span class="project-arrow">↗</span></a>
+            <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="index">02</span><h3>WebTNX</h3><p data-i18n="project2">Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.</p><span class="project-arrow">↗</span></a>
+            <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="index">03</span><h3>EtherKing</h3><p data-i18n="project3">A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.</p><span class="project-arrow">↗</span></a>
+            <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal><span class="index">04</span><h3>NXLAB Console</h3><p data-i18n="project4">A command-line toolkit that turns repetitive development work into clear, dependable workflows.</p><span class="project-arrow">↗</span></a>
+            <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="index">05</span><h3>TraveLegand</h3><p data-i18n="project5">A practical travel companion designed to make better decisions when time and context are limited.</p><span class="project-arrow">↗</span></a>
+          </div>
         </div>
-        <div class="project-list">
-          <a class="project" href="https://nexacaptcha.zone.id/" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">01</span><h3>NexaCAPTCHA</h3><p>Motion-based human verification designed to stay fast for people while making automated solving substantially more expensive.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="https://webtnx.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">02</span><h3>WebTNX</h3><p>Stable, lightweight HTTP tunneling for connecting local services to the open web.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="https://etherking.zone.id" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">03</span><h3>EtherKing</h3><p>A multi-model AI space for exploring different intelligences in one conversation.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="https://nxlab.nett.to" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">04</span><h3>NXLAB Console</h3><p>A command-line toolkit built to make repetitive developer work disappear.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="project-index">05</span><h3>TraveLegand</h3><p>A practical travel companion for making faster decisions while moving through the world.</p><span class="project-arrow" aria-hidden="true">-&gt;</span></a>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section" id="process">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <div><p class="eyebrow">Experiment protocol</p><h2>Question everything. Ship something.</h2></div>
-          <p class="section-intro">Our process is deliberately simple: investigate an interesting edge, build the smallest honest version, then learn from what happens outside the lab.</p>
+      <section class="section" id="principles">
+        <div class="container">
+          <p class="stamp" data-i18n="principlesStamp" data-reveal>Operating principles</p>
+          <div class="section-lead" data-reveal><h2 data-i18n-html="principlesTitle">Independent in thought. <em>Exact in execution.</em></h2><p data-i18n="principlesIntro">We are a compact team by design. Senior attention stays close to the work, decisions stay legible, and quality never becomes someone else's responsibility.</p></div>
+          <div class="principle-grid">
+            <article class="principle" data-reveal><strong>01 / CLARITY</strong><div><h3 data-i18n="principle1Title">Define the real problem</h3><p data-i18n="principle1Copy">We remove assumptions before we add technology.</p></div></article>
+            <article class="principle" data-reveal><strong>02 / CRAFT</strong><div><h3 data-i18n="principle2Title">Build beyond the demo</h3><p data-i18n="principle2Copy">The edge cases are part of the product, not a later phase.</p></div></article>
+            <article class="principle" data-reveal><strong>03 / TRUST</strong><div><h3 data-i18n="principle3Title">Make systems explainable</h3><p data-i18n="principle3Copy">People should understand what a system does and why.</p></div></article>
+            <article class="principle" data-reveal><strong>04 / MOMENTUM</strong><div><h3 data-i18n="principle4Title">Release, learn, refine</h3><p data-i18n="principle4Copy">Evidence from use is more valuable than certainty in a room.</p></div></article>
+          </div>
         </div>
-        <div class="process-grid">
-          <article class="process-step" data-reveal><div class="step-meta"><span>01</span><span>Observe</span></div><h3>Find the friction.</h3><p>We look for technical problems people have accepted for too long and ask whether they can be made simpler.</p></article>
-          <article class="process-step" data-reveal><div class="step-meta"><span>02</span><span>Prototype</span></div><h3>Make it real.</h3><p>We learn through code, assembling focused experiments that expose both the potential and the limits of an idea.</p></article>
-          <article class="process-step" data-reveal><div class="step-meta"><span>03</span><span>Release</span></div><h3>Open the loop.</h3><p>We put useful work into the world, observe how it behaves, and keep evolving what earns a reason to exist.</p></article>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section" id="company">
-      <div class="container about-grid" data-reveal>
-        <div class="about-copy"><p class="eyebrow">NeuralNexusLab / NXLAB</p><h2>Independent by nature. Connected by curiosity.</h2><p>We are a technology lab from Taiwan. We build across networking, artificial intelligence, security, and developer tooling because the most interesting ideas rarely stay inside one category.</p></div>
-        <div class="principles">
-          <div class="principle"><strong>01</strong><span>Build before explaining</span></div>
-          <div class="principle"><strong>02</strong><span>Useful beats impressive</span></div>
-          <div class="principle"><strong>03</strong><span>Security is part of craft</span></div>
-          <div class="principle"><strong>04</strong><span>Curiosity has no roadmap</span></div>
+      <section class="contact" id="contact">
+        <div class="container">
+          <div class="contact-panel" data-reveal>
+            <p class="eyebrow" data-i18n="contactEyebrow">Open channel / New collaborations</p>
+            <h2 data-i18n-html="contactTitle">Have a difficult idea? <em>Bring it into focus.</em></h2>
+            <a class="button primary" href="mailto:mail@nxlab.zone.id" data-i18n="contactButton">Start a conversation</a>
+            <div class="contact-meta"><a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a><span>23.6978° N / 120.9605° E</span><span data-i18n="contactMeta">Taiwan / Available worldwide</span></div>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="contact-section" id="contact">
-      <div class="container">
-        <div class="contact-card" data-reveal>
-          <p class="eyebrow">Open channel</p>
-          <h2>Found something interesting? Send a signal.</h2>
-          <a class="button" href="mailto:mail@nxlab.zone.id">Contact the lab</a>
-          <div class="contact-details"><a href="mailto:mail@nxlab.zone.id">mail@nxlab.zone.id</a><a href="mailto:neuralnexuslab@hotmail.com">neuralnexuslab@hotmail.com</a><span>23.6978 N / 120.9605 E</span></div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
-  <footer>
-    <div class="container footer-wrap"><span>(c) <span id="year"></span> NeuralNexusLab.</span><span>OPEN INTERNET / AI / DEVELOPER TOOLS</span></div>
-  </footer>
+  <footer><div class="container footer-wrap"><span>© <span id="year"></span> NeuralNexusLab</span><span class="footer-coordinate" data-i18n="footer">FLY DIRECT / BUILD WITH PURPOSE / TAIWAN</span></div></footer>
 
   <script>
-    const menuButton = document.querySelector(".menu-toggle");
-    const navigation = document.querySelector(".nav-links");
-    const languageSelect = document.getElementById("language-select");
-
-    function closeMenu() {
-      menuButton.setAttribute("aria-expanded", "false");
-      menuButton.setAttribute("aria-label", currentLanguage === "zh-TW" ? "開啟導覽選單" : currentLanguage === "ja" ? "ナビゲーションを開く" : "Open navigation");
-      navigation.classList.remove("open");
-      document.body.classList.remove("menu-open");
-    }
-
-    menuButton.addEventListener("click", () => {
-      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-      menuButton.setAttribute("aria-expanded", String(!isOpen));
-      menuButton.setAttribute("aria-label", isOpen
-        ? (currentLanguage === "zh-TW" ? "開啟導覽選單" : currentLanguage === "ja" ? "ナビゲーションを開く" : "Open navigation")
-        : (currentLanguage === "zh-TW" ? "關閉導覽選單" : currentLanguage === "ja" ? "ナビゲーションを閉じる" : "Close navigation"));
-      navigation.classList.toggle("open", !isOpen);
-      document.body.classList.toggle("menu-open", !isOpen);
-    });
-
-    navigation.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 900) closeMenu();
-    });
-
     const translations = {
       en: {
-        title: "NeuralNexusLab — Independent technology lab",
-        description: "NeuralNexusLab is an independent technology lab from Taiwan creating internet infrastructure, AI experiences, and developer tools.",
-        ogDescription: "Experimental tools for the open internet, human–AI interaction, and developer workflows.",
-        text: [
-          [".skip-link", "Skip to content"],
-          [".nav-links a:nth-child(1)", "The Lab"],
-          [".nav-links a:nth-child(2)", "Projects"],
-          [".nav-links a:nth-child(3)", "Process"],
-          [".nav-links a:nth-child(4)", "About"],
-          [".nav-action", "Enter the lab"],
-          [".hero .eyebrow", "Independent technology lab / Taiwan"],
-          [".hero h1", 'We build for the <span class="gradient-text glitch-text" data-text="curious.">curious.</span>'],
-          [".hero-copy", "NeuralNexusLab is a small independent lab creating internet infrastructure, AI experiences, and developer tools. We explore ideas by turning them into working products."],
-          [".actions .primary", "Explore our projects"],
-          [".actions .secondary", "About the lab"],
-          [".panel-head > span:first-child", "Lab network / live map"],
-          [".panel-head .live", "Online"],
-          [".service-node:nth-child(1) .node-label", "Security / 01"],
-          [".service-node:nth-child(2) .node-label", "Network / 02"],
-          [".service-node:nth-child(3) .node-label", "Intelligence / 03"],
-          [".service-node:nth-child(4) .node-label", "Developer / 04"],
-          [".service-node:nth-child(1) .status", "Online"],
-          [".service-node:nth-child(2) .status", "Online"],
-          [".service-node:nth-child(3) .status", "Online"],
-          [".service-node:nth-child(4) .status", "Active"],
-          [".trust-item:nth-child(1) .trust-label", "Signal"],
-          [".trust-item:nth-child(1) .trust-value", "Ideas should become usable things."],
-          [".trust-item:nth-child(2) .trust-label", "01 / Network"],
-          [".trust-item:nth-child(2) .trust-value", "Open internet tools"],
-          [".trust-item:nth-child(3) .trust-label", "02 / Intelligence"],
-          [".trust-item:nth-child(3) .trust-value", "Human-AI interaction"],
-          [".trust-item:nth-child(4) .trust-label", "03 / Origin"],
-          [".trust-item:nth-child(4) .trust-value", "Taiwan"],
-          ["#lab .section-header .eyebrow", "Inside the lab"],
-          ["#lab .section-header h2", "Three territories. One endless experiment."],
-          ["#lab .section-intro", "We follow technical curiosity across boundaries. Every project begins with a question, becomes a prototype, and stays only if it proves useful in the real world."],
-          [".capability:nth-child(1) h3", "Open internet"],
-          [".capability:nth-child(1) p", "Lightweight network tools that make local systems easier to connect, expose, and understand."],
-          [".capability:nth-child(2) h3", "Machine intelligence"],
-          [".capability:nth-child(2) p", "Interfaces that explore how people can work, think, and create alongside multiple AI systems."],
-          [".capability:nth-child(3) h3", "Developer experience"],
-          [".capability:nth-child(3) p", "Focused utilities that remove friction from the command line and everyday software workflows."],
-          ["#work .section-header .eyebrow", "Project archive"],
-          ["#work .section-header h2", "Things we have released into the wild."],
-          ["#work .section-intro", "Not concepts. Not pitch decks. These are working experiments built to answer a concrete question and available for anyone curious enough to try them."],
-          [".project:nth-child(1) p", "Motion-based human verification designed to stay fast for people while making automated solving substantially more expensive."],
-          [".project:nth-child(2) p", "Stable, lightweight HTTP tunneling for connecting local services to the open web."],
-          [".project:nth-child(3) p", "A multi-model AI space for exploring different intelligences in one conversation."],
-          [".project:nth-child(4) p", "A command-line toolkit built to make repetitive developer work disappear."],
-          [".project:nth-child(5) p", "A practical travel companion for making faster decisions while moving through the world."],
-          ["#process .section-header .eyebrow", "Experiment protocol"],
-          ["#process .section-header h2", "Question everything. Ship something."],
-          ["#process .section-intro", "Our process is deliberately simple: investigate an interesting edge, build the smallest honest version, then learn from what happens outside the lab."],
-          [".process-step:nth-child(1) .step-meta span:last-child", "Observe"],
-          [".process-step:nth-child(1) h3", "Find the friction."],
-          [".process-step:nth-child(1) p", "We look for technical problems people have accepted for too long and ask whether they can be made simpler."],
-          [".process-step:nth-child(2) .step-meta span:last-child", "Prototype"],
-          [".process-step:nth-child(2) h3", "Make it real."],
-          [".process-step:nth-child(2) p", "We learn through code, assembling focused experiments that expose both the potential and the limits of an idea."],
-          [".process-step:nth-child(3) .step-meta span:last-child", "Release"],
-          [".process-step:nth-child(3) h3", "Open the loop."],
-          [".process-step:nth-child(3) p", "We put useful work into the world, observe how it behaves, and keep evolving what earns a reason to exist."],
-          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
-          [".about-copy h2", "Independent by nature. Connected by curiosity."],
-          [".about-copy p", "We are a technology lab from Taiwan. We build across networking, artificial intelligence, security, and developer tooling because the most interesting ideas rarely stay inside one category."],
-          [".principle:nth-child(1) span", "Build before explaining"],
-          [".principle:nth-child(2) span", "Useful beats impressive"],
-          [".principle:nth-child(3) span", "Security is part of craft"],
-          [".principle:nth-child(4) span", "Curiosity has no roadmap"],
-          [".contact-card .eyebrow", "Open channel"],
-          [".contact-card h2", "Found something interesting? Send a signal."],
-          [".contact-card .button", "Contact the lab"],
-          [".footer-wrap > span:last-child", "OPEN INTERNET / AI / DEVELOPER TOOLS"]
-        ]
+        title: "NeuralNexusLab — Engineering beyond the expected", description: "NeuralNexusLab is an independent engineering studio in Taiwan building dependable internet infrastructure, applied AI systems, and developer tools.",
+        skip: "Skip to content", navExpertise: "Expertise", navWork: "Selected work", navPrinciples: "Principles", navContact: "Contact", navAction: "Start a conversation",
+        heroEyebrow: "Independent engineering studio / Taiwan / 10,000 M", heroLine: "We engineer", heroEm: "above the expected.", heroCopy: "NeuralNexusLab turns ambitious ideas into dependable systems—across internet infrastructure, applied AI, security, and developer experience.", heroPrimary: "Explore selected work", heroSecondary: "Meet the lab",
+        flightLabel: "Engineering flight / NXL-01", flightStatus: "Operational", flightTitle: "From hard questions to systems people can trust.", metaAltitude: "Altitude", metaFocus: "Focus", metaOrigin: "Origin",
+        stripSignal: "Signal", stripSignalValue: "Precision over noise.", stripNetwork: "01 / Network", stripNetworkValue: "Open by design", stripIntelligence: "02 / Intelligence", stripIntelligenceValue: "Applied with purpose", stripOrigin: "03 / Origin", stripOriginValue: "Taiwan, built for the world",
+        expertiseStamp: "Core systems", expertiseTitle: "Engineering that holds up <em>in the real world.</em>", expertiseIntro: "We combine research discipline with product judgment. Every engagement is shaped around measurable utility, responsible architecture, and a clear path from prototype to operation.", cap1Title: "Internet infrastructure", cap1Copy: "Resilient networking tools and delivery layers that make services easier to connect, expose, and operate.", cap2Title: "Applied intelligence", cap2Copy: "Purpose-built AI experiences that augment judgment, make complexity legible, and respect human control.", cap3Title: "Security engineering", cap3Copy: "Security designed into the system from its first boundary—not added after the product is already exposed.", cap4Title: "Developer experience", cap4Copy: "Focused interfaces and automation that reduce friction without hiding the mechanics engineers need to trust.", capStatus: "Production minded", signalLabel: "The NeuralNexus standard", signalTitle: "Useful enough to adopt. Rigorous enough to depend on.",
+        workStamp: "Selected work", workTitle: "Working products, <em>not theatre.</em>", workIntro: "Each project is a focused answer to a real technical constraint. We release, observe, and improve what earns its place in the world.", project1: "Motion-based human verification that remains effortless for people while raising the cost of automation.", project2: "Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.", project3: "A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.", project4: "A command-line toolkit that turns repetitive development work into clear, dependable workflows.", project5: "A practical travel companion designed to make better decisions when time and context are limited.",
+        principlesStamp: "Operating principles", principlesTitle: "Independent in thought. <em>Exact in execution.</em>", principlesIntro: "We are a compact team by design. Senior attention stays close to the work, decisions stay legible, and quality never becomes someone else's responsibility.", principle1Title: "Define the real problem", principle1Copy: "We remove assumptions before we add technology.", principle2Title: "Build beyond the demo", principle2Copy: "The edge cases are part of the product, not a later phase.", principle3Title: "Make systems explainable", principle3Copy: "People should understand what a system does and why.", principle4Title: "Release, learn, refine", principle4Copy: "Evidence from use is more valuable than certainty in a room.",
+        contactEyebrow: "Open channel / New collaborations", contactTitle: "Have a difficult idea? <em>Bring it into focus.</em>", contactButton: "Start a conversation", contactMeta: "Taiwan / Available worldwide", footer: "FLY DIRECT / BUILD WITH PURPOSE / TAIWAN"
       },
       "zh-TW": {
-        title: "NeuralNexusLab — 獨立科技實驗室",
-        description: "NeuralNexusLab 是來自台灣的獨立科技實驗室，專注打造網際網路基礎設施、AI 體驗與開發者工具。",
-        ogDescription: "探索開放網際網路、人機 AI 互動與開發者工作流程的實驗性工具。",
-        text: [
-          [".skip-link", "跳到主要內容"],
-          [".nav-links a:nth-child(1)", "實驗室"],
-          [".nav-links a:nth-child(2)", "專案"],
-          [".nav-links a:nth-child(3)", "流程"],
-          [".nav-links a:nth-child(4)", "關於"],
-          [".nav-action", "進入實驗室"],
-          [".hero .eyebrow", "獨立科技實驗室 / 台灣"],
-          [".hero h1", '我們為<span class="gradient-text glitch-text" data-text="好奇的人。">好奇的人。</span>而打造。'],
-          [".hero-copy", "NeuralNexusLab 是一間小型獨立實驗室，打造網際網路基礎設施、AI 體驗與開發者工具。我們透過把想法做成真正可運作的產品來探索它們。"],
-          [".actions .primary", "探索我們的專案"],
-          [".actions .secondary", "關於實驗室"],
-          [".panel-head > span:first-child", "實驗室網路 / 即時地圖"],
-          [".panel-head .live", "線上"],
-          [".service-node:nth-child(1) .node-label", "安全 / 01"],
-          [".service-node:nth-child(2) .node-label", "網路 / 02"],
-          [".service-node:nth-child(3) .node-label", "智慧 / 03"],
-          [".service-node:nth-child(4) .node-label", "開發者 / 04"],
-          [".service-node:nth-child(1) .status", "線上"],
-          [".service-node:nth-child(2) .status", "線上"],
-          [".service-node:nth-child(3) .status", "線上"],
-          [".service-node:nth-child(4) .status", "運作中"],
-          [".trust-item:nth-child(1) .trust-label", "訊號"],
-          [".trust-item:nth-child(1) .trust-value", "想法應該成為真正可用的東西。"],
-          [".trust-item:nth-child(2) .trust-label", "01 / 網路"],
-          [".trust-item:nth-child(2) .trust-value", "開放網際網路工具"],
-          [".trust-item:nth-child(3) .trust-label", "02 / 智慧"],
-          [".trust-item:nth-child(3) .trust-value", "人類與 AI 互動"],
-          [".trust-item:nth-child(4) .trust-label", "03 / 起源"],
-          [".trust-item:nth-child(4) .trust-value", "台灣"],
-          ["#lab .section-header .eyebrow", "實驗室內部"],
-          ["#lab .section-header h2", "三個領域。一場沒有終點的實驗。"],
-          ["#lab .section-intro", "我們讓技術好奇心跨越領域。每個專案都從一個問題開始，成為原型，並且只有在真實世界證明有用後才留下來。"],
-          [".capability:nth-child(1) h3", "開放網際網路"],
-          [".capability:nth-child(1) p", "輕量化網路工具，讓本地系統更容易連線、公開與理解。"],
-          [".capability:nth-child(2) h3", "機器智慧"],
-          [".capability:nth-child(2) p", "探索人們如何與多種 AI 系統一起工作、思考與創作的介面。"],
-          [".capability:nth-child(3) h3", "開發者體驗"],
-          [".capability:nth-child(3) p", "專注的實用工具，減少命令列與日常軟體工作流程中的阻力。"],
-          ["#work .section-header .eyebrow", "專案檔案庫"],
-          ["#work .section-header h2", "我們已經放進真實世界的東西。"],
-          ["#work .section-intro", "不是概念，也不是簡報。這些是為了回答具體問題而打造、真正可運作的實驗，任何夠好奇的人都能親自試試。"],
-          [".project:nth-child(1) p", "以動態機制進行人類驗證，讓真人保持快速操作，同時大幅提高自動化解題的成本。"],
-          [".project:nth-child(2) p", "穩定、輕量的 HTTP 隧道，讓本地服務連接到開放網路。"],
-          [".project:nth-child(3) p", "多模型 AI 空間，讓不同智慧在同一場對話中被探索。"],
-          [".project:nth-child(4) p", "命令列工具組，讓重複性的開發工作直接消失。"],
-          [".project:nth-child(5) p", "實用的旅遊助手，幫助你在移動途中更快做出決定。"],
-          ["#process .section-header .eyebrow", "實驗協定"],
-          ["#process .section-header h2", "質疑一切。然後做出東西。"],
-          ["#process .section-intro", "我們的流程刻意保持簡單：研究有趣的邊界、做出最小但誠實的版本，再從實驗室之外真正發生的事情中學習。"],
-          [".process-step:nth-child(1) .step-meta span:last-child", "觀察"],
-          [".process-step:nth-child(1) h3", "找到摩擦點。"],
-          [".process-step:nth-child(1) p", "我們尋找那些人們已經忍受太久的技術問題，並問它們是否能變得更簡單。"],
-          [".process-step:nth-child(2) .step-meta span:last-child", "原型"],
-          [".process-step:nth-child(2) h3", "把它做出來。"],
-          [".process-step:nth-child(2) p", "我們透過程式碼學習，組裝聚焦的實驗，同時揭露一個想法的潛力與限制。"],
-          [".process-step:nth-child(3) .step-meta span:last-child", "發布"],
-          [".process-step:nth-child(3) h3", "打開回饋迴路。"],
-          [".process-step:nth-child(3) p", "我們把有用的成果放進世界，觀察它如何運作，並持續演化那些值得存在的東西。"],
-          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
-          [".about-copy h2", "天生獨立。因好奇而相連。"],
-          [".about-copy p", "我們是來自台灣的科技實驗室。我們橫跨網路、人工智慧、安全與開發者工具，因為最有趣的想法很少乖乖待在單一分類裡。"],
-          [".principle:nth-child(1) span", "先做，再解釋"],
-          [".principle:nth-child(2) span", "有用勝過看起來厲害"],
-          [".principle:nth-child(3) span", "安全是工藝的一部分"],
-          [".principle:nth-child(4) span", "好奇心沒有路線圖"],
-          [".contact-card .eyebrow", "開放頻道"],
-          [".contact-card h2", "發現有趣的東西？傳個訊號過來。"],
-          [".contact-card .button", "聯絡實驗室"],
-          [".footer-wrap > span:last-child", "開放網際網路 / AI / 開發者工具"]
-        ]
+        title: "NeuralNexusLab — 超越預期的工程實力", description: "NeuralNexusLab 是來自台灣的獨立工程團隊，打造可靠的網路基礎設施、應用型 AI 系統與開發者工具。",
+        skip: "跳到主要內容", navExpertise: "專業領域", navWork: "精選作品", navPrinciples: "核心原則", navContact: "聯絡我們", navAction: "開啟合作對話",
+        heroEyebrow: "獨立工程團隊 / 台灣 / 高度 10,000 公尺", heroLine: "我們打造", heroEm: "超越預期的系統。", heroCopy: "NeuralNexusLab 將具野心的構想，轉化為值得信賴的產品與系統——橫跨網路基礎設施、應用型 AI、資安與開發者體驗。", heroPrimary: "探索精選作品", heroSecondary: "認識團隊",
+        flightLabel: "工程航班 / NXL-01", flightStatus: "運作中", flightTitle: "從高難度問題，走向真正值得信賴的系統。", metaAltitude: "高度", metaFocus: "任務", metaOrigin: "起點",
+        stripSignal: "訊號", stripSignalValue: "精準，勝過雜訊。", stripNetwork: "01 / 網路", stripNetworkValue: "以開放為設計起點", stripIntelligence: "02 / 智慧", stripIntelligenceValue: "為真實目的而應用", stripOrigin: "03 / 起點", stripOriginValue: "立足台灣，面向世界",
+        expertiseStamp: "核心系統", expertiseTitle: "經得起<em>真實世界考驗</em>的工程。", expertiseIntro: "我們結合研究紀律與產品判斷。每次合作都以可衡量的價值、負責任的架構，以及從原型走向穩定運作的清楚路徑為核心。", cap1Title: "網路基礎設施", cap1Copy: "打造具韌性的網路工具與傳輸層，讓服務更容易連線、發布與維運。", cap2Title: "應用型人工智慧", cap2Copy: "以明確目的打造 AI 體驗，增強判斷、釐清複雜資訊，同時保留人的控制權。", cap3Title: "資安工程", cap3Copy: "從系統的第一道邊界開始設計安全，而不是等產品暴露後才補上防護。", cap4Title: "開發者體驗", cap4Copy: "用聚焦的介面與自動化降低摩擦，同時保留工程師需要理解與信任的運作機制。", capStatus: "以正式環境為標準", signalLabel: "NeuralNexus 標準", signalTitle: "實用到值得採用，嚴謹到可以依賴。",
+        workStamp: "精選作品", workTitle: "真正運作的產品，<em>不是表演。</em>", workIntro: "每個專案都是對真實技術限制的精準回答。我們發布、觀察，並持續改進那些在世界上證明自己價值的成果。", project1: "以動態操作進行人類驗證，對真人保持直覺，同時提高自動化解題的成本。", project2: "輕量化 HTTP 通道，減少將本地服務帶上開放網路時的維運摩擦。", project3: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", project4: "將重複開發工作整理成清楚、可靠流程的命令列工具組。", project5: "在時間與資訊有限時，協助旅人做出更好決策的實用夥伴。",
+        principlesStamp: "行動原則", principlesTitle: "思考獨立，<em>執行精準。</em>", principlesIntro: "我們刻意維持精實團隊。資深成員始終貼近實作、每個決策都清楚可追溯，而品質從來不是別人的責任。", principle1Title: "定義真正的問題", principle1Copy: "在加入技術之前，先移除未經驗證的假設。", principle2Title: "打造超越展示的成果", principle2Copy: "邊界情境本來就是產品的一部分，不是未來再處理。", principle3Title: "讓系統可以被理解", principle3Copy: "人們應該知道系統做了什麼，以及為什麼這樣做。", principle4Title: "發布、學習、精進", principle4Copy: "來自真實使用的證據，勝過會議室裡的確定感。",
+        contactEyebrow: "開放頻道 / 新合作", contactTitle: "有一個困難的想法？<em>讓我們一起聚焦。</em>", contactButton: "開啟合作對話", contactMeta: "台灣 / 全球合作", footer: "直達目標 / 為目的而打造 / 台灣"
       },
       ja: {
-        title: "NeuralNexusLab — 独立系テクノロジーラボ",
-        description: "NeuralNexusLab は台湾発の独立系テクノロジーラボです。インターネット基盤、AI 体験、開発者向けツールを開発しています。",
-        ogDescription: "オープンインターネット、人間と AI の協働、開発者ワークフローを探究する実験的なツール。",
-        text: [
-          [".skip-link", "メインコンテンツへ"],
-          [".nav-links a:nth-child(1)", "ラボ"],
-          [".nav-links a:nth-child(2)", "プロジェクト"],
-          [".nav-links a:nth-child(3)", "プロセス"],
-          [".nav-links a:nth-child(4)", "概要"],
-          [".nav-action", "ラボに入る"],
-          [".hero .eyebrow", "独立系テクノロジーラボ / 台湾"],
-          [".hero h1", '私たちは<span class="gradient-text glitch-text" data-text="好奇心ある人へ。">好奇心ある人へ。</span>つくる。'],
-          [".hero-copy", "NeuralNexusLab は、インターネット基盤、AI 体験、開発者向けツールをつくる小さな独立系ラボです。アイデアを実際に動くプロダクトへ変えることで探究します。"],
-          [".actions .primary", "プロジェクトを見る"],
-          [".actions .secondary", "ラボについて"],
-          [".panel-head > span:first-child", "ラボネットワーク / ライブマップ"],
-          [".panel-head .live", "オンライン"],
-          [".service-node:nth-child(1) .node-label", "セキュリティ / 01"],
-          [".service-node:nth-child(2) .node-label", "ネットワーク / 02"],
-          [".service-node:nth-child(3) .node-label", "インテリジェンス / 03"],
-          [".service-node:nth-child(4) .node-label", "開発者 / 04"],
-          [".service-node:nth-child(1) .status", "オンライン"],
-          [".service-node:nth-child(2) .status", "オンライン"],
-          [".service-node:nth-child(3) .status", "オンライン"],
-          [".service-node:nth-child(4) .status", "稼働中"],
-          [".trust-item:nth-child(1) .trust-label", "シグナル"],
-          [".trust-item:nth-child(1) .trust-value", "アイデアは使えるものになるべきだ。"],
-          [".trust-item:nth-child(2) .trust-label", "01 / ネットワーク"],
-          [".trust-item:nth-child(2) .trust-value", "オープンインターネットツール"],
-          [".trust-item:nth-child(3) .trust-label", "02 / インテリジェンス"],
-          [".trust-item:nth-child(3) .trust-value", "人間と AI のインタラクション"],
-          [".trust-item:nth-child(4) .trust-label", "03 / Origin"],
-          [".trust-item:nth-child(4) .trust-value", "台湾"],
-          ["#lab .section-header .eyebrow", "ラボの内側"],
-          ["#lab .section-header h2", "3つの領域。終わりのない1つの実験。"],
-          ["#lab .section-intro", "私たちは技術的な好奇心を境界の外まで追いかけます。すべてのプロジェクトは問いから始まり、プロトタイプになり、現実世界で役立つと証明されたものだけが残ります。"],
-          [".capability:nth-child(1) h3", "オープンインターネット"],
-          [".capability:nth-child(1) p", "ローカルシステムをより簡単につなぎ、公開し、理解するための軽量なネットワークツール。"],
-          [".capability:nth-child(2) h3", "マシンインテリジェンス"],
-          [".capability:nth-child(2) p", "複数の AI システムと人がどのように働き、考え、創造できるかを探るインターフェース。"],
-          [".capability:nth-child(3) h3", "開発者体験"],
-          [".capability:nth-child(3) p", "コマンドラインや日々のソフトウェア開発から摩擦を減らす、目的を絞ったユーティリティ。"],
-          ["#work .section-header .eyebrow", "プロジェクトアーカイブ"],
-          ["#work .section-header h2", "私たちが世界へ放ったもの。"],
-          ["#work .section-intro", "コンセプトでもピッチ資料でもありません。具体的な問いに答えるためにつくった、実際に動く実験です。興味があれば誰でも試せます。"],
-          [".project:nth-child(1) p", "人には素早く解ける操作感を保ちながら、自動化された解答のコストを大幅に高める動的な人間認証。"],
-          [".project:nth-child(2) p", "ローカルサービスをオープンウェブへ接続する、安定した軽量 HTTP トンネリング。"],
-          [".project:nth-child(3) p", "1つの会話の中で異なる知性を探れる、マルチモデル AI スペース。"],
-          [".project:nth-child(4) p", "反復的な開発作業を消していくためにつくられたコマンドラインツールキット。"],
-          [".project:nth-child(5) p", "移動中の意思決定をより速くするための実用的な旅行コンパニオン。"],
-          ["#process .section-header .eyebrow", "実験プロトコル"],
-          ["#process .section-header h2", "すべてを疑う。何かを出す。"],
-          ["#process .section-intro", "私たちのプロセスは意図的にシンプルです。面白い境界を調べ、最小限で誠実な形をつくり、ラボの外で起きることから学びます。"],
-          [".process-step:nth-child(1) .step-meta span:last-child", "観察"],
-          [".process-step:nth-child(1) h3", "摩擦を見つける。"],
-          [".process-step:nth-child(1) p", "人々が長く受け入れてしまっている技術的な問題を探し、もっと単純にできないかを考えます。"],
-          [".process-step:nth-child(2) .step-meta span:last-child", "試作"],
-          [".process-step:nth-child(2) h3", "現実にする。"],
-          [".process-step:nth-child(2) p", "コードを通じて学び、アイデアの可能性と限界の両方を明らかにする、焦点を絞った実験を組み立てます。"],
-          [".process-step:nth-child(3) .step-meta span:last-child", "公開"],
-          [".process-step:nth-child(3) h3", "ループを開く。"],
-          [".process-step:nth-child(3) p", "役立つものを世界へ出し、その振る舞いを観察し、存在する理由を得たものを進化させ続けます。"],
-          [".about-copy .eyebrow", "NeuralNexusLab / NXLAB"],
-          [".about-copy h2", "本質は独立。好奇心でつながる。"],
-          [".about-copy p", "私たちは台湾発のテクノロジーラボです。ネットワーク、人工知能、セキュリティ、開発者向けツールを横断してつくります。最も面白いアイデアは、たいてい1つのカテゴリーには収まらないからです。"],
-          [".principle:nth-child(1) span", "説明する前につくる"],
-          [".principle:nth-child(2) span", "見栄えより実用性"],
-          [".principle:nth-child(3) span", "セキュリティも技術の一部"],
-          [".principle:nth-child(4) span", "好奇心にロードマップはない"],
-          [".contact-card .eyebrow", "オープンチャンネル"],
-          [".contact-card h2", "面白いものを見つけた？ シグナルを送ってください。"],
-          [".contact-card .button", "ラボに連絡"],
-          [".footer-wrap > span:last-child", "OPEN INTERNET / AI / DEVELOPER TOOLS"]
-        ]
+        title: "NeuralNexusLab — 期待を超えるエンジニアリング", description: "NeuralNexusLabは台湾発の独立系エンジニアリングスタジオです。信頼できるインターネット基盤、応用AI、開発者ツールを構築します。",
+        skip: "メインコンテンツへ", navExpertise: "専門領域", navWork: "プロジェクト", navPrinciples: "原則", navContact: "お問い合わせ", navAction: "相談を始める",
+        heroEyebrow: "独立系エンジニアリングスタジオ / 台湾 / 高度10,000M", heroLine: "私たちは", heroEm: "期待の先を実装する。", heroCopy: "NeuralNexusLabは、大胆な構想を信頼できるシステムへ。インターネット基盤、応用AI、セキュリティ、開発者体験を横断して設計します。", heroPrimary: "プロジェクトを見る", heroSecondary: "ラボについて",
+        flightLabel: "エンジニアリング便 / NXL-01", flightStatus: "稼働中", flightTitle: "難しい問いから、人が信頼できるシステムへ。", metaAltitude: "高度", metaFocus: "目的", metaOrigin: "拠点",
+        stripSignal: "シグナル", stripSignalValue: "ノイズより精度。", stripNetwork: "01 / ネットワーク", stripNetworkValue: "オープンを前提に設計", stripIntelligence: "02 / インテリジェンス", stripIntelligenceValue: "目的のために応用", stripOrigin: "03 / 拠点", stripOriginValue: "台湾から世界へ",
+        expertiseStamp: "Core systems", expertiseTitle: "現実世界で<em>耐えうる設計。</em>", expertiseIntro: "研究の規律とプロダクト判断を両立し、測定可能な価値、責任あるアーキテクチャ、試作から運用までの明確な道筋を設計します。", cap1Title: "インターネット基盤", cap1Copy: "接続・公開・運用をシンプルにする、堅牢なネットワークツールと配信レイヤー。", cap2Title: "応用AI", cap2Copy: "判断を支え、複雑さを可視化し、人のコントロールを尊重するAI体験。", cap3Title: "セキュリティ設計", cap3Copy: "公開後に追加するのではなく、最初の境界からセキュリティを設計。", cap4Title: "開発者体験", cap4Copy: "信頼に必要な仕組みを隠さず、摩擦を減らすインターフェースと自動化。", capStatus: "運用品質", signalLabel: "NeuralNexus standard", signalTitle: "採用に値する実用性。依存できる堅牢性。",
+        workStamp: "Selected work", workTitle: "動くプロダクト。<em>演出ではない。</em>", workIntro: "各プロジェクトは現実の技術制約に対する明確な答えです。公開し、観察し、価値を証明したものを改善し続けます。", project1: "人には直感的でありながら、自動化のコストを高めるモーション型認証。", project2: "ローカルサービスを少ない運用負荷でオープンウェブへつなぐHTTPトンネリング。", project3: "複数モデルの視点を比較し、ひとつの空間で知性を探索するAI環境。", project4: "反復的な開発作業を、明快で信頼できるフローへ変えるCLIツールキット。", project5: "時間と情報が限られる旅先で、より良い意思決定を支える実用的なコンパニオン。",
+        principlesStamp: "Operating principles", principlesTitle: "思考は独立。<em>実行は緻密。</em>", principlesIntro: "意図的に小さなチームを保ち、シニアメンバーが実装に近い位置で判断します。意思決定は明瞭に、品質は全員の責任として扱います。", principle1Title: "本当の課題を定義する", principle1Copy: "技術を足す前に、前提を取り除く。", principle2Title: "デモの先までつくる", principle2Copy: "エッジケースも最初からプロダクトの一部。", principle3Title: "理解できるシステムに", principle3Copy: "何を、なぜ行うかを人が理解できる設計に。", principle4Title: "公開し、学び、磨く", principle4Copy: "実利用から得る証拠は、会議室の確信より価値がある。",
+        contactEyebrow: "Open channel / New collaborations", contactTitle: "難しいアイデアを、<em>明確な形へ。</em>", contactButton: "相談を始める", contactMeta: "台湾 / 世界各地に対応", footer: "FLY DIRECT / BUILD WITH PURPOSE / TAIWAN"
       }
     };
 
+    const navigation = document.querySelector(".nav-links");
+    const menuButton = document.querySelector(".menu-toggle");
+    const languageSelect = document.getElementById("language-select");
     let currentLanguage = localStorage.getItem("nxlab-language") || "en";
     if (!translations[currentLanguage]) currentLanguage = "en";
 
+    function closeMenu() { menuButton.setAttribute("aria-expanded", "false"); navigation.classList.remove("open"); document.body.classList.remove("menu-open"); }
+    menuButton.addEventListener("click", () => { const open = menuButton.getAttribute("aria-expanded") !== "true"; menuButton.setAttribute("aria-expanded", String(open)); navigation.classList.toggle("open", open); document.body.classList.toggle("menu-open", open); });
+    navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+
     function applyLanguage(language) {
-      const pack = translations[language];
-      currentLanguage = language;
-      document.documentElement.lang = language;
-      document.title = pack.title;
-      document.querySelector('meta[name="description"]').setAttribute("content", pack.description);
-      document.querySelector('meta[property="og:title"]').setAttribute("content", pack.title);
-      document.querySelector('meta[property="og:description"]').setAttribute("content", pack.ogDescription);
-
-      pack.text.forEach(([selector, value]) => {
-        const element = document.querySelector(selector);
-        if (!element) return;
-        if (selector === ".hero h1") {
-          element.innerHTML = value;
-        } else {
-          element.textContent = value;
-        }
-      });
-
-      document.querySelector(".brand").setAttribute("aria-label",
-        language === "zh-TW" ? "NeuralNexusLab 首頁" :
-        language === "ja" ? "NeuralNexusLab ホーム" :
-        "NeuralNexusLab home"
-      );
-      navigation.setAttribute("aria-label",
-        language === "zh-TW" ? "主要導覽" :
-        language === "ja" ? "メインナビゲーション" :
-        "Main navigation"
-      );
-      languageSelect.setAttribute("aria-label",
-        language === "zh-TW" ? "語言" :
-        language === "ja" ? "言語" :
-        "Language"
-      );
-      document.querySelector(".system-panel").setAttribute("aria-label",
-        language === "zh-TW" ? "NeuralNexusLab 專案網路示意圖" :
-        language === "ja" ? "NeuralNexusLab プロジェクトネットワーク図" :
-        "NeuralNexusLab project network illustration"
-      );
-      document.querySelector(".trust-strip").setAttribute("aria-label",
-        language === "zh-TW" ? "實驗室座標" :
-        language === "ja" ? "ラボ座標" :
-        "Lab coordinates"
-      );
-
-      closeMenu();
-      languageSelect.value = language;
-      localStorage.setItem("nxlab-language", language);
+      const pack = translations[language]; currentLanguage = language; document.documentElement.lang = language; document.title = pack.title;
+      document.querySelector('meta[name="description"]').content = pack.description;
+      document.querySelectorAll("[data-i18n]").forEach(el => { const value = pack[el.dataset.i18n]; if (value) el.textContent = value; });
+      document.querySelectorAll("[data-i18n-html]").forEach(el => { const value = pack[el.dataset.i18nHtml]; if (value) el.innerHTML = value; });
+      languageSelect.value = language; localStorage.setItem("nxlab-language", language); closeMenu();
     }
+    languageSelect.addEventListener("change", e => applyLanguage(e.target.value)); applyLanguage(currentLanguage);
 
-    languageSelect.addEventListener("change", (event) => applyLanguage(event.target.value));
-    applyLanguage(currentLanguage);
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = document.querySelectorAll("[data-reveal]");
-    if (reducedMotion || !("IntersectionObserver" in window)) {
-      revealItems.forEach((item) => item.classList.add("visible"));
-    } else {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-      revealItems.forEach((item) => observer.observe(item));
-    }
-
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reveals = document.querySelectorAll("[data-reveal]");
+    if (reducedMotion || !("IntersectionObserver" in window)) reveals.forEach(el => el.classList.add("visible"));
+    else { const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); } }), { threshold: .12 }); reveals.forEach(el => observer.observe(el)); }
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Procedural high-altitude atmosphere: WebGL ray-marched cloud deck with wind-driven depth.
+    (() => {
+      const canvas = document.getElementById("sky");
+      const gl = canvas.getContext("webgl", { alpha: false, antialias: false, powerPreference: "high-performance" });
+      if (!gl) return;
+      const vertex = `attribute vec2 p; void main(){gl_Position=vec4(p,0.,1.);}`;
+      const fragment = `precision highp float;
+        uniform vec2 r; uniform float t;
+        float h(vec3 p){p=fract(p*.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}
+        float n(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z);}
+        float fbm(vec3 p){float v=0.,a=.52;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec3(7.1,2.7,5.3);a*=.5;}return v;}
+        void main(){vec2 uv=(gl_FragCoord.xy*2.-r)/r.y; vec3 rd=normalize(vec3(uv.x,uv.y-.04,1.18));
+          float sun=max(dot(rd,normalize(vec3(.72,.35,.6))),0.); vec3 sky=mix(vec3(.18,.48,.75),vec3(.58,.82,.96),max(rd.y,0.)); sky+=vec3(1.,.82,.55)*pow(sun,420.)*1.8+vec3(1.,.72,.42)*pow(sun,18.)*.18;
+          vec4 sum=vec4(0.); float tm=t*.018; float start=max(0.,(-.38)/min(rd.y,-.035));
+          for(int i=0;i<34;i++){float d=start+float(i)*.075;vec3 p=rd*d*1.9+vec3(tm,0.,tm*.28);float layer=smoothstep(.34,.02,abs(p.y+.38));float den=smoothstep(.49,.72,fbm(p*1.35))*layer;den*=.16;vec3 lit=mix(vec3(.34,.43,.55),vec3(1.,.96,.88),clamp(.35+p.y+sun*.8,0.,1.));sum.rgb+=(1.-sum.a)*lit*den;sum.a+=(1.-sum.a)*den;}
+          vec3 col=mix(sky,sum.rgb+sky*(1.-sum.a),sum.a*.95);col=mix(col,vec3(.72,.86,.97),pow(max(0.,1.-abs(rd.y)*5.),3.)*.25);gl_FragColor=vec4(pow(col,vec3(.92)),1.);}`;
+      function shader(type, source) { const s=gl.createShader(type); gl.shaderSource(s,source); gl.compileShader(s); return s; }
+      const program=gl.createProgram(); gl.attachShader(program,shader(gl.VERTEX_SHADER,vertex)); gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragment)); gl.linkProgram(program); gl.useProgram(program);
+      const buffer=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buffer); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+      const pos=gl.getAttribLocation(program,"p"); gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+      const res=gl.getUniformLocation(program,"r"), time=gl.getUniformLocation(program,"t"); let start=performance.now();
+      function resize(){const scale=Math.min(devicePixelRatio,1.15)*.72,w=Math.floor(innerWidth*scale),hgt=Math.floor(innerHeight*scale);if(canvas.width!==w||canvas.height!==hgt){canvas.width=w;canvas.height=hgt;gl.viewport(0,0,w,hgt);}}
+      function frame(now){resize();gl.uniform2f(res,canvas.width,canvas.height);gl.uniform1f(time,reducedMotion?0:(now-start)/1000);gl.drawArrays(gl.TRIANGLES,0,6);if(!reducedMotion)requestAnimationFrame(frame);}
+      requestAnimationFrame(frame);
+    })();
   </script>
 </body>
 </html>
