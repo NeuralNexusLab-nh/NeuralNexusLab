@@ -11,7 +11,7 @@
   <title>NeuralNexusLab — Engineering beyond the expected</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Oxanium:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500&family=Oxanium:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --void: #090909;
@@ -95,7 +95,7 @@
       align-items: center;
       gap: 28px;
     }
-    .brand { display: inline-flex; align-items: center; gap: 11px; width: fit-content; text-decoration: none; font-weight: 500; letter-spacing: -.03em; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; width: fit-content; min-width: max-content; text-decoration: none; font-weight: 500; letter-spacing: -.03em; }
     .brand-mark { position: relative; width: 18px; height: 18px; border: 1px solid var(--paper); transform: rotate(45deg); }
     .brand-mark::before { content: ""; position: absolute; inset: 5px; background: var(--electric); box-shadow: 0 0 20px 5px rgba(22,135,255,.72); animation: beacon 2.8s ease-in-out infinite; }
     .nav-links { display: flex; gap: 30px; }
@@ -149,15 +149,15 @@
     .section { position: relative; padding: 140px 0; }
     .stamp { margin: 0 0 84px; overflow-wrap: anywhere; color: var(--soft); font-family: var(--mono); font-size: clamp(32px,6vw,74px); font-weight: 400; line-height: .95; letter-spacing: .16em; text-transform: uppercase; }
     .section-lead { display: grid; grid-template-columns: .8fr 1.2fr; gap: 60px; margin-bottom: 74px; }
-    .section-lead h2 { max-width: 580px; margin: 0; font-size: clamp(38px,5vw,64px); font-weight: 300; line-height: 1; letter-spacing: -.05em; }
+    .section-lead h2 { max-width: 580px; margin: 0; font-size: clamp(38px,5vw,64px); font-weight: 300; line-height: 1.05; letter-spacing: -.045em; text-wrap: balance; }
     .section-lead h2 em { font-family: var(--display); font-style: normal; font-weight: 400; }
     .section-lead p { max-width: 550px; margin: 4px 0 0 auto; color: var(--steel); font-size: 18px; font-weight: 300; }
 
     .capability-list { border-top: 1px solid var(--line); }
-    .capability { display: grid; grid-template-columns: 80px .75fr 1.25fr auto; gap: 30px; align-items: start; padding: 34px 0; border-bottom: 1px solid var(--line-soft); }
+    .capability { display: grid; grid-template-columns: 80px .75fr 1.25fr auto; gap: 30px; align-items: start; padding: 38px 0; border-bottom: 1px solid var(--line-soft); }
     .index { color: var(--ice); font-family: var(--mono); font-size: 11px; }
     .capability h3 { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: -.03em; }
-    .capability p { max-width: 560px; margin: 0; color: var(--steel); }
+    .capability p { max-width: 560px; margin: 0; color: var(--steel); line-height: 1.7; }
     .status-pill { padding: 7px 11px; color: var(--paper); background: rgba(247,249,250,.08); border: 1px solid var(--line); border-radius: 99px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 
     .signal-card { margin-top: 86px; padding: 42px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; background: var(--electric); border-radius: var(--radius); overflow: hidden; }
@@ -172,7 +172,7 @@
     .project:hover::before { transform: none; }
     .project h3, .project p, .project span { position: relative; }
     .project h3 { margin: 0; font-size: 26px; font-weight: 400; letter-spacing: -.03em; }
-    .project p { margin: 0; color: var(--steel); }
+    .project p { margin: 0; color: var(--steel); line-height: 1.7; }
     .project-arrow { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
 
     .principle-grid { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
@@ -183,7 +183,7 @@
 
     .contact { padding: 140px 0 70px; }
     .contact-panel { padding: clamp(38px,7vw,84px); background: rgba(247,249,250,.045); border: 1px solid var(--line); border-radius: var(--radius); }
-    .contact-panel h2 { max-width: 850px; margin-bottom: 36px; font-size: clamp(48px,7vw,88px); font-weight: 300; line-height: .88; letter-spacing: -.055em; }
+    .contact-panel h2 { max-width: 850px; margin-bottom: 40px; font-size: clamp(48px,7vw,88px); font-weight: 300; line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
     .contact-panel h2 em { font-family: var(--display); font-style: normal; font-weight: 400; }
     .contact-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 28px; margin-top: 70px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--steel); font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
     .contact-meta a { text-decoration: none; }
@@ -195,6 +195,15 @@
     [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
     [data-reveal].visible { opacity: 1; transform: none; }
     @keyframes beacon { 50% { opacity: .45; transform: scale(.7); } }
+
+    html:lang(zh-TW) body { font-family: "Chakra Petch", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif; }
+    html:lang(ja) body { font-family: "Chakra Petch", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif; }
+    html:lang(zh-TW) h1, html:lang(ja) h1 { font-size: clamp(62px, 8vw, 104px); line-height: 1.02; letter-spacing: -.035em; }
+    html:lang(zh-TW) h1 em, html:lang(ja) h1 em { margin-left: .08em; letter-spacing: -.025em; }
+    html:lang(zh-TW) .flight-card h2, html:lang(ja) .flight-card h2 { line-height: 1.2; letter-spacing: -.025em; }
+    html:lang(zh-TW) .stamp, html:lang(ja) .stamp { letter-spacing: .1em; }
+    html:lang(zh-TW) .section-lead h2, html:lang(ja) .section-lead h2 { font-size: clamp(38px, 4.4vw, 56px); line-height: 1.18; letter-spacing: -.025em; }
+    html:lang(zh-TW) .contact-panel h2, html:lang(ja) .contact-panel h2 { font-size: clamp(48px, 6vw, 72px); line-height: 1.12; letter-spacing: -.03em; }
 
     @media (max-width: 900px) {
       .container { width: min(calc(100% - 32px), var(--max)); }
@@ -226,18 +235,30 @@
     }
     @media (max-width: 560px) {
       .brand span:last-child { font-size: 14px; }
-      .language-select { width: 74px; }
+      .language-select { width: 84px; }
       .hero { padding-bottom: 40px; }
       h1 { line-height: .82; }
       .flight-card { padding: 26px; }
       .flight-head { margin-bottom: 38px; }
       .altitude-grid { grid-template-columns: 1fr; }
       .altitude-item { border-right: 0; }
-      .capability, .project { grid-template-columns: 38px 1fr auto; gap: 18px; }
+      .capability { grid-template-columns: 1fr auto; gap: 16px 12px; padding: 30px 0 34px; }
+      .capability .index { grid-column: 1; grid-row: 1; }
+      .capability .status-pill { grid-column: 2; grid-row: 1; }
+      .capability h3 { grid-column: 1 / -1; grid-row: 2; }
+      .capability p { grid-column: 1 / -1; grid-row: 3; }
+      .project { grid-template-columns: 1fr auto; gap: 16px 12px; padding: 30px 0; }
+      .project .index { grid-column: 1; grid-row: 1; }
+      .project .project-arrow { grid-column: 2; grid-row: 1; }
+      .project h3 { grid-column: 1 / -1; grid-row: 2; }
+      .project p { grid-column: 1 / -1; grid-row: 3; }
       .signal-card { grid-template-columns: 1fr; padding: 30px; }
       .principle-grid { grid-template-columns: 1fr; }
-      .principle { min-height: 240px; }
+      .principle { min-height: 218px; padding: 28px; }
       .footer-wrap { flex-direction: column; }
+      html:lang(zh-TW) h1, html:lang(ja) h1 { font-size: clamp(52px, 14vw, 62px); line-height: 1.05; }
+      html:lang(zh-TW) .section-lead h2, html:lang(ja) .section-lead h2 { font-size: 36px; line-height: 1.24; }
+      html:lang(zh-TW) .contact-panel h2, html:lang(ja) .contact-panel h2 { font-size: 42px; line-height: 1.18; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -379,12 +400,12 @@
         title: "NeuralNexusLab — 超越預期的工程實力", description: "NeuralNexusLab 是來自台灣的獨立工程團隊，打造可靠的網路基礎設施、應用型 AI 系統與開發者工具。",
         skip: "跳到主要內容", navExpertise: "專業領域", navWork: "精選作品", navPrinciples: "核心原則", navContact: "聯絡我們", navAction: "開啟合作對話",
         heroEyebrow: "獨立工程團隊 / 台灣 / 低地球軌道", heroLine: "我們打造", heroEm: "超越預期的系統。", heroCopy: "NeuralNexusLab 將具野心的構想，轉化為值得信賴的產品與系統——橫跨網路基礎設施、應用型 AI、資安與開發者體驗。", heroPrimary: "探索精選作品", heroSecondary: "認識團隊",
-        flightLabel: "工程航班 / NXL-01", flightStatus: "運作中", flightTitle: "從高難度問題，走向真正值得信賴的系統。", metaAltitude: "軌道", metaFocus: "任務", metaOrigin: "起點",
+        flightLabel: "工程航班 / NXL-01", flightStatus: "運作中", flightTitle: "把困難問題，做成可靠系統。", metaAltitude: "軌道", metaFocus: "任務", metaOrigin: "起點",
         stripSignal: "訊號", stripSignalValue: "精準，勝過雜訊。", stripNetwork: "01 / 網路", stripNetworkValue: "以開放為設計起點", stripIntelligence: "02 / 智慧", stripIntelligenceValue: "為真實目的而應用", stripOrigin: "03 / 起點", stripOriginValue: "立足台灣，面向世界",
-        expertiseStamp: "核心系統", expertiseTitle: "經得起<em>真實世界考驗</em>的工程。", expertiseIntro: "我們結合研究紀律與產品判斷。每次合作都以可衡量的價值、負責任的架構，以及從原型走向穩定運作的清楚路徑為核心。", cap1Title: "網路基礎設施", cap1Copy: "打造具韌性的網路工具與傳輸層，讓服務更容易連線、發布與維運。", cap2Title: "應用型人工智慧", cap2Copy: "以明確目的打造 AI 體驗，增強判斷、釐清複雜資訊，同時保留人的控制權。", cap3Title: "資安工程", cap3Copy: "從系統的第一道邊界開始設計安全，而不是等產品暴露後才補上防護。", cap4Title: "開發者體驗", cap4Copy: "用聚焦的介面與自動化降低摩擦，同時保留工程師需要理解與信任的運作機制。", capStatus: "以正式環境為標準", signalLabel: "NeuralNexus 標準", signalTitle: "實用到值得採用，嚴謹到可以依賴。",
-        workStamp: "精選作品", workTitle: "真正運作的產品，<em>不是表演。</em>", workIntro: "每個專案都是對真實技術限制的精準回答。我們發布、觀察，並持續改進那些在世界上證明自己價值的成果。", project1: "以動態操作進行人類驗證，對真人保持直覺，同時提高自動化解題的成本。", project2: "輕量化 HTTP 通道，減少將本地服務帶上開放網路時的維運摩擦。", project3: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", project4: "將重複開發工作整理成清楚、可靠流程的命令列工具組。", project5: "在時間與資訊有限時，協助旅人做出更好決策的實用夥伴。",
-        principlesStamp: "行動原則", principlesTitle: "思考獨立，<em>執行精準。</em>", principlesIntro: "我們刻意維持精實團隊。資深成員始終貼近實作、每個決策都清楚可追溯，而品質從來不是別人的責任。", principle1Title: "定義真正的問題", principle1Copy: "在加入技術之前，先移除未經驗證的假設。", principle2Title: "打造超越展示的成果", principle2Copy: "邊界情境本來就是產品的一部分，不是未來再處理。", principle3Title: "讓系統可以被理解", principle3Copy: "人們應該知道系統做了什麼，以及為什麼這樣做。", principle4Title: "發布、學習、精進", principle4Copy: "來自真實使用的證據，勝過會議室裡的確定感。",
-        contactEyebrow: "開放頻道 / 新合作", contactTitle: "有一個困難的想法？<em>讓我們一起聚焦。</em>", contactButton: "開啟合作對話", contactMeta: "台灣 / 全球合作", footer: "直達目標 / 為目的而打造 / 台灣"
+        expertiseStamp: "核心系統", expertiseTitle: "讓工程經得起<em>真實世界。</em>", expertiseIntro: "我們結合研究紀律與產品判斷。每次合作都以可衡量的價值、負責任的架構，以及從原型走向穩定運作的清楚路徑為核心。", cap1Title: "網路基礎設施", cap1Copy: "打造具韌性的網路工具與傳輸層，讓服務更容易連線、發布與維運。", cap2Title: "應用型人工智慧", cap2Copy: "以明確目的打造 AI 體驗，增強判斷、釐清複雜資訊，同時保留人的控制權。", cap3Title: "資安工程", cap3Copy: "從系統的第一道邊界開始設計安全，而不是等產品暴露後才補上防護。", cap4Title: "開發者體驗", cap4Copy: "用聚焦的介面與自動化降低摩擦，同時保留工程師需要理解與信任的運作機制。", capStatus: "正式環境標準", signalLabel: "NeuralNexus 標準", signalTitle: "實用到值得採用，嚴謹到可以依賴。",
+        workStamp: "精選作品", workTitle: "交付可靠成果，<em>不做表面文章。</em>", workIntro: "每個專案都是對真實技術限制的精準回答。我們發布、觀察，並持續改進那些在世界上證明自己價值的成果。", project1: "以動態操作進行人類驗證，對真人保持直覺，同時提高自動化解題的成本。", project2: "輕量化 HTTP 通道，減少將本地服務帶上開放網路時的維運摩擦。", project3: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", project4: "將重複開發工作整理成清楚、可靠流程的命令列工具組。", project5: "在時間與資訊有限時，協助旅人做出更好決策的實用夥伴。",
+        principlesStamp: "行動原則", principlesTitle: "獨立思考，<em>精準執行。</em>", principlesIntro: "我們刻意維持精實團隊。資深成員始終貼近實作、每個決策都清楚可追溯，而品質從來不是別人的責任。", principle1Title: "定義真正的問題", principle1Copy: "在加入技術之前，先移除未經驗證的假設。", principle2Title: "打造超越展示的成果", principle2Copy: "邊界情境本來就是產品的一部分，不是未來再處理。", principle3Title: "讓系統可以被理解", principle3Copy: "人們應該知道系統做了什麼，以及為什麼這樣做。", principle4Title: "發布、學習、精進", principle4Copy: "來自真實使用的證據，勝過會議室裡的確定感。",
+        contactEyebrow: "開放頻道 / 新合作", contactTitle: "把複雜問題，<em>做成可靠成果。</em>", contactButton: "開始合作", contactMeta: "台灣 / 全球合作", footer: "直達目標 / 為目的而打造 / 台灣"
       },
       ja: {
         title: "NeuralNexusLab — 期待を超えるエンジニアリング", description: "NeuralNexusLabは台湾発の独立系エンジニアリングスタジオです。信頼できるインターネット基盤、応用AI、開発者ツールを構築します。",
