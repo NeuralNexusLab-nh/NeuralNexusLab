@@ -1,5 +1,4 @@
-Robots.txt for NeuralNexusLab's official website.
+User-agent: *
+Allow: /
 
-Disallow: *
-
-By NeuralNexusLab.
+Sitemap: https://nxlabtw.com/sitemap.xml
