@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nxlabtw.com/">
   <meta property="og:site_name" content="NeuralNexusLab">
-  <meta property="og:image" content="https://nxlabtw.com/assets/nx-ai-mark.png">
+  <meta property="og:image" content="https://nxlabtw.com/assets/nx-logo-imagegen.png">
   <meta property="og:image:width" content="1254">
   <meta property="og:image:height" content="1254">
   <meta property="og:image:alt" content="NeuralNexusLab angular NX technology mark">
@@ -22,11 +22,12 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="NeuralNexusLab (NXLab) — Web Development & Security Testing">
   <meta name="twitter:description" content="A Taiwan-based technology team building websites, testing web security, and creating practical software products.">
-  <meta name="twitter:image" content="https://nxlabtw.com/assets/nx-ai-mark.png">
+  <meta name="twitter:image" content="https://nxlabtw.com/assets/nx-logo-imagegen.png">
   <meta name="twitter:image:alt" content="NeuralNexusLab angular NX technology mark">
   <title>NeuralNexusLab (NXLab) — Web Development & Security Testing</title>
   <link rel="canonical" href="https://nxlabtw.com/">
-  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/nx-logo-imagegen.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/nx-logo-imagegen.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&family=Oxanium:wght@400;500;600&display=swap" rel="stylesheet">
@@ -48,9 +49,9 @@
         "description": "A Taiwan-based technology team specializing in website development, web application security testing, and practical software products.",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://nxlabtw.com/logo.svg",
-          "width": 512,
-          "height": 512
+          "url": "https://nxlabtw.com/assets/nx-logo-imagegen.png",
+          "width": 1254,
+          "height": 1254
         },
         "knowsAbout": [
           "Website development",
@@ -156,9 +157,7 @@
     .site-header.scrolled { background: rgba(2,5,10,.84); border-color: var(--line-dark); backdrop-filter: blur(18px); }
     .nav-shell { width: var(--page); height: 100%; margin-inline: auto; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 28px; }
     .brand { display: inline-flex; align-items: center; gap: 12px; width: fit-content; text-decoration: none; font-family: var(--display); font-size: 14px; font-weight: 600; letter-spacing: -.02em; }
-    .nx-mark { width: 34px; height: 34px; overflow: visible; flex: 0 0 auto; }
-    .nx-mark path { fill: none; stroke: currentColor; stroke-width: 7; stroke-linecap: square; stroke-linejoin: bevel; }
-    .nx-mark .shared { stroke: var(--electric); }
+    .nx-mark { display: block; width: 38px; height: 38px; object-fit: contain; flex: 0 0 auto; }
     .nav-links { display: flex; align-items: center; gap: clamp(18px,2.4vw,36px); }
     .nav-links a { position: relative; color: rgba(255,255,255,.68); text-decoration: none; font-family: var(--mono); font-size: 10px; letter-spacing: .11em; text-transform: uppercase; transition: color .2s; }
     .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -9px; height: 2px; background: var(--electric); transition: right .25s; }
@@ -436,8 +435,8 @@
     .network { min-height: auto; color: var(--white); background: #04101b; padding: 96px 0 88px; }
     .network::before { width: auto; height: auto; right: -4%; top: -4%; border: 0; transform: translate3d(calc(var(--section-shift,0) * 2vw),0,0) scale(1.06); opacity: .34; }
     .network::after { width: 34vw; height: 34vw; right: -17vw; bottom: -19vw; border-color: rgba(88,220,255,.15); }
-    .network-title { margin-bottom: 48px; }
-    .network-title .display-title { font-size: clamp(44px,7vw,104px); }
+    .network-title { margin-bottom: 38px; }
+    .network-title .display-title { font-size: clamp(38px,4.6vw,70px); }
     .network-list { border-color: var(--line-dark); background: rgba(2,8,15,.38); }
     .network-link { grid-template-columns: 48px 1fr auto 28px; min-height: 96px; color: var(--white); border-color: var(--line-dark); }
     .network-link:hover, .network-link:focus-visible { color: var(--white); background: rgba(36,140,255,.13); padding-inline: 14px; }
@@ -455,14 +454,14 @@
       top: 3%;
       width: min(46vw,620px);
       aspect-ratio: 1;
-      background: url("/assets/nx-ai-mark.png") center / contain no-repeat;
+      background: url("/assets/nx-logo-imagegen.png") center / contain no-repeat;
       opacity: .08;
       mix-blend-mode: screen;
       animation: mark-float 9s ease-in-out infinite alternate;
       pointer-events: none;
     }
-    .contact-title { margin-bottom: 52px; }
-    .contact-title .display-title { font-size: clamp(44px,7vw,104px); white-space: normal; transform: none; }
+    .contact-title { margin-bottom: 38px; }
+    .contact-title .display-title { font-size: clamp(38px,4.6vw,70px); white-space: normal; transform: none; }
     .email-list { border-color: var(--line-dark); background: rgba(2,8,15,.5); }
     .email-link { grid-template-columns: 48px minmax(0,1fr) auto; min-height: 92px; padding: 17px 14px 17px 0; color: var(--white); border-color: var(--line-dark); }
     .email-link:hover, .email-link:focus-visible { color: var(--white); background: rgba(36,140,255,.14); padding-inline: 14px; }
@@ -531,7 +530,7 @@
       .project p { font-size: 12px; }
       .network { padding-bottom: 68px; }
       .network-title { margin-bottom: 34px; }
-      .network-title .display-title, .contact-title .display-title { font-size: clamp(36px,10vw,48px); }
+      .network-title .display-title, .contact-title .display-title { font-size: clamp(30px,8vw,38px); }
       .network-link { min-height: 80px; }
       .network-link strong { font-size: clamp(28px,8.5vw,38px); }
       .contact-title { margin-bottom: 34px; }
@@ -556,11 +555,7 @@
   <header class="site-header" id="site-header">
     <div class="nav-shell">
       <a class="brand" href="#home" aria-label="NeuralNexusLab home">
-        <svg class="nx-mark" viewBox="0 0 64 64" role="img" aria-label="NX logo">
-          <path d="M7 54 20 10M20 10 35 54"/>
-          <path class="shared" d="M35 54 50 9"/>
-          <path d="M39 10 45 27M48 36 55 54"/>
-        </svg>
+        <img class="nx-mark" src="/assets/nx-logo-imagegen.png" width="1254" height="1254" alt="NX">
         <span>NeuralNexusLab</span>
       </a>
       <nav class="nav-links" id="site-nav" aria-label="Main navigation">
@@ -638,7 +633,7 @@
     <section class="network" id="network" data-section="network">
       <div class="page">
         <p class="section-label"><span data-i18n="networkLabel">04 / Official Network</span><span data-i18n="networkSide">Code, security, and open models</span></p>
-        <div class="network-title"><h2 class="display-title" data-reveal data-i18n="networkTitle">Find us.</h2></div>
+        <div class="network-title"><h2 class="display-title" data-reveal data-i18n="networkTitle">Find us</h2></div>
         <div class="network-list">
           <a class="network-link" href="https://github.com/NeuralNexusLab-nh" target="_blank" rel="noopener noreferrer" data-reveal aria-label="NeuralNexusLab on GitHub"><span class="number">01</span><strong>GitHub</strong><span class="handle">@NeuralNexusLab-nh</span><span class="arrow">↗</span></a>
           <a class="network-link" href="https://hackerone.com/neuralnexuslab?type=user" target="_blank" rel="noopener noreferrer" data-reveal aria-label="NeuralNexusLab on HackerOne"><span class="number">02</span><strong>HackerOne</strong><span class="handle">@neuralnexuslab</span><span class="arrow">↗</span></a>
@@ -650,7 +645,7 @@
     <section class="contact" id="contact" data-section="contact">
       <div class="page">
         <p class="section-label"><span data-i18n="contactLabel">05 / Contact</span><span data-i18n="contactSide">Direct lines to NeuralNexusLab</span></p>
-        <div class="contact-title"><h2 class="display-title" data-reveal data-i18n="contactTitle">Contact us.</h2></div>
+        <div class="contact-title"><h2 class="display-title" data-reveal data-i18n="contactTitle">Contact us</h2></div>
         <div class="email-list">
           <a class="email-link" href="mailto:service@nxlabtw.com" data-reveal><span class="number">01</span><strong>service@nxlabtw.com</strong><span class="purpose" data-i18n="servicePurpose">Web & security services ↗</span></a>
           <a class="email-link" href="mailto:mail@nxlabtw.com" data-reveal><span class="number">02</span><strong>mail@nxlabtw.com</strong><span class="purpose" data-i18n="mailPurpose">General inquiries ↗</span></a>
@@ -674,18 +669,18 @@
         heroKicker: "NeuralNexusLab / NXLab / Taiwan", heroLine: "Systems advance,", heroEm: "we build at the edge.", heroIntro: "<strong>NeuralNexusLab (NXLab)</strong> is a technology team from Taiwan.<br>We build websites,<br>test web application security,<br>and create practical software products.", scroll: "Scroll to explore",
         servicesLabel: "02 / Services", servicesSide: "For companies, teams, and organizations", servicesTitle: "Build reliable websites,<br>test them against <span style=\"color:var(--electric)\">real threats.</span>", webTitle: "Website Development", webCopy: "Clear, fast, maintainable websites designed for small companies, independent teams, and organizations ready to establish a serious presence online.", securityTitle: "Web Security Testing", securityCopy: "Web application security assessments and penetration testing that identify exploitable weaknesses before they become real incidents.", serviceCta: "Need a website or security review?",
         projectsLabel: "03 / Projects", projectsSide: "Products built by NeuralNexusLab", projectsTitle: "From ideas,<br>to working products.", projectsCopy: "Six products across AI · personal software · security · internet infrastructure.", projectEtherKing: "A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.", projectAstraNote: "A free online notebook for ideas, reminders, lists, work, study, and essential information across devices.", projectBrowzen: "A fast Windows browser with Chromium rendering, built-in essentials, and browsing data that stays on your device.", projectNexa: "Motion-based human verification designed to stay effortless for people while resisting automation.", projectWebTNX: "Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.", projectTravel: "A practical travel companion for finding useful places nearby when time and context are limited.",
-        networkLabel: "04 / Official Network", networkSide: "Code, security, and open models", networkTitle: "Find us.",
-        contactLabel: "05 / Contact", contactSide: "Direct lines to NeuralNexusLab", contactTitle: "Contact us.", servicePurpose: "Web & security services ↗", mailPurpose: "General inquiries ↗", backupPurpose: "Alternative contact ↗", contactCopy: "Website development and security testing go to the service address.<br>Projects and general inquiries go directly to the lab.", contactLocation: "Taiwan / Available worldwide", footer: "Taiwan / Website Development / Web Security"
+        networkLabel: "04 / Official Network", networkSide: "Code, security, and open models", networkTitle: "Find us",
+        contactLabel: "05 / Contact", contactSide: "Direct lines to NeuralNexusLab", contactTitle: "Contact us", servicePurpose: "Web & security services ↗", mailPurpose: "General inquiries ↗", backupPurpose: "Alternative contact ↗", contactCopy: "Website development and security testing go to the service address.<br>Projects and general inquiries go directly to the lab.", contactLocation: "Taiwan / Available worldwide", footer: "Taiwan / Website Development / Web Security"
       },
       "zh-TW": {
         title: "NeuralNexusLab（NXLab）— 網站開發與 Web 安全測試",
         description: "NeuralNexusLab（NXLab）是來自台灣的技術團隊，專注於網站開發、Web 應用安全測試與實用軟體產品。",
         skip: "跳至主要內容", navHome: "首頁", navServices: "服務", navProjects: "專案", navNetwork: "官方平台", navContact: "聯絡",
-        heroKicker: "NeuralNexusLab / NXLab / 台灣", heroLine: "科技持續向前，", heroEm: "我們打造前沿產品。", heroIntro: "<strong>NeuralNexusLab（NXLab）</strong> 是來自台灣的技術團隊。<br>我們開發網站，<br>測試 Web 應用安全，<br>也打造實用的軟體產品。", scroll: "向下探索",
+        heroKicker: "NeuralNexusLab / NXLab / 台灣", heroLine: "科技持續向前，", heroEm: "我們走在技術的前沿", heroIntro: "<strong>NeuralNexusLab（NXLab）</strong> 是來自台灣的技術團隊。<br>我們開發網站，<br>測試 Web 應用安全，<br>也打造實用的軟體產品。", scroll: "向下探索",
         servicesLabel: "02 / 服務", servicesSide: "提供給公司、團隊與組織", servicesTitle: "打造可靠的網站，<br>驗證<span style=\"color:var(--electric)\">真實的風險。</span>", webTitle: "網站開發", webCopy: "為小型公司、獨立團隊與組織打造清楚、快速且易於長期維護的網站，建立值得信任的線上形象。", securityTitle: "Web 安全測試", securityCopy: "針對網站與 Web 應用進行安全評估及滲透測試，在弱點演變成真實事件之前找出可被利用的風險。", serviceCta: "需要網站或安全測試？",
         projectsLabel: "03 / 專案", projectsSide: "NeuralNexusLab 打造的產品", projectsTitle: "從想法，<br>到真正可用的產品。", projectsCopy: "六個產品橫跨人工智慧 · 個人軟體 · 資安 · 網路基礎設施。", projectEtherKing: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", projectAstraNote: "免費的線上筆記本，適合記錄想法、提醒、清單、工作、學習與常用資料，並可跨裝置接續使用。", projectBrowzen: "採用 Chromium 渲染、內建日常功能的快速 Windows 瀏覽器，瀏覽資料只留在你的裝置。", projectNexa: "以動態操作進行人類驗證，對真人保持直覺，同時抵抗自動化。", projectWebTNX: "輕量化 HTTP 通道，降低將本地服務帶上開放網路時的維運摩擦。", projectTravel: "在時間與資訊有限時，協助旅人尋找附近實用地點的旅行夥伴。",
-        networkLabel: "04 / 官方平台", networkSide: "程式碼、資安與開放模型", networkTitle: "找到我們。",
-        contactLabel: "05 / 聯絡", contactSide: "直接聯絡 NeuralNexusLab", contactTitle: "聯絡我們。", servicePurpose: "網站與安全服務 ↗", mailPurpose: "一般聯絡 ↗", backupPurpose: "備用聯絡方式 ↗", contactCopy: "網站開發與安全測試請寄至服務信箱。<br>專案與一般聯絡請直接寄給實驗室。", contactLocation: "台灣 / 服務全球", footer: "台灣 / 網站開發 / Web 安全"
+        networkLabel: "04 / 官方平台", networkSide: "程式碼、資安與開放模型", networkTitle: "找到我們",
+        contactLabel: "05 / 聯絡", contactSide: "直接聯絡 NeuralNexusLab", contactTitle: "聯絡我們", servicePurpose: "網站與安全服務 ↗", mailPurpose: "一般聯絡 ↗", backupPurpose: "備用聯絡方式 ↗", contactCopy: "網站開發與安全測試請寄至服務信箱。<br>專案與一般聯絡請直接寄給實驗室。", contactLocation: "台灣 / 服務全球", footer: "台灣 / 網站開發 / Web 安全"
       },
       ja: {
         title: "NeuralNexusLab（NXLab）— Web開発とセキュリティテスト",
@@ -694,8 +689,8 @@
         heroKicker: "NeuralNexusLab / NXLab / 台湾", heroLine: "技術は進化する、", heroEm: "先端を形にする。", heroIntro: "<strong>NeuralNexusLab（NXLab）</strong>は台湾発の技術チームです。<br>Webサイトを開発し、<br>Webアプリケーションの安全性を検証し、<br>実用的なソフトウェア製品をつくります。", scroll: "スクロールして探索",
         servicesLabel: "02 / サービス", servicesSide: "企業、チーム、組織のために", servicesTitle: "信頼できるWebサイトをつくり、<br><span style=\"color:var(--electric)\">現実の脅威</span>に備えて検証する。", webTitle: "Webサイト開発", webCopy: "小規模企業、独立チーム、組織のために、明快で高速、長期的に保守できるWebサイトを設計・開発します。", securityTitle: "Webセキュリティテスト", securityCopy: "Webアプリケーションのセキュリティ評価とペネトレーションテストを通じて、脆弱性が実害につながる前にリスクを特定します。", serviceCta: "Webサイトやセキュリティ評価が必要ですか？",
         projectsLabel: "03 / プロジェクト", projectsSide: "NeuralNexusLabがつくる製品", projectsTitle: "アイデアから、<br>使える製品へ。", projectsCopy: "6つの製品はAI・パーソナルソフトウェア・セキュリティ・インターネット基盤にまたがります。", projectEtherKing: "複数モデルの視点を比較し、ひとつの空間で知性を探索するAI環境。", projectAstraNote: "アイデア、リマインダー、リスト、仕事、学習、よく使う情報を端末をまたいで記録できる無料オンラインノート。", projectBrowzen: "Chromiumレンダリングと日常機能を備え、閲覧データを端末内に保つ高速Windowsブラウザ。", projectNexa: "人には直感的でありながら、自動化に強いモーション型認証。", projectWebTNX: "ローカルサービスを少ない運用負荷でオープンウェブへつなぐ軽量HTTPトンネリング。", projectTravel: "時間と情報が限られる旅先で、近くの役立つ場所を探す実用的なコンパニオン。",
-        networkLabel: "04 / 公式ネットワーク", networkSide: "コード、セキュリティ、オープンモデル", networkTitle: "公式チャンネル。",
-        contactLabel: "05 / お問い合わせ", contactSide: "NeuralNexusLabへの直通窓口", contactTitle: "お問い合わせ。", servicePurpose: "Web・セキュリティサービス ↗", mailPurpose: "一般のお問い合わせ ↗", backupPurpose: "予備の連絡先 ↗", contactCopy: "Webサイト開発とセキュリティテストはサービス窓口へ。<br>プロジェクトと一般のお問い合わせはラボへ直接ご連絡ください。", contactLocation: "台湾 / 世界各地に対応", footer: "台湾 / Webサイト開発 / Webセキュリティ"
+        networkLabel: "04 / 公式ネットワーク", networkSide: "コード、セキュリティ、オープンモデル", networkTitle: "公式チャンネル",
+        contactLabel: "05 / お問い合わせ", contactSide: "NeuralNexusLabへの直通窓口", contactTitle: "お問い合わせ", servicePurpose: "Web・セキュリティサービス ↗", mailPurpose: "一般のお問い合わせ ↗", backupPurpose: "予備の連絡先 ↗", contactCopy: "Webサイト開発とセキュリティテストはサービス窓口へ。<br>プロジェクトと一般のお問い合わせはラボへ直接ご連絡ください。", contactLocation: "台湾 / 世界各地に対応", footer: "台湾 / Webサイト開発 / Webセキュリティ"
       }
     };
 
