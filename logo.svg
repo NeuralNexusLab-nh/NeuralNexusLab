@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
   <title id="title">NeuralNexusLab NX monogram</title>
-  <desc id="desc">An angular NX monogram built on a 45-degree grid with a shared blue stroke.</desc>
+  <desc id="desc">An angular NX monogram refined from an AI-generated concept, built on a 45-degree grid with a shared blue stroke.</desc>
   <rect width="512" height="512" fill="#02050a"/>
-  <g fill="none" stroke-width="42" stroke-linecap="square" stroke-linejoin="bevel">
-    <path d="M74 414 190 94 298 414" stroke="#f8f9f7"/>
-    <path d="M298 414 421 78" stroke="#087ef5"/>
-    <path d="M313 87 435 414" stroke="#f8f9f7"/>
+  <g fill="none" stroke-width="44" stroke-linecap="square" stroke-linejoin="bevel">
+    <path d="M68 430 176 78M176 78 296 430" stroke="#edf7ff"/>
+    <path d="M296 430 416 70" stroke="#248cff"/>
+    <path d="M327 80 374 206M395 270 452 430" stroke="#edf7ff"/>
   </g>
 </svg>
