@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">NeuralNexusLab</title>
-  <desc id="desc">A blue beacon inside an angular white frame on a dark background.</desc>
-  <rect width="512" height="512" rx="96" fill="#090909"/>
-  <path d="M256 72 440 256 256 440 72 256Z" fill="none" stroke="#f7f9fa" stroke-width="28"/>
-  <path d="M256 176 336 256 256 336 176 256Z" fill="#1687ff"/>
+  <title id="title">NeuralNexusLab NX monogram</title>
+  <desc id="desc">An angular NX monogram built on a 45-degree grid with a shared blue stroke.</desc>
+  <rect width="512" height="512" fill="#02050a"/>
+  <g fill="none" stroke-width="42" stroke-linecap="square" stroke-linejoin="bevel">
+    <path d="M74 414 190 94 298 414" stroke="#f8f9f7"/>
+    <path d="M298 414 421 78" stroke="#087ef5"/>
+    <path d="M313 87 435 414" stroke="#f8f9f7"/>
+  </g>
 </svg>

@@ -1,0 +1,34 @@
+# NeuralNexusLab (NXLab)
+
+> NeuralNexusLab, also known as NXLab, is a Taiwan-based technology team specializing in website development, web application security testing, and practical software products.
+
+## Official website
+
+- [NeuralNexusLab](https://nxlabtw.com/): Company, services, projects, official profiles, and contact information.
+
+## Services
+
+- Website development for small companies, independent teams, and organizations.
+- Web application security assessments and penetration testing.
+- Service inquiries: service@nxlabtw.com
+
+## Projects
+
+- [EtherKing](https://etherking.nxlabtw.com/): Multi-model AI environment.
+- [AstraNote](https://astranote.nxlabtw.com/): Free online notebook available across devices.
+- [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Privacy-conscious Chromium-based Windows browser.
+- [NexaCAPTCHA](https://nexacaptcha.nxlabtw.com/): Motion-based human verification.
+- [WebTNX](https://webtnx.nxlabtw.com/): Lightweight HTTP tunnelling.
+- [TraveLegend](https://nxlabtw.com/tl.html): Nearby place finder and travel companion.
+
+## Official profiles
+
+- [GitHub](https://github.com/NeuralNexusLab-nh)
+- [HackerOne](https://hackerone.com/neuralnexuslab?type=user)
+- [Ollama](https://ollama.com/NeuralNexusLab)
+
+## Contact
+
+- Services: service@nxlabtw.com
+- General: mail@nxlabtw.com
+- Alternative: neuralnexuslab@hotmail.com
