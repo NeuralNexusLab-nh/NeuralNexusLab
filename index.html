@@ -698,8 +698,43 @@
     const menuButton = document.querySelector(".menu-toggle");
     const languageSelect = document.getElementById("language-select");
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let currentLanguage = localStorage.getItem("nxlab-language") || (navigator.language.startsWith("zh") ? "zh-TW" : navigator.language.startsWith("ja") ? "ja" : "en");
-    if (!translations[currentLanguage]) currentLanguage = "en";
+    const languageStorageKey = "nxlab-language";
+
+    function normalizeLanguage(language) {
+      const tag = String(language || "").trim().replaceAll("_", "-").toLowerCase();
+      if (!tag) return null;
+      if (tag === "zh" || tag.startsWith("zh-")) return "zh-TW";
+      if (tag === "ja" || tag.startsWith("ja-")) return "ja";
+      if (tag === "en" || tag.startsWith("en-")) return "en";
+      return null;
+    }
+
+    function readStoredLanguage() {
+      try {
+        return normalizeLanguage(localStorage.getItem(languageStorageKey));
+      } catch {
+        return null;
+      }
+    }
+
+    function detectBrowserLanguage() {
+      const preferredLanguages = Array.isArray(navigator.languages) ? navigator.languages : [];
+      for (const language of [...preferredLanguages, navigator.language]) {
+        const supportedLanguage = normalizeLanguage(language);
+        if (supportedLanguage) return supportedLanguage;
+      }
+      return "en";
+    }
+
+    function storeLanguage(language) {
+      try {
+        localStorage.setItem(languageStorageKey, language);
+      } catch {
+        // The selected language still works when storage is unavailable.
+      }
+    }
+
+    let currentLanguage = readStoredLanguage() || detectBrowserLanguage();
 
     function closeMenu() {
       menuButton.setAttribute("aria-expanded", "false");
@@ -714,10 +749,11 @@
     });
     navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
 
-    function applyLanguage(language) {
-      const pack = translations[language];
-      currentLanguage = language;
-      document.documentElement.lang = language;
+    function applyLanguage(language, { persist = false } = {}) {
+      const supportedLanguage = normalizeLanguage(language) || "en";
+      const pack = translations[supportedLanguage];
+      currentLanguage = supportedLanguage;
+      document.documentElement.lang = supportedLanguage;
       document.title = pack.title;
       document.querySelector('meta[name="description"]').content = pack.description;
       document.querySelectorAll("[data-i18n]").forEach(element => {
@@ -728,11 +764,11 @@
         const value = pack[element.dataset.i18nHtml];
         if (value) element.innerHTML = value;
       });
-      languageSelect.value = language;
-      localStorage.setItem("nxlab-language", language);
+      languageSelect.value = supportedLanguage;
+      if (persist) storeLanguage(supportedLanguage);
       closeMenu();
     }
-    languageSelect.addEventListener("change", event => applyLanguage(event.target.value));
+    languageSelect.addEventListener("change", event => applyLanguage(event.target.value, { persist: true }));
     applyLanguage(currentLanguage);
 
     const revealElements = document.querySelectorAll("[data-reveal]");
