@@ -1,0 +1,17 @@
+{
+  "name": "neuralnexuslab-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NeuralNexusLab website powered by Express.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
