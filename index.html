@@ -489,15 +489,15 @@
     .donate-copy .display-title { max-width: 480px; font-size: clamp(34px,3.8vw,54px); text-transform: none; }
     .donate-description { max-width: 470px; margin: 18px 0 0; color: var(--muted-dark); font-size: 15px; line-height: 1.65; }
     .donate-panel { display: grid; grid-template-columns: auto minmax(0,1fr); gap: clamp(20px,2.6vw,32px); align-items: center; min-width: 0; padding: 22px; background: rgba(2,8,15,.58); border: 1px solid var(--line-dark); }
-    .donate-qr-shell { justify-self: start; padding: 6px; background: #02050a; border: 1px solid rgba(88,220,255,.28); }
+    .donate-qr-shell { position: relative; justify-self: start; padding: 6px; background: #02050a; border: 1px solid rgba(88,220,255,.28); }
     .bitcoin-qr { width: clamp(150px,13vw,170px); aspect-ratio: 1; overflow: hidden; background: #fff; }
     .bitcoin-qr svg { display: block; width: 100%; height: 100%; background: #fff; shape-rendering: crispEdges; }
+    .bitcoin-qr-logo { position: absolute; top: 50%; left: 50%; display: grid; place-items: center; width: 26px; height: 26px; color: var(--white); background: var(--electric); border: 3px solid #fff; border-radius: 50%; font-family: var(--mono); font-size: 14px; font-weight: 700; line-height: 1; transform: translate(-50%,-50%); pointer-events: none; }
     .donate-details { min-width: 0; }
     .donate-asset-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 22px; }
     .donate-asset { display: inline-flex; align-items: center; gap: 9px; font-family: var(--display); font-size: clamp(22px,2.2vw,30px); font-weight: 500; line-height: 1; }
     .donate-asset .bitcoin-symbol { color: var(--electric); font-family: var(--mono); font-size: .72em; }
-    .donate-chain, .donate-address-label, .donate-meta { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
-    .donate-chain { color: var(--cyan); white-space: nowrap; }
+    .donate-address-label, .donate-meta { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
     .donate-address-label { display: block; margin-bottom: 9px; color: var(--muted-dark); }
     .bitcoin-address-row { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 46px; align-items: center; min-width: 0; min-height: 50px; background: rgba(255,255,255,.025); border: 1px solid var(--line-dark); }
     .bitcoin-address { display: block; min-width: 0; padding: 0 13px; overflow: hidden; color: var(--white); font-family: var(--mono); font-size: clamp(10.5px,1vw,12px); font-style: normal; letter-spacing: -.025em; text-overflow: ellipsis; white-space: nowrap; }
@@ -510,6 +510,9 @@
     .bitcoin-address-row[data-copied="true"] .copy-check { display: block; }
     .copy-feedback { position: absolute; z-index: 2; top: 50%; right: 54px; min-width: max-content; padding: 3px 7px; color: var(--cyan); background: #06101a; border: 1px solid var(--line-dark); font-family: var(--mono); font-size: 9px; letter-spacing: .08em; opacity: 0; transform: translateY(-50%); pointer-events: none; transition: opacity .18s; }
     .bitcoin-address-row[data-copied="true"] .copy-feedback { opacity: 1; }
+    .bitcoin-uri-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 12px; padding: 0 15px; color: var(--white); background: rgba(36,140,255,.13); border: 1px solid rgba(88,220,255,.34); font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; transition: color .2s,background .2s,border-color .2s; }
+    .bitcoin-uri-link:hover { color: var(--white); background: rgba(36,140,255,.24); border-color: var(--cyan); }
+    .bitcoin-uri-link:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
     .donate-network-row { display: flex; justify-content: space-between; gap: 18px; margin-top: 14px; color: var(--muted-dark); font-size: 11px; }
     .donate-meta { color: var(--cyan); white-space: nowrap; }
     footer { background: #02050a; border-top: 1px solid var(--line-dark); }
@@ -720,7 +723,7 @@
 
     <section class="donate" id="donate" data-section="donate" aria-labelledby="donate-title">
       <div class="page">
-        <p class="section-label"><span data-i18n="donateLabel">06 / Donate</span><span data-i18n="donateSide">BTC · MAINNET</span></p>
+        <p class="section-label"><span data-i18n="donateLabel">06 / Donate</span></p>
         <div class="donate-grid">
           <div class="donate-copy">
             <h2 class="display-title" id="donate-title" data-reveal data-i18n="donateTitle">Donate to NeuralNexusLab</h2>
@@ -729,21 +732,22 @@
           <div class="donate-panel" data-reveal>
             <div class="donate-qr-shell">
               <div class="bitcoin-qr" id="bitcoin-qr" role="img" aria-label="Bitcoin donation QR code for NeuralNexusLab" data-i18n-aria-label="donateQrLabel"></div>
+              <span class="bitcoin-qr-logo" aria-hidden="true">₿</span>
             </div>
             <div class="donate-details">
               <div class="donate-asset-row">
                 <strong class="donate-asset"><span class="bitcoin-symbol" aria-hidden="true">₿</span><span data-i18n="donateBitcoin">Bitcoin</span></strong>
-                <span class="donate-chain" data-i18n="donateMeta">BTC · MAINNET</span>
               </div>
               <span class="donate-address-label" data-i18n="donateAddressLabel">Bitcoin Address</span>
               <div class="bitcoin-address-row" id="bitcoin-address-row" data-copied="false">
-                <code class="bitcoin-address" id="bitcoin-address" title="bc1q2kvj29pvkh4uajckcml85jf9k5c03yzmuha55l">bc1q2kvj29pvkh4uajckcml85jf9k5c03yzmuha55l</code>
+                <code class="bitcoin-address" id="bitcoin-address" title="bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm">bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm</code>
                 <span class="copy-feedback" id="copy-feedback" aria-live="polite"></span>
                 <button class="copy-bitcoin" id="copy-bitcoin" type="button" aria-label="Copy Bitcoin address" data-i18n-aria-label="donateCopyLabel">
                   <svg class="copy-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11"></rect><path d="M16 8V5H5v11h3"></path></svg>
                   <svg class="copy-check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
                 </button>
               </div>
+              <a class="bitcoin-uri-link" href="bitcoin:bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm" data-i18n="donateOpenUri">Open in Bitcoin wallet</a>
               <div class="donate-network-row"><span class="donate-meta" data-i18n="donateMeta">BTC · MAINNET</span><span data-i18n="donateNetwork">Bitcoin network only</span></div>
             </div>
           </div>
@@ -768,7 +772,7 @@
         projectsLabel: "03 / Projects", projectsSide: "Products built by NeuralNexusLab", projectsTitle: "From ideas,<br>to working products.", projectsCopy: "Six products across AI · personal software · security · internet infrastructure.", projectEtherKing: "A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.", projectAstraNote: "A free online notebook for ideas, reminders, lists, work, study, and essential information across devices.", projectBrowzen: "A fast Windows browser with Chromium rendering, built-in essentials, and browsing data that stays on your device.", projectNexa: "Motion-based human verification designed to stay effortless for people while resisting automation.", projectWebTNX: "Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.", projectTravel: "A practical travel companion for finding useful places nearby when time and context are limited.",
         networkLabel: "04 / Official Network", networkSide: "Code, security, and open models", networkTitle: "Find us",
         contactLabel: "05 / Contact", contactSide: "Direct lines to NeuralNexusLab", contactTitle: "Contact us", mailPurpose: "General inquiries ↗", backupPurpose: "Alternative contact ↗", contactCopy: "For projects, general questions, or collaboration,<br>contact the lab directly.", contactLocation: "Taiwan / Available worldwide",
-        donateLabel: "06 / Donate", donateSide: "BTC · MAINNET", donateTitle: "Donate to NeuralNexusLab", donateDescription: "If our projects are useful to you, you can support our work with Bitcoin.", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin Address", donateCopyLabel: "Copy Bitcoin address", donateCopied: "Copied", donateNetwork: "Bitcoin network only", donateQrLabel: "Bitcoin donation QR code for NeuralNexusLab", footer: "Taiwan / Website Development / Web Security"
+        donateLabel: "06 / Donate", donateTitle: "Donate to NeuralNexusLab", donateDescription: "If our projects are useful to you, you can support our work with Bitcoin.", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin Address", donateCopyLabel: "Copy Bitcoin address", donateCopied: "Copied", donateOpenUri: "Open in Bitcoin wallet", donateNetwork: "Bitcoin network only", donateQrLabel: "Bitcoin donation QR code for NeuralNexusLab", footer: "Taiwan / Website Development / Web Security"
       },
       "zh-TW": {
         title: "NeuralNexusLab — 網站開發與 Web 安全測試",
@@ -779,7 +783,7 @@
         projectsLabel: "03 / 專案", projectsSide: "NeuralNexusLab 打造的產品", projectsTitle: "從想法，<br>到真正可用的產品。", projectsCopy: "六個產品橫跨人工智慧 · 個人軟體 · 資安 · 網路基礎設施。", projectEtherKing: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", projectAstraNote: "免費的線上筆記本，適合記錄想法、提醒、清單、工作、學習與常用資料，並可跨裝置接續使用。", projectBrowzen: "採用 Chromium 渲染、內建日常功能的快速 Windows 瀏覽器，瀏覽資料只留在你的裝置。", projectNexa: "以動態操作進行人類驗證，對真人保持直覺，同時抵抗自動化。", projectWebTNX: "輕量化 HTTP 通道，降低將本地服務帶上開放網路時的維運摩擦。", projectTravel: "在時間與資訊有限時，協助旅人尋找附近實用地點的旅行夥伴。",
         networkLabel: "04 / 官方平台", networkSide: "程式碼、資安與開放模型", networkTitle: "找到我們",
         contactLabel: "05 / 聯絡", contactSide: "直接聯絡 NeuralNexusLab", contactTitle: "聯絡我們", mailPurpose: "一般聯絡 ↗", backupPurpose: "備用聯絡方式 ↗", contactCopy: "專案、一般詢問或合作聯絡，<br>請直接寄給我們。", contactLocation: "台灣 / 服務全球",
-        donateLabel: "06 / 贊助", donateSide: "BTC · MAINNET", donateTitle: "贊助 NeuralNexusLab", donateDescription: "如果我們的專案對你有幫助，你可以透過 Bitcoin 贊助我們持續開發。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin 地址", donateCopyLabel: "複製 Bitcoin 地址", donateCopied: "已複製", donateNetwork: "僅限 Bitcoin 網路", donateQrLabel: "NeuralNexusLab Bitcoin 贊助 QR Code", footer: "台灣 / 網站開發 / Web 安全"
+        donateLabel: "06 / 贊助", donateTitle: "贊助 NeuralNexusLab", donateDescription: "如果我們的專案對你有幫助，你可以透過 Bitcoin 贊助我們持續開發。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin 地址", donateCopyLabel: "複製 Bitcoin 地址", donateCopied: "已複製", donateOpenUri: "在 Bitcoin 錢包中開啟", donateNetwork: "僅限 Bitcoin 網路", donateQrLabel: "NeuralNexusLab Bitcoin 贊助 QR Code", footer: "台灣 / 網站開發 / Web 安全"
       },
       ja: {
         title: "NeuralNexusLab — Web開発とセキュリティテスト",
@@ -790,7 +794,7 @@
         projectsLabel: "03 / プロジェクト", projectsSide: "NeuralNexusLabがつくる製品", projectsTitle: "アイデアから、<br>使える製品へ。", projectsCopy: "6つの製品はAI・パーソナルソフトウェア・セキュリティ・インターネット基盤にまたがります。", projectEtherKing: "複数モデルの視点を比較し、ひとつの空間で知性を探索するAI環境。", projectAstraNote: "アイデア、リマインダー、リスト、仕事、学習、よく使う情報を端末をまたいで記録できる無料オンラインノート。", projectBrowzen: "Chromiumレンダリングと日常機能を備え、閲覧データを端末内に保つ高速Windowsブラウザ。", projectNexa: "人には直感的でありながら、自動化に強いモーション型認証。", projectWebTNX: "ローカルサービスを少ない運用負荷でオープンウェブへつなぐ軽量HTTPトンネリング。", projectTravel: "時間と情報が限られる旅先で、近くの役立つ場所を探す実用的なコンパニオン。",
         networkLabel: "04 / 公式ネットワーク", networkSide: "コード、セキュリティ、オープンモデル", networkTitle: "公式チャンネル",
         contactLabel: "05 / お問い合わせ", contactSide: "NeuralNexusLabへの直通窓口", contactTitle: "お問い合わせ", mailPurpose: "一般のお問い合わせ ↗", backupPurpose: "予備の連絡先 ↗", contactCopy: "プロジェクト、一般のお問い合わせ、協業のご相談は、<br>ラボへ直接ご連絡ください。", contactLocation: "台湾 / 世界各地に対応",
-        donateLabel: "06 / 寄付", donateSide: "BTC · MAINNET", donateTitle: "NeuralNexusLab に寄付", donateDescription: "私たちのプロジェクトが役に立った場合、Bitcoin で開発を支援できます。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin アドレス", donateCopyLabel: "Bitcoin アドレスをコピー", donateCopied: "コピーしました", donateNetwork: "Bitcoin ネットワークのみ", donateQrLabel: "NeuralNexusLab Bitcoin 寄付用 QR コード", footer: "台湾 / Webサイト開発 / Webセキュリティ"
+        donateLabel: "06 / 寄付", donateTitle: "NeuralNexusLab に寄付", donateDescription: "私たちのプロジェクトが役に立った場合、Bitcoin で開発を支援できます。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin アドレス", donateCopyLabel: "Bitcoin アドレスをコピー", donateCopied: "コピーしました", donateOpenUri: "Bitcoin ウォレットで開く", donateNetwork: "Bitcoin ネットワークのみ", donateQrLabel: "NeuralNexusLab Bitcoin 寄付用 QR コード", footer: "台湾 / Webサイト開発 / Webセキュリティ"
       }
     };
 
@@ -879,11 +883,11 @@
     languageSelect.addEventListener("change", event => applyLanguage(event.target.value, { persist: true }));
     applyLanguage(currentLanguage);
 
-    const bitcoinAddress = "bc1q2kvj29pvkh4uajckcml85jf9k5c03yzmuha55l";
-    const bitcoinUri = "bitcoin:bc1q2kvj29pvkh4uajckcml85jf9k5c03yzmuha55l";
+    const bitcoinAddress = "bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
+    const bitcoinUri = "bitcoin:bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
     const bitcoinQr = document.getElementById("bitcoin-qr");
     if (bitcoinQr && typeof qrcode === "function") {
-      const qr = qrcode(0, "M");
+      const qr = qrcode(0, "H");
       qr.addData(bitcoinUri, "Byte");
       qr.make();
       bitcoinQr.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 16, scalable: true });
