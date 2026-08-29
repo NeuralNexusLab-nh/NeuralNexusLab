@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const fetch = require("node-fetch");
+
 const app = express();
 const port = process.env.PORT || 3000;
 const publicDirectory = path.join(__dirname, "public");
@@ -14,14 +14,31 @@ app.get("/ip", (req, res) => {
   res.send(req.ip);
 });
 
+async function sendIpInfo(ip, res) {
+  if (!process.env.TOKEN) {
+    return res.status(503).json({ error: "TOKEN is not configured" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.ipinfo.io/lite/${encodeURIComponent(ip)}?token=${encodeURIComponent(process.env.TOKEN)}`
+    );
+    const data = await response.json();
+    return res.status(response.status).json(data);
+  } catch (error) {
+    console.error("Failed to fetch IP information:", error.message);
+    return res.status(502).json({ error: "Failed to fetch IP information" });
+  }
+}
+
 app.get("/ipinfo", (req, res) => {
-  fetch(`https://api.ipinfo.io/lite/${req.ip}?token=${process.env.TOKEN}`).then(resp => resp.json()).then(data => res.json(data));
+  sendIpInfo(req.ip, res);
 });
 
 app.get("/ipinfo/:ip", (req, res) => {
-  fetch(`https://api.ipinfo.io/lite/${req.params.ip}?token=${process.env.TOKEN}`).then(resp => resp.json()).then(data => res.json(data));
+  sendIpInfo(req.params.ip, res);
 });
-  
+
 app.get("/api/health", (_request, response) => {
   response.json({ status: "ok", service: "NeuralNexusLab" });
 });
