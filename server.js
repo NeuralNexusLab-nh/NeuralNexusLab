@@ -15,11 +15,11 @@ app.get("/ip", (req, res) => {
 });
 
 app.get("/ipinfo", (req, res) => {
-  fetch(`https://api.ipinfo.io/lite/${req.ip}?token=${process.env.TOKEN}`).then(res => res.json()).then(res.json);
+  fetch(`https://api.ipinfo.io/lite/${req.ip}?token=${process.env.TOKEN}`).then(resp => resp.json()).then(data => res.json(data));
 });
 
 app.get("/ipinfo/:ip", (req, res) => {
-  fetch(`https://api.ipinfo.io/lite/${req.params.ip}?token=${process.env.TOKEN}`).then(res => res.json()).then(res.json);
+  fetch(`https://api.ipinfo.io/lite/${req.params.ip}?token=${process.env.TOKEN}`).then(resp => resp.json()).then(data => res.json(data));
 });
   
 app.get("/api/health", (_request, response) => {
