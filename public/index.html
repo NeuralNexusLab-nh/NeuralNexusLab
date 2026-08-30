@@ -740,14 +740,14 @@
               </div>
               <span class="donate-address-label" data-i18n="donateAddressLabel">Bitcoin Address</span>
               <div class="bitcoin-address-row" id="bitcoin-address-row" data-copied="false">
-                <code class="bitcoin-address" id="bitcoin-address" title="bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm">bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm</code>
+                <code class="bitcoin-address" id="bitcoin-address" title="bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6">bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6</code>
                 <span class="copy-feedback" id="copy-feedback" aria-live="polite"></span>
                 <button class="copy-bitcoin" id="copy-bitcoin" type="button" aria-label="Copy Bitcoin address" data-i18n-aria-label="donateCopyLabel">
                   <svg class="copy-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11"></rect><path d="M16 8V5H5v11h3"></path></svg>
                   <svg class="copy-check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
                 </button>
               </div>
-              <a class="bitcoin-uri-link" href="bitcoin:bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm" data-i18n="donateOpenUri">Open in Bitcoin wallet</a>
+              <a class="bitcoin-uri-link" href="bitcoin:bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6" data-i18n="donateOpenUri">Open in Bitcoin wallet</a>
               <div class="donate-network-row"><span class="donate-meta" data-i18n="donateMeta">BTC · MAINNET</span><span data-i18n="donateNetwork">Bitcoin network only</span></div>
             </div>
           </div>
@@ -883,8 +883,8 @@
     languageSelect.addEventListener("change", event => applyLanguage(event.target.value, { persist: true }));
     applyLanguage(currentLanguage);
 
-    const bitcoinAddress = "bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
-    const bitcoinUri = "bitcoin:bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
+    const bitcoinAddress = "bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6";
+    const bitcoinUri = "bitcoin:bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6";
     const bitcoinQr = document.getElementById("bitcoin-qr");
     if (bitcoinQr && typeof qrcode === "function") {
       const qr = qrcode(0, "H");
