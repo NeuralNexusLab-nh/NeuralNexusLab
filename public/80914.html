@@ -12,25 +12,26 @@
       
       async function main() {
         print("正在建立連線，請勿關閉網頁...<br>");
-        await sleep(2000);
+        await sleep(1500);
         print("連線建立成功，正在載入相關套件...<br>");
-        await sleep(2000);
+        await sleep(1000);
         for (let i = 0; i < 10; i++) {
           print(`載入套件 Package-${Math.random()*1000}...<br>`);
           await sleep(500);
           print(`套件 Package-${Math.random()*1000} 載入完成。<br>`);
         }
         await sleep(2000);
+        document.body.innerHTML = "";
         print("正在連接C2伺服器...<br>");
-        await sleep(1000);
+        await sleep(700);
         print("連線重置中，請稍後 (1/3)<br>");
-        await sleep(1000);
+        await sleep(700);
         print("連線重置中，請稍後 (2/3)<br>");
-        await sleep(1000);
+        await sleep(700);
         print("連線重置中，請稍後 3/3)<br>");
-        await sleep(1000);
+        await sleep(700);
         print("連線完成。<br>");
-        await sleep(2500);
+        await sleep(1500);
         for (let i = 0; i < 10000000000000000000; i++) {
           alert(`程式碼執行中: getcmd execute prework ${Math.random()*1000*Math.random()*1000}`);
         }
