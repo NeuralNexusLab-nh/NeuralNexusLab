@@ -614,6 +614,82 @@
       .services::after, .projects .page::after, .network .page::after, .contact .page::after,
       .contact::after { animation: none !important; translate: none !important; }
     }
+
+    /* NXLab 2026: midnight product editorial system */
+    :root { --space:#060716; --ink:#0a0b1b; --panel:rgba(17,19,48,.58); --panel-strong:#111332; --electric:#6b7cff; --cyan:#78d8ff; --violet:#b19cff; --line-dark:rgba(196,205,255,.16); --muted-dark:rgba(230,233,255,.66); --page:min(1180px,calc(100vw - 64px)); }
+    body { background:var(--space); background-image:radial-gradient(ellipse at 50% -20%,#27265c 0,transparent 44%); }
+    body::before { opacity:.018; background-image:repeating-linear-gradient(180deg,transparent 0,transparent 4px,rgba(154,178,255,.9) 5px); }
+    .site-header { height:82px; }
+    .site-header.scrolled { background:rgba(7,8,23,.78); border-color:rgba(190,203,255,.15); backdrop-filter:blur(22px) saturate(130%); }
+    .nav-shell { gap:20px; }
+    .brand { gap:10px; color:#f7f7ff; font-size:15px; }
+    .nx-mark { width:44px; height:44px; }
+    .nav-links { gap:8px; padding:5px; background:rgba(255,255,255,.045); border:1px solid rgba(212,220,255,.1); border-radius:999px; box-shadow:inset 0 1px rgba(255,255,255,.07); }
+    .nav-links a { padding:8px 11px; color:rgba(240,242,255,.72); letter-spacing:.05em; border-radius:999px; }
+    .nav-links a::after { display:none; }
+    .nav-links a:hover,.nav-links a.active { color:#fff; background:rgba(129,141,255,.2); }
+    .language-select { height:36px; border-radius:999px; border-color:rgba(212,220,255,.18); background:rgba(255,255,255,.04); }
+    .hero { min-height:100svh; background:#050614; align-items:center; }
+    #blackhole-canvas { position:absolute; z-index:-3; inset:0; width:100%; height:100%; }
+    .hero-shade { z-index:-2; background:linear-gradient(90deg,rgba(5,6,20,.78) 0%,rgba(5,6,20,.22) 51%,rgba(5,6,20,.45) 100%),linear-gradient(0deg,rgba(5,6,20,.68),transparent 40%); }
+    .hero::before { content:"NEURAL NEXUS // RESEARCH & BUILD"; right:max(32px,calc((100vw - 1180px)/2)); top:118px; color:rgba(196,203,255,.52); writing-mode:horizontal-tb; }
+    .blackhole-index { position:absolute; z-index:1; right:max(32px,calc((100vw - 1180px)/2)); bottom:48px; display:grid; gap:6px; color:rgba(215,220,255,.62); font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-align:right; }
+    .blackhole-index span:last-child { color:var(--cyan); }
+    .hero-content { padding:142px 0 70px; }
+    .hero-kicker { display:inline-flex; padding:7px 12px; margin-bottom:22px; color:#dce1ff; background:rgba(113,125,255,.12); border:1px solid rgba(164,176,255,.2); border-radius:999px; letter-spacing:.12em; }
+    .hero h1 { max-width:830px; font-size:clamp(48px,6.1vw,92px); line-height:.94; text-transform:none; letter-spacing:-.052em; }
+    .hero h1 em { color:#c7c9ff; text-shadow:0 0 38px rgba(145,141,255,.24); }
+    .hero-intro { max-width:535px; margin:30px 0 0; color:rgba(238,240,255,.78); font-size:clamp(15px,1.3vw,18px); }
+    .hero-foot { max-width:800px; margin-top:48px; border-color:rgba(190,203,255,.19); }
+    .scroll-cue::before { background:var(--violet); }
+    .section-label { color:#9ba5da; }
+    .section-label span:first-child { color:#aab6ff; }
+    .display-title { color:#f4f4ff; font-size:clamp(40px,5.1vw,68px); font-weight:500; letter-spacing:-.045em; text-transform:none; }
+    .services,.projects,.network,.contact,.donate { color:#f4f4ff; background:#090a1d; }
+    .services::before,.projects::after,.network::before,.contact::before { opacity:0; background:none; }
+    .services::after,.projects .page::after,.network .page::after,.contact .page::after { background:linear-gradient(90deg,transparent,var(--violet),transparent); box-shadow:none; opacity:.38; }
+    .services { background:radial-gradient(ellipse at 18% 0%,rgba(91,101,230,.2),transparent 42%),#0b0c21; }
+    .services-stage { padding:118px 0 108px; }
+    .services-word { color:rgba(181,190,255,.045); font-size:clamp(96px,17vw,230px); }
+    .services h2 { max-width:760px; }
+    .service-list { margin-top:48px; background:var(--panel); border:1px solid var(--line-dark); border-radius:18px; overflow:hidden; backdrop-filter:blur(14px); }
+    .service-row { grid-template-columns:64px minmax(200px,.72fr) minmax(280px,1.28fr); min-height:118px; padding:26px 28px; border-color:var(--line-dark); }
+    .service-row:first-child { border-top:0; }
+    .service-row .number { color:#aeb7ff; }
+    .service-row h3 { color:#fff; }
+    .service-cta { margin-top:42px; padding:20px 24px 4px; border-left:2px solid var(--violet); }
+    .service-email { color:#e6e8ff; font-size:clamp(26px,3.6vw,48px); }
+    .service-email:hover { color:#aab6ff; }
+    .projects { padding:112px 0 118px; background:radial-gradient(ellipse at 85% 0%,rgba(72,92,222,.25),transparent 43%),#10112b; }
+    .projects::before { content:"WORK"; right:2vw; top:64px; color:rgba(214,218,255,.035); font-size:clamp(120px,22vw,300px); }
+    .projects-head { grid-template-columns:1fr minmax(260px,.7fr); gap:58px; margin-bottom:46px; }
+    .projects-head p { color:var(--muted-dark); font-size:15px; }
+    .project-list { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; border:0; background:none; }
+    .project { display:flex; flex-direction:column; align-items:flex-start; min-height:294px; gap:20px; padding:23px; color:#f6f7ff; background:linear-gradient(145deg,rgba(34,36,79,.86),rgba(12,13,36,.92)); border:1px solid rgba(192,202,255,.16); border-radius:16px; overflow:hidden; }
+    .project::before { inset:auto 0 0; width:100%; height:3px; background:linear-gradient(90deg,var(--electric),var(--cyan)); transform:scaleX(0); transform-origin:left; }
+    .project:hover,.project:focus-visible { padding:23px; color:#fff; background:linear-gradient(145deg,rgba(92,105,230,.48),rgba(22,24,63,.96)); border-color:rgba(175,188,255,.5); transform:translateY(-5px); }
+    .project:hover::before,.project:focus-visible::before { transform:scaleX(1); }
+    .project h3 { font-size:clamp(26px,2.25vw,37px); line-height:1; }
+    .project p { color:rgba(226,230,255,.64); font-size:13px; line-height:1.65; }
+    .project:hover p,.project:focus-visible p { color:#f3f4ff; }
+    .project-arrow { margin-top:auto; color:#b7c2ff; }
+    .network { padding:108px 0; background:radial-gradient(circle at 20% 20%,rgba(157,127,255,.19),transparent 31%),#0a0b21; }
+    .network::after { border-color:rgba(163,175,255,.16); }
+    .network-list,.email-list { background:var(--panel); border:1px solid var(--line-dark); border-radius:18px; overflow:hidden; }
+    .network-link { min-height:102px; padding:0 22px; border-color:var(--line-dark); }
+    .network-link:hover,.network-link:focus-visible,.email-link:hover,.email-link:focus-visible { padding-inline:22px; color:#fff; background:rgba(108,122,255,.18); }
+    .network-link strong { font-size:clamp(27px,3.6vw,48px); }
+    .network-link .arrow,.project-arrow { color:#b9c7ff; }
+    .contact { padding:108px 0 0; background:radial-gradient(ellipse at 85% 8%,rgba(83,118,255,.21),transparent 42%),#090a1d; }
+    .contact::after { opacity:.045; filter:hue-rotate(23deg); }
+    .email-link { min-height:104px; padding:19px 22px; }
+    .contact-note { color:var(--muted-dark); }
+    .donate { background:#111330; border-color:rgba(194,203,255,.15); }
+    .donate::before { opacity:.36; background-image:linear-gradient(rgba(166,180,255,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(166,180,255,.075) 1px,transparent 1px),radial-gradient(circle at 78% 40%,rgba(125,114,255,.18),transparent 38%); }
+    footer { background:#060716; }
+    @media (max-width:1100px) { .project-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .project { min-height:220px; } }
+    @media (max-width:980px) { .nav-links { border-radius:0; } .blackhole-index { right:20px; bottom:24px; } .project-list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:640px) { :root { --page:calc(100vw - 32px); } .site-header { height:72px; } .hero-content { padding:118px 0 58px; } .hero h1 { font-size:clamp(38px,10vw,50px); } .hero::before,.blackhole-index { display:none; } .hero-intro { max-width:400px; } .services-stage,.projects,.network,.contact { padding-top:76px; } .service-list,.network-list,.email-list { border-radius:12px; } .service-row { padding:20px 18px; } .projects-head { grid-template-columns:1fr; gap:20px; } .project-list { grid-template-columns:1fr; gap:10px; } .project { min-height:182px; padding:20px; } .project:hover,.project:focus-visible { padding:20px; transform:none; } .network-link { padding-inline:16px; } .email-link { padding-inline:16px; } }
   </style>
 </head>
 <body>
@@ -643,8 +719,9 @@
 
   <main id="main">
     <section class="hero" id="home" data-section="home">
-      <canvas id="earth-canvas" aria-hidden="true"></canvas>
+      <canvas id="blackhole-canvas" aria-hidden="true"></canvas>
       <div class="hero-shade" aria-hidden="true"></div>
+      <div class="blackhole-index" aria-hidden="true"><span>NX-01</span><span>EVENT HORIZON</span></div>
       <div class="hero-content">
         <p class="hero-kicker" data-i18n="heroKicker">NeuralNexusLab / NXLab / Taiwan</p>
         <h1 data-reveal><span data-i18n="heroLine">Systems advance,</span><em data-i18n="heroEm">we build at the edge.</em></h1>
@@ -684,15 +761,14 @@
         <p class="section-label"><span data-i18n="projectsLabel">03 / Projects</span><span data-i18n="projectsSide">Products built by NeuralNexusLab</span></p>
         <div class="projects-head">
           <h2 class="display-title" data-reveal data-i18n-html="projectsTitle">From ideas,<br>to working products.</h2>
-          <p data-reveal data-i18n="projectsCopy">Six products across AI · personal software · security · internet infrastructure.</p>
+          <p data-reveal data-i18n="projectsCopy">Five products across AI · personal software · security · internet infrastructure.</p>
         </div>
         <div class="project-list">
           <a class="project" href="https://astranote.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">01</span><h3>AstraNote</h3><p data-i18n="projectAstraNote">A free online notebook for ideas, reminders, lists, work, study, and essential information across devices.</p><span class="project-arrow">↗</span></a>
-          <a class="project" href="https://nexacaptcha.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">02</span><h3>NexaCAPTCHA</h3><p data-i18n="projectNexa">Motion-based human verification designed to stay effortless for people while resisting automation.</p><span class="project-arrow">↗</span></a>
-          <a class="project" href="https://webtnx.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">03</span><h3>WebTNX</h3><p data-i18n="projectWebTNX">Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.</p><span class="project-arrow">↗</span></a>
+          <a class="project" href="https://webtnx.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">02</span><h3>WebTNX</h3><p data-i18n="projectWebTNX">Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.</p><span class="project-arrow">↗</span></a>
+          <a class="project" href="https://nexacaptcha.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">03</span><h3>NexaCAPTCHA</h3><p data-i18n="projectNexa">Image-based human verification that is clear for people and resistant to automated abuse.</p><span class="project-arrow">↗</span></a>
           <a class="project" href="https://etherking.nxlabtw.com" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">04</span><h3>EtherKing</h3><p data-i18n="projectEtherKing">A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.</p><span class="project-arrow">↗</span></a>
           <a class="project" href="https://github.com/NeuralNexusLab-nh/Browzen" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">05</span><h3>Browzen</h3><p data-i18n="projectBrowzen">A fast Windows browser with Chromium rendering, built-in essentials, and browsing data that stays on your device.</p><span class="project-arrow">↗</span></a>
-          <a class="project" href="/tl.html" target="_blank" rel="noopener noreferrer" data-reveal><span class="number">06</span><h3>TraveLegend</h3><p data-i18n="projectTravel">A practical travel companion for finding useful places nearby when time and context are limited.</p><span class="project-arrow">↗</span></a>
         </div>
       </div>
     </section>
@@ -769,7 +845,7 @@
         skip: "Skip to content", navHome: "Home", navServices: "Services", navProjects: "Projects", navNetwork: "Network", navContact: "Contact", navDonate: "DONATE",
         heroKicker: "NeuralNexusLab / NXLab / Taiwan", heroLine: "Systems advance,", heroEm: "we build at the edge.", heroIntro: "<strong>NeuralNexusLab (NXLab)</strong> is a technology team from Taiwan.<br>We build websites,<br>test web application security,<br>and create practical software products.", scroll: "Scroll to explore",
         servicesLabel: "02 / Services", servicesSide: "For companies, teams, and organizations", servicesTitle: "Build reliable websites,<br>test them against <span style=\"color:var(--electric)\">real threats.</span>", webTitle: "Website Development", webCopy: "Clear, fast, maintainable websites designed for small companies, independent teams, and organizations ready to establish a serious presence online.", securityTitle: "Web Security Testing", securityCopy: "Web application security assessments and penetration testing that identify exploitable weaknesses before they become real incidents.", serviceCta: "Need a website or security review?",
-        projectsLabel: "03 / Projects", projectsSide: "Products built by NeuralNexusLab", projectsTitle: "From ideas,<br>to working products.", projectsCopy: "Six products across AI · personal software · security · internet infrastructure.", projectEtherKing: "A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.", projectAstraNote: "A free online notebook for ideas, reminders, lists, work, study, and essential information across devices.", projectBrowzen: "A fast Windows browser with Chromium rendering, built-in essentials, and browsing data that stays on your device.", projectNexa: "Motion-based human verification designed to stay effortless for people while resisting automation.", projectWebTNX: "Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.", projectTravel: "A practical travel companion for finding useful places nearby when time and context are limited.",
+        projectsLabel: "03 / Projects", projectsSide: "Products built by NeuralNexusLab", projectsTitle: "From ideas,<br>to working products.", projectsCopy: "Five products across AI · personal software · security · internet infrastructure.", projectEtherKing: "A multi-model AI environment for comparing perspectives and exploring intelligence in one coherent space.", projectAstraNote: "A free online notebook for ideas, reminders, lists, work, study, and essential information across devices.", projectBrowzen: "A fast Windows browser with Chromium rendering, built-in essentials, and browsing data that stays on your device.", projectNexa: "Image-based human verification that is clear for people and resistant to automated abuse.", projectWebTNX: "Lightweight HTTP tunnelling for bringing local services onto the open web with less operational friction.",
         networkLabel: "04 / Official Network", networkSide: "Code, security, and open models", networkTitle: "Find us",
         contactLabel: "05 / Contact", contactSide: "Direct lines to NeuralNexusLab", contactTitle: "Contact us", mailPurpose: "General inquiries ↗", backupPurpose: "Alternative contact ↗", contactCopy: "For projects, general questions, or collaboration,<br>contact the lab directly.", contactLocation: "Taiwan / Available worldwide",
         donateLabel: "06 / Donate", donateTitle: "Donate to NeuralNexusLab", donateDescription: "If our projects are useful to you, you can support our work with Bitcoin.", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin Address", donateCopyLabel: "Copy Bitcoin address", donateCopied: "Copied", donateOpenUri: "Open in Bitcoin wallet", donateNetwork: "Bitcoin network only", donateQrLabel: "Bitcoin donation QR code for NeuralNexusLab", footer: "Taiwan / Website Development / Web Security"
@@ -780,7 +856,7 @@
         skip: "跳至主要內容", navHome: "首頁", navServices: "服務", navProjects: "專案", navNetwork: "官方平台", navContact: "聯絡", navDonate: "贊助",
         heroKicker: "NeuralNexusLab / NXLab / 台灣", heroLine: "科技持續向前，", heroEm: "我們讓前沿成為日常", heroIntro: "<strong>NeuralNexusLab（NXLab）</strong> 是來自台灣的技術團隊。<br>我們開發網站，<br>測試 Web 應用安全，<br>也打造實用的軟體產品。", scroll: "向下探索",
         servicesLabel: "02 / 服務", servicesSide: "提供給公司、團隊與組織", servicesTitle: "打造可靠的網站，<br>驗證<span style=\"color:var(--electric)\">真實的風險。</span>", webTitle: "網站開發", webCopy: "為小型公司、獨立團隊與組織打造清楚、快速且易於長期維護的網站，建立值得信任的線上形象。", securityTitle: "Web 安全測試", securityCopy: "針對網站與 Web 應用進行安全評估及滲透測試，在弱點演變成真實事件之前找出可被利用的風險。", serviceCta: "需要網站或安全測試？",
-        projectsLabel: "03 / 專案", projectsSide: "NeuralNexusLab 打造的產品", projectsTitle: "從想法，<br>到真正可用的產品。", projectsCopy: "六個產品橫跨人工智慧 · 個人軟體 · 資安 · 網路基礎設施。", projectEtherKing: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", projectAstraNote: "免費的線上筆記本，適合記錄想法、提醒、清單、工作、學習與常用資料，並可跨裝置接續使用。", projectBrowzen: "採用 Chromium 渲染、內建日常功能的快速 Windows 瀏覽器，瀏覽資料只留在你的裝置。", projectNexa: "以動態操作進行人類驗證，對真人保持直覺，同時抵抗自動化。", projectWebTNX: "輕量化 HTTP 通道，降低將本地服務帶上開放網路時的維運摩擦。", projectTravel: "在時間與資訊有限時，協助旅人尋找附近實用地點的旅行夥伴。",
+        projectsLabel: "03 / 專案", projectsSide: "NeuralNexusLab 打造的產品", projectsTitle: "從想法，<br>到真正可用的產品。", projectsCopy: "五個產品橫跨人工智慧 · 個人軟體 · 資安 · 網路基礎設施。", projectEtherKing: "在一致的空間中比較觀點、探索多種智慧的多模型 AI 環境。", projectAstraNote: "免費的線上筆記本，適合記錄想法、提醒、清單、工作、學習與常用資料，並可跨裝置接續使用。", projectBrowzen: "採用 Chromium 渲染、內建日常功能的快速 Windows 瀏覽器，瀏覽資料只留在你的裝置。", projectNexa: "以圖片辨識為核心的人類驗證，讓真人清楚操作，同時抵抗自動化濫用。", projectWebTNX: "輕量化 HTTP 通道，降低將本地服務帶上開放網路時的維運摩擦。",
         networkLabel: "04 / 官方平台", networkSide: "程式碼、資安與開放模型", networkTitle: "找到我們",
         contactLabel: "05 / 聯絡", contactSide: "直接聯絡 NeuralNexusLab", contactTitle: "聯絡我們", mailPurpose: "一般聯絡 ↗", backupPurpose: "備用聯絡方式 ↗", contactCopy: "專案、一般詢問或合作聯絡，<br>請直接寄給我們。", contactLocation: "台灣 / 服務全球",
         donateLabel: "06 / 贊助", donateTitle: "贊助 NeuralNexusLab", donateDescription: "如果我們的專案對你有幫助，你可以透過 Bitcoin 贊助我們持續開發。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin 地址", donateCopyLabel: "複製 Bitcoin 地址", donateCopied: "已複製", donateOpenUri: "在 Bitcoin 錢包中開啟", donateNetwork: "僅限 Bitcoin 網路", donateQrLabel: "NeuralNexusLab Bitcoin 贊助 QR Code", footer: "台灣 / 網站開發 / Web 安全"
@@ -791,7 +867,7 @@
         skip: "本文へ移動", navHome: "ホーム", navServices: "サービス", navProjects: "プロジェクト", navNetwork: "ネットワーク", navContact: "お問い合わせ", navDonate: "寄付",
         heroKicker: "NeuralNexusLab / NXLab / 台湾", heroLine: "技術は進化する、", heroEm: "先端を形にする。", heroIntro: "<strong>NeuralNexusLab（NXLab）</strong>は台湾発の技術チームです。<br>Webサイトを開発し、<br>Webアプリケーションの安全性を検証し、<br>実用的なソフトウェア製品をつくります。", scroll: "スクロールして探索",
         servicesLabel: "02 / サービス", servicesSide: "企業、チーム、組織のために", servicesTitle: "信頼できるWebサイトをつくり、<br><span style=\"color:var(--electric)\">現実の脅威</span>に備えて検証する。", webTitle: "Webサイト開発", webCopy: "小規模企業、独立チーム、組織のために、明快で高速、長期的に保守できるWebサイトを設計・開発します。", securityTitle: "Webセキュリティテスト", securityCopy: "Webアプリケーションのセキュリティ評価とペネトレーションテストを通じて、脆弱性が実害につながる前にリスクを特定します。", serviceCta: "Webサイトやセキュリティ評価が必要ですか？",
-        projectsLabel: "03 / プロジェクト", projectsSide: "NeuralNexusLabがつくる製品", projectsTitle: "アイデアから、<br>使える製品へ。", projectsCopy: "6つの製品はAI・パーソナルソフトウェア・セキュリティ・インターネット基盤にまたがります。", projectEtherKing: "複数モデルの視点を比較し、ひとつの空間で知性を探索するAI環境。", projectAstraNote: "アイデア、リマインダー、リスト、仕事、学習、よく使う情報を端末をまたいで記録できる無料オンラインノート。", projectBrowzen: "Chromiumレンダリングと日常機能を備え、閲覧データを端末内に保つ高速Windowsブラウザ。", projectNexa: "人には直感的でありながら、自動化に強いモーション型認証。", projectWebTNX: "ローカルサービスを少ない運用負荷でオープンウェブへつなぐ軽量HTTPトンネリング。", projectTravel: "時間と情報が限られる旅先で、近くの役立つ場所を探す実用的なコンパニオン。",
+        projectsLabel: "03 / プロジェクト", projectsSide: "NeuralNexusLabがつくる製品", projectsTitle: "アイデアから、<br>使える製品へ。", projectsCopy: "5つの製品はAI・パーソナルソフトウェア・セキュリティ・インターネット基盤にまたがります。", projectEtherKing: "複数モデルの視点を比較し、ひとつの空間で知性を探索するAI環境。", projectAstraNote: "アイデア、リマインダー、リスト、仕事、学習、よく使う情報を端末をまたいで記録できる無料オンラインノート。", projectBrowzen: "Chromiumレンダリングと日常機能を備え、閲覧データを端末内に保つ高速Windowsブラウザ。", projectNexa: "人にはわかりやすく、自動化された不正利用に強い画像ベースの人間認証。", projectWebTNX: "ローカルサービスを少ない運用負荷でオープンウェブへつなぐ軽量HTTPトンネリング。",
         networkLabel: "04 / 公式ネットワーク", networkSide: "コード、セキュリティ、オープンモデル", networkTitle: "公式チャンネル",
         contactLabel: "05 / お問い合わせ", contactSide: "NeuralNexusLabへの直通窓口", contactTitle: "お問い合わせ", mailPurpose: "一般のお問い合わせ ↗", backupPurpose: "予備の連絡先 ↗", contactCopy: "プロジェクト、一般のお問い合わせ、協業のご相談は、<br>ラボへ直接ご連絡ください。", contactLocation: "台湾 / 世界各地に対応",
         donateLabel: "06 / 寄付", donateTitle: "NeuralNexusLab に寄付", donateDescription: "私たちのプロジェクトが役に立った場合、Bitcoin で開発を支援できます。", donateBitcoin: "Bitcoin", donateMeta: "BTC · MAINNET", donateAddressLabel: "Bitcoin アドレス", donateCopyLabel: "Bitcoin アドレスをコピー", donateCopied: "コピーしました", donateOpenUri: "Bitcoin ウォレットで開く", donateNetwork: "Bitcoin ネットワークのみ", donateQrLabel: "NeuralNexusLab Bitcoin 寄付用 QR コード", footer: "台湾 / Webサイト開発 / Webセキュリティ"
@@ -989,36 +1065,40 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     (() => {
-      const canvas = document.getElementById("earth-canvas");
+      const canvas = document.getElementById("blackhole-canvas");
       const gl = canvas.getContext("webgl", { alpha: false, antialias: false, powerPreference: "high-performance" });
       if (!gl) return;
       const vertex = `attribute vec2 p; void main(){gl_Position=vec4(p,0.,1.);}`;
       const fragment = `precision highp float;
         uniform vec2 r; uniform float t; uniform float s;
+        float hash21(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return fract(p.x*p.y); }
         void main(){
           vec2 uv=(gl_FragCoord.xy*2.-r)/r.y;
           float aspect=r.x/r.y;
-          vec3 col=mix(vec3(.001,.004,.011),vec3(.005,.017,.04),clamp(uv.y*.34+.48,0.,1.));
-          float mobile=1.-smoothstep(.8,1.05,aspect);
-          vec2 center=vec2((.30-.20*s)*aspect,-1.37+.44*mobile+.28*s);
+          vec2 grid=uv*vec2(54.,54.);
+          vec2 cell=floor(grid), f=fract(grid)-.5;
+          float seed=hash21(cell);
+          float stars=smoothstep(.035,0.,length(f))*smoothstep(.82,.98,seed);
+          vec3 col=vec3(.010,.011,.045)+stars*vec3(.42,.48,.92)*(0.5+seed);
+          vec2 center=vec2(.34*aspect-.12*s,-.03+.045*sin(t*.12));
           vec2 q=uv-center;
-          float radius=1.17;
-          float sd=length(q)-radius;
-          float earth=1.-smoothstep(-.012,.012,sd);
-          col=mix(col,vec3(.0002,.001,.0035),earth);
-          vec2 normal=normalize(q);
-          float facing=pow(max(dot(normal,normalize(vec2(-.16,1.))),0.),1.72);
-          float hardRim=exp(-abs(sd)*96.)*facing;
-          float outerGlow=exp(-max(sd,0.)*13.)*step(0.,sd)*facing;
-          float innerGlow=exp(-max(-sd,0.)*36.)*step(0.,-sd)*facing;
-          float pulse=.975+.025*sin(t*.4);
-          col+=vec3(.025,.39,1.)*hardRim*1.8*pulse;
-          col+=vec3(.012,.19,.68)*outerGlow*.68*pulse;
-          col+=vec3(.004,.06,.2)*innerGlow*.38;
-          float sunrise=pow(max(dot(normal,normalize(vec2(.74,.67))),0.),30.)*exp(-abs(sd)*19.);
-          col+=vec3(.2,.64,1.)*sunrise*.52;
-          float vignette=1.-.2*smoothstep(.45,1.85,length(uv*vec2(.58,1.)));
-          gl_FragColor=vec4(pow(col*vignette,vec3(.86)),1.);
+          q.y*=1.24;
+          float d=length(q);
+          float angle=atan(q.y,q.x);
+          float wave=.5+.5*sin(angle*8.-d*35.-t*.72);
+          float fine=.55+.45*sin(angle*18.+d*68.+t*.45);
+          float band=.052+.065*wave;
+          float disk=exp(-pow((d-.39)/band,2.))*mix(.45,1.15,fine);
+          float outer=exp(-pow((d-.60)/.17,2.))*.24;
+          float lens=exp(-pow((d-.225)*25.,2.));
+          float flare=pow(max(0.,sin(angle-.4)),15.)*exp(-pow((d-.41)/.16,2.));
+          vec3 cool=mix(vec3(.17,.22,.95),vec3(.72,.43,1.),wave);
+          col+=cool*(disk*.90+outer*.18+lens*.16);
+          col+=vec3(.58,.73,1.)*flare*1.05;
+          float core=1.-smoothstep(.185,.225,d);
+          col=mix(col,vec3(.0002,.00025,.0012),core);
+          float vignette=1.-.30*smoothstep(.4,1.65,length(uv*vec2(.64,1.)));
+          gl_FragColor=vec4(pow(col*vignette,vec3(.82)),1.);
         }`;
       function makeShader(type, source) {
         const shader = gl.createShader(type);
