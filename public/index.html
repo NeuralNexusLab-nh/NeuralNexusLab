@@ -629,12 +629,12 @@
     .nav-links a::after { display:none; }
     .nav-links a:hover,.nav-links a.active { color:#fff; background:rgba(129,141,255,.2); }
     .language-select { height:36px; border-radius:999px; border-color:rgba(212,220,255,.18); background:rgba(255,255,255,.04); }
-    .hero { min-height:100svh; background:#050614; align-items:center; }
-    #blackhole-canvas { position:absolute; z-index:-3; inset:0; width:100%; height:100%; }
-    .hero-shade { z-index:-2; background:linear-gradient(90deg,rgba(5,6,20,.78) 0%,rgba(5,6,20,.22) 51%,rgba(5,6,20,.45) 100%),linear-gradient(0deg,rgba(5,6,20,.68),transparent 40%); }
+    .hero { min-height:100svh; background:#030305 url("/assets/black-hole-eht-inspired.png") 63% 50% / cover no-repeat; align-items:center; animation:black-hole-drift 18s ease-in-out infinite alternate; }
+    #blackhole-canvas { display:none; }
+    .hero-shade { z-index:-2; background:linear-gradient(90deg,rgba(0,0,0,.79) 0%,rgba(0,0,0,.38) 48%,rgba(0,0,0,.26) 100%),linear-gradient(0deg,rgba(0,0,0,.68),transparent 42%); }
     .hero::before { content:"NEURAL NEXUS // RESEARCH & BUILD"; right:max(32px,calc((100vw - 1180px)/2)); top:118px; color:rgba(196,203,255,.52); writing-mode:horizontal-tb; }
     .blackhole-index { position:absolute; z-index:1; right:max(32px,calc((100vw - 1180px)/2)); bottom:48px; display:grid; gap:6px; color:rgba(215,220,255,.62); font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-align:right; }
-    .blackhole-index span:last-child { color:var(--cyan); }
+    .blackhole-index span:last-child { color:#f1ad55; }
     .hero-content { padding:142px 0 70px; }
     .hero-kicker { display:inline-flex; padding:7px 12px; margin-bottom:22px; color:#dce1ff; background:rgba(113,125,255,.12); border:1px solid rgba(164,176,255,.2); border-radius:999px; letter-spacing:.12em; }
     .hero h1 { max-width:830px; font-size:clamp(48px,6.1vw,92px); line-height:.94; text-transform:none; letter-spacing:-.052em; }
@@ -642,6 +642,7 @@
     .hero-intro { max-width:535px; margin:30px 0 0; color:rgba(238,240,255,.78); font-size:clamp(15px,1.3vw,18px); }
     .hero-foot { max-width:800px; margin-top:48px; border-color:rgba(190,203,255,.19); }
     .scroll-cue::before { background:var(--violet); }
+    @keyframes black-hole-drift { from { background-position:61% 50%; } to { background-position:66% 48%; } }
     .section-label { color:#9ba5da; }
     .section-label span:first-child { color:#aab6ff; }
     .display-title { color:#f4f4ff; font-size:clamp(40px,5.1vw,68px); font-weight:500; letter-spacing:-.045em; text-transform:none; }
@@ -690,6 +691,8 @@
     @media (max-width:1100px) { .project-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .project { min-height:220px; } }
     @media (max-width:980px) { .nav-links { border-radius:0; } .blackhole-index { right:20px; bottom:24px; } .project-list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media (max-width:640px) { :root { --page:calc(100vw - 32px); } .site-header { height:72px; } .hero-content { padding:118px 0 58px; } .hero h1 { font-size:clamp(38px,10vw,50px); } .hero::before,.blackhole-index { display:none; } .hero-intro { max-width:400px; } .services-stage,.projects,.network,.contact { padding-top:76px; } .service-list,.network-list,.email-list { border-radius:12px; } .service-row { padding:20px 18px; } .projects-head { grid-template-columns:1fr; gap:20px; } .project-list { grid-template-columns:1fr; gap:10px; } .project { min-height:182px; padding:20px; } .project:hover,.project:focus-visible { padding:20px; transform:none; } .network-link { padding-inline:16px; } .email-link { padding-inline:16px; } }
+    @media (max-width:640px) { .hero { background-position:67% 50%; } }
+    @media (prefers-reduced-motion: reduce) { .hero { animation:none; } }
   </style>
 </head>
 <body>
@@ -719,7 +722,7 @@
 
   <main id="main">
     <section class="hero" id="home" data-section="home">
-      <canvas id="blackhole-canvas" aria-hidden="true"></canvas>
+      <canvas id="blackhole-canvas" data-mode="static" aria-hidden="true"></canvas>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="blackhole-index" aria-hidden="true"><span>NX-01</span><span>EVENT HORIZON</span></div>
       <div class="hero-content">
@@ -1066,6 +1069,7 @@
 
     (() => {
       const canvas = document.getElementById("blackhole-canvas");
+      if (!canvas || canvas.dataset.mode === "static") return;
       const gl = canvas.getContext("webgl", { alpha: false, antialias: false, powerPreference: "high-performance" });
       if (!gl) return;
       const vertex = `attribute vec2 p; void main(){gl_Position=vec4(p,0.,1.);}`;
