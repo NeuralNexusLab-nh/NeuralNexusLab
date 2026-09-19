@@ -22,7 +22,6 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        bitastra: resolve(__dirname, "bitastra.html"),
         wallet: resolve(__dirname, "wallet.html"),
       },
     },
