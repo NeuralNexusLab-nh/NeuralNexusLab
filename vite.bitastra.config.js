@@ -23,7 +23,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         bitastra: resolve(__dirname, "bitastra.html"),
-        bitastrawallet: resolve(__dirname, "bitastrawallet.html"),
+        wallet: resolve(__dirname, "wallet.html"),
       },
     },
   },
