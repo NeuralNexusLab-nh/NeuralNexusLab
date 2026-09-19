@@ -18,8 +18,8 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
-    outDir: "public",
-    emptyOutDir: false,
+    outDir: "dist",
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         wallet: resolve(__dirname, "wallet.html"),

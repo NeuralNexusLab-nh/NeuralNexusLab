@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "build:bitastra": "vite build --config vite.bitastra.config.js",
+    "build": "vite build --config vite.bitastra.config.js",
+    "build:bitastra": "npm run build",
     "test:providers": "node scripts/test-providers-v3.mjs"
   },
   "engines": {
