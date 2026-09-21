@@ -5,8 +5,8 @@
   "description": "NeuralNexusLab website powered by Express.",
   "main": "server.js",
   "scripts": {
-    "start": "node --max-old-space-size=72 server.js",
-    "dev": "node --max-old-space-size=72 --watch server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
   "engines": {
     "node": ">=18"
