@@ -8,10 +8,6 @@ const publicDirectory = path.join(__dirname, "public");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", true);
-app.use((req, res, next) => {
-  console.log(`IP: ${req.ip}, method: ${req.method}, path: ${req.path}, UA: ${req.headers["user-agent"]}`);
-  next();
-});
 
 // Add new routes here.
 app.get("/ip", (req, res) => {
