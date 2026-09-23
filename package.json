@@ -1,8 +1,8 @@
 {
-  "name": "neuralnexuslab-website",
+  "name": "nxlabtw-website",
   "version": "1.0.0",
   "private": true,
-  "description": "NeuralNexusLab website powered by Express.",
+  "description": "NXLabTW website powered by Express.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

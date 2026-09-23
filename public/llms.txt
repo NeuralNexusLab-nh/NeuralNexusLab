@@ -1,10 +1,10 @@
-# NeuralNexusLab (NXLab)
+# NXLabTW
 
-> NeuralNexusLab, also known as NXLab, is a Taiwan-based technology team specializing in website development, web application security testing, and practical software products.
+> NXLabTW is a Taiwan-based technology team specializing in website development, web application security testing, and practical software products.
 
 ## Official website
 
-- [NeuralNexusLab](https://nxlabtw.com/): Company, services, projects, official profiles, and contact information.
+- [NXLabTW](https://nxlabtw.com/): Company, services, projects, official profiles, and contact information.
 
 ## Services
 

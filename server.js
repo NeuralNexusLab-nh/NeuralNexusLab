@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/health", (_request, response) => {
-  response.json({ status: "ok", service: "NeuralNexusLab" });
+  response.json({ status: "ok", service: "NXLabTW" });
 });
 
 // Add new routes here.
@@ -63,5 +63,5 @@ app.get("/exit", (req, res) => {
 app.use(express.static(publicDirectory));
 
 app.listen(port, () => {
-  console.log(`NeuralNexusLab Official Website is running at http://localhost:${port}`);
+  console.log(`NXLabTW Official Website is running at http://localhost:${port}`);
 });
