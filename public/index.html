@@ -1165,6 +1165,15 @@
 
     copyBitcoinButton?.addEventListener("click", copyBitcoinAddress);
 
+    function trackDcardEvent(eventName) {
+      if (typeof window.dadk === "function") window.dadk("track", eventName);
+    }
+
+    document.querySelector(".service-email")?.addEventListener("click", () => trackDcardEvent("Lead"));
+    document.querySelectorAll(".email-link").forEach(link => {
+      link.addEventListener("click", () => trackDcardEvent("Contact"));
+    });
+
     const revealElements = document.querySelectorAll("[data-reveal]");
     if (reducedMotion || !("IntersectionObserver" in window)) revealElements.forEach(element => element.classList.add("visible"));
     else {
