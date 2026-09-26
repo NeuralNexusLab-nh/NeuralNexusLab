@@ -17,7 +17,6 @@
 - [AstraNote](https://astranote.nxlabtw.com/): Free online notebook available across devices.
 - [NexaCAPTCHA](https://nexacaptcha.nxlabtw.com/): Motion-based human verification.
 - [WebTNX](https://webtnx.nxlabtw.com/): Lightweight HTTP tunnelling.
-- [EtherKing](https://etherking.nxlabtw.com/): Multi-model AI environment.
 - [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Privacy-conscious Chromium-based Windows browser.
 - [TraveLegend](https://nxlabtw.com/tl.html): Nearby place finder and travel companion.
 
