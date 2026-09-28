@@ -25,6 +25,18 @@ app.get("/ip", (req, res) => {
   res.send(req.ip);
 });
 
+app.get("/.onion", (req, res) => {
+  res.send("nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
+});
+
+app.get("/onion", (req, res) => {
+  res.send("nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
+});
+
+app.get("/tor", (req, res) => {
+  res.send("nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
+});
+
 async function sendIpInfo(ip, res) {
   if (!process.env.TOKEN) {
     return res.status(503).json({ error: "TOKEN is not configured" });
@@ -69,6 +81,10 @@ app.get("/exit", (req, res) => {
 });
 
 app.use(express.static(publicDirectory));
+
+app.all("*", (req, res) => {
+  res.status(404).send("ERROR 404 - Not Found");
+});
 
 app.listen(port, () => {
   console.log(`NXLabTW Official Website is running at http://localhost:${port}`);
