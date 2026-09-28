@@ -82,7 +82,7 @@ app.get("/exit", (req, res) => {
 
 app.use(express.static(publicDirectory));
 
-app.all("*", (req, res) => {
+app.use((req, res) => {
   res.status(404).send("ERROR 404 - Not Found");
 });
 
