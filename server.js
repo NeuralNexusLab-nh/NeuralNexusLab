@@ -4,9 +4,17 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 const publicDirectory = path.join(__dirname, "public");
+const onionOrigin = "http://nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion";
 app.set("trust proxy", true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use((request, response, next) => {
+  if (["nxlabtw.com", "www.nxlabtw.com"].includes(request.hostname.toLowerCase())) {
+    response.set("Onion-Location", `${onionOrigin}${request.originalUrl}`);
+  }
+  next();
+});
 
 app.get("/api/health", (_request, response) => {
   response.json({ status: "ok", service: "NXLabTW" });
