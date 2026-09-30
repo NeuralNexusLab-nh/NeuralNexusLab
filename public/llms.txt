@@ -15,9 +15,10 @@
 ## Projects
 
 - [AstraNote](https://astranote.nxlabtw.com/): Free online notebook available across devices.
-- [NexaCAPTCHA](https://nexacaptcha.nxlabtw.com/): Motion-based human verification.
+- [NexaCAPTCHA](https://nexacaptcha.nxlabtw.com/): Static image-based human verification.
 - [WebTNX](https://webtnx.nxlabtw.com/): Lightweight HTTP tunnelling.
 - [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Privacy-conscious Chromium-based Windows browser.
+- [Neutron — ACMTN](https://neutron.nxlabtw.com/): Private, browser-encrypted conversations through the Advanced Confidential Message Transfer Network.
 - [TraveLegend](https://nxlabtw.com/tl.html): Nearby place finder and travel companion.
 
 ## Official profiles
