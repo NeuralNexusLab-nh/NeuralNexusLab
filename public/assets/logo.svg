@@ -1,10 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 599 599" role="img" aria-labelledby="title desc">
   <title id="title">NXLabTW handwritten NX monogram</title>
   <desc id="desc">A minimal white handwritten NX monogram on a charcoal-black field.</desc>
-  <rect width="512" height="512" fill="#202020"/>
-  <g fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M44 404 C79 347 109 291 130 230 C143 191 151 146 170 64 C194 109 210 165 224 219 L257 412"/>
-    <path d="M286 83 C315 134 353 200 397 260 C424 298 448 333 468 365"/>
-    <path d="M471 84 C423 135 378 176 326 216 C292 243 258 274 235 300"/>
+  <rect width="599" height="599" fill="#202020"/>
+  <g transform="translate(0 104)" fill="none" stroke="#fff" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 299 C74 243 113 203 143 149 C162 112 178 80 199 54 C206 80 211 107 222 132 C244 191 266 253 301 317 C317 295 343 275 368 250 C393 226 415 205 433 183 C469 139 505 87 540 42"/>
+    <path d="M333 46 C336 74 356 98 376 120 C398 147 415 166 433 183 C472 229 500 266 521 301 C534 321 548 338 558 349"/>
   </g>
 </svg>
