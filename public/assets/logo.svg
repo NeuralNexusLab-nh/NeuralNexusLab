@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">NXLabTW NX monogram</title>
-  <desc id="desc">An angular NX monogram refined from an AI-generated concept, built on a 45-degree grid with a shared blue stroke.</desc>
-  <rect width="512" height="512" fill="#02050a"/>
-  <g fill="none" stroke-width="44" stroke-linecap="square" stroke-linejoin="bevel">
-    <path d="M68 430 176 78M176 78 296 430" stroke="#edf7ff"/>
-    <path d="M296 430 416 70" stroke="#248cff"/>
-    <path d="M327 80 374 206M395 270 452 430" stroke="#edf7ff"/>
+  <title id="title">NXLabTW handwritten NX monogram</title>
+  <desc id="desc">A minimal white handwritten NX monogram on a charcoal-black field.</desc>
+  <rect width="512" height="512" fill="#202020"/>
+  <g fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 404 C79 347 109 291 130 230 C143 191 151 146 170 64 C194 109 210 165 224 219 L257 412"/>
+    <path d="M286 83 C315 134 353 200 397 260 C424 298 448 333 468 365"/>
+    <path d="M471 84 C423 135 378 176 326 216 C292 243 258 274 235 300"/>
   </g>
 </svg>
