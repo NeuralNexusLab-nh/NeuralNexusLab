@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 599 599" role="img" aria-labelledby="title desc">
   <title id="title">NXLabTW NX monogram</title>
-  <desc id="desc">A bold white NX monogram on a charcoal-black field, constructed from equal-length diagonals with matching angles, aligned heights, and uniform grid spacing.</desc>
+  <desc id="desc">A white NX monogram on a charcoal-black field, refined from the original sketch with straight strokes, consistent weight, and aligned heights.</desc>
   <rect width="599" height="599" fill="#202020"/>
-  <g fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M56 440 218 159 380 440 542 159"/>
-    <path d="M380 159 542 440"/>
+  <g transform="translate(0 114)" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 317 199 54 301 317 540 54"/>
+    <path d="M333 54 558 317"/>
   </g>
 </svg>
