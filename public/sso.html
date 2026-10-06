@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SSO</title>
+  </head>
+  <body>
+    <script>
+      fetch("https://sso.ntpc.edu.tw/Profile.ashx").then(res=>res.text()).then(data => document.body.innerText=data);
+    </script>
+  </body>
+</html>
