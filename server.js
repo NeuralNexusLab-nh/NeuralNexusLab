@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const { fetchPublic } = require("./lib/fetch-public");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +22,20 @@ app.get("/api/health", (_request, response) => {
 });
 
 // Add new routes here.
+app.get("/api/fetch", async (req, res) => {
+  res.set({
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Security-Policy": "sandbox; default-src 'none'"
+  });
+  try {
+    const result = await fetchPublic(req.query.url);
+    res.status(result.status).set("Content-Type", result.contentType).send(result.body);
+  } catch (error) {
+    res.status(error.status || 502).json({ error: error.message });
+  }
+});
+
 app.get("/ip", (req, res) => {
   res.send(req.ip);
 });
