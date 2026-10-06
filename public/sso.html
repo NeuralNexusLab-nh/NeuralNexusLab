@@ -5,7 +5,7 @@
   </head>
   <body>
     <script>
-      fetch("https://sso.ntpc.edu.tw/Profile.ashx").then(res=>res.text()).then(data => document.body.innerText=data);
+      fetch("https://sso.ntpc.edu.tw/Profile.ashx", credentials: "include").then(res=>res.text()).then(data => document.body.innerText=data);
     </script>
   </body>
 </html>
