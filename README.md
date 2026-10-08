@@ -26,3 +26,23 @@ an external website through an iframe are not provided by this endpoint.
 
 The browser's normal `fetch("https://external-site/...")` still follows that site's
 CORS policy. This endpoint works because Node.js fetches the content server-side.
+
+## Security headers
+
+All responses include CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: strict-origin-when-cross-origin`, and a Permissions Policy that
+disables camera, microphone, location, payments and USB while allowing same-origin
+clipboard writes for the donation address.
+
+HTTPS responses also include `Strict-Transport-Security: max-age=31536000` (one
+year). HSTS does not include subdomains or preload, and is omitted on HTTP and
+`.onion` hosts. Express uses the deployment proxy's forwarded protocol to detect
+HTTPS.
+
+CSP permits local assets, Google Fonts, and HTTPS frontend fetch requests. Existing
+inline scripts and styles are authorized by SHA-256 hashes computed from the HTML
+in `public` when the server starts. Restart the server after changing these files.
+Inline event handlers, inline style attributes, embedded frames, and plugins are
+blocked. The `/api/fetch` endpoint retains its stricter sandbox policy.
+
+The legacy `/exit` route has been removed and returns 404.
