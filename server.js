@@ -55,6 +55,14 @@ app.get("/tor", (req, res) => {
   res.send("nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
 });
 
+app.get("/studyx.ai", (req, res) => {
+  res.redirect("https://astranote.nxlabtw.com/shared/Eds0HYkulIg7Y_Zbx3BEdregeVm8gyDJ3ZJjlc7sTiI")
+});
+
+app.get("/StudyX.AI", (req, res) => {
+  res.redirect("https://astranote.nxlabtw.com/shared/Eds0HYkulIg7Y_Zbx3BEdregeVm8gyDJ3ZJjlc7sTiI")
+});
+
 async function sendIpInfo(ip, res) {
   if (!process.env.TOKEN) {
     return res.status(503).json({ error: "TOKEN is not configured" });
