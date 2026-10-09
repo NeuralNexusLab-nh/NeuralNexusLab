@@ -55,7 +55,7 @@ after(async () => {
 test("security headers cover HTML, static assets, API responses, and 404s", async () => {
   for (const [url, status] of [
     ["/", 200], ["/sso.html", 200], ["/assets/qrcode-generator.js", 200],
-    ["/api/health", 200], ["/not-found", 404]
+    ["/api/health", 200], ["/ascii", 200], ["/ascii/list", 200], ["/not-found", 404]
   ]) {
     const response = await fetch(origin + url, { headers: httpsHeaders });
     assert.equal(response.status, status, url);

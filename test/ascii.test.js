@@ -101,9 +101,34 @@ test("bundled Bad Apple covers the whole supplied video at a fixed size and rate
   assert.notEqual(animation.frames[300], animation.frames[600]);
 });
 
-test("removed help, list and other animation paths return 404 without upstream requests", async () => {
+test("help and list show only the three supported animations without upstream requests", async () => {
   const before = upstreamRequests.length;
-  for (const pathname of ["/ascii", "/ascii/", "/ascii/list", "/ascii/donut", "/ascii/missing"]) {
+  for (const pathname of ["/ascii", "/ascii/"]) {
+    const response = await fetch(origin + pathname);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get("content-type"), /^text\/plain/);
+    const help = await response.text();
+    for (const name of ["badapple", "rick", "parrot"]) {
+      assert.ok(help.includes(`curl.exe -N https://nxlabtw.com/ascii/${name}`));
+    }
+    assert.match(help, /120 seconds/);
+    assert.match(help, /219 seconds/);
+  }
+  const response = await fetch(origin + "/ascii/list");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /^application\/json/);
+  assert.deepEqual(await response.json(), { frames: ["badapple", "rick", "parrot"] });
+  for (const pathname of ["/ascii", "/ascii/", "/ascii/list"]) {
+    const head = await fetch(origin + pathname, { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+  }
+  assert.equal(upstreamRequests.length, before);
+});
+
+test("unsupported animation paths return 404 without upstream requests", async () => {
+  const before = upstreamRequests.length;
+  for (const pathname of ["/ascii/donut", "/ascii/missing"]) {
     for (const method of ["GET", "HEAD"]) {
       const response = await fetch(origin + pathname, { method });
       assert.equal(response.status, 404, method + " " + pathname);

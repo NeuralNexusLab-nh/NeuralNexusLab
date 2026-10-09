@@ -50,14 +50,18 @@ The legacy `/exit` route has been removed and returns 404.
 ## Terminal ASCII animations
 
 ```sh
+curl https://nxlabtw.com/ascii
+curl https://nxlabtw.com/ascii/list
 curl -N https://nxlabtw.com/ascii/badapple
 curl -N https://nxlabtw.com/ascii/rick
 curl -N https://nxlabtw.com/ascii/parrot
 ```
 
-Only `/ascii/badapple`, `/ascii/rick`, and `/ascii/parrot` are available.
-`/ascii`, `/ascii/`, `/ascii/list`, and every other animation return 404 without
-contacting the upstream service. Rick and Parrot proxy the HTTPS text stream from
+`/ascii` (also `/ascii/`) shows usage and playback durations. `/ascii/list` returns
+`{"frames":["badapple","rick","parrot"]}` locally, without contacting ascii.live.
+Only `/ascii/badapple`, `/ascii/rick`, and `/ascii/parrot` play animations; other
+animation names return 404 without contacting the upstream service.
+Rick and Parrot proxy the HTTPS text stream from
 ascii.live; their availability depends on that service. Rick and Parrot loop for
 120 seconds, measured from the first received animation data, then end the HTTP
 response normally so curl exits automatically. Bad Apple plays its full video once
