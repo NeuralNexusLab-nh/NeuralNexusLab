@@ -11,6 +11,7 @@ let upstreamOrigin;
 let upstreamClosed = 0;
 let upstreamStatus = 200;
 let upstreamFailure = false;
+let splitFrames = false;
 const upstreamRequests = [];
 
 function listen(server) {
@@ -28,13 +29,25 @@ before(async () => {
       return res.end('{"error":"Frames not found"}');
     }
     res.writeHead(200);
-    res.write("\x1b[2J\x1b[Hfirst\n");
-    const timer = setInterval(() => res.write("\x1b[2J\x1b[Hnext\n"), 20);
-    res.once("close", () => { clearInterval(timer); upstreamClosed++; });
+    const frames = ["first", "next", "last"];
+    let index = 0;
+    let fragmentTimer;
+    function draw() {
+      const frame = "\x1b[2J\x1b[H" + frames[index] + "\n";
+      index = (index + 1) % frames.length;
+      if (splitFrames) {
+        res.write(frame.slice(0, 2));
+        fragmentTimer = setTimeout(() => res.write(frame.slice(2)), 2);
+      } else res.write(frame);
+    }
+    draw();
+    const timer = setInterval(draw, 20);
+    res.once("close", () => { clearInterval(timer); clearTimeout(fragmentTimer); upstreamClosed++; });
   });
   upstreamOrigin = await listen(upstreamServer);
   const app = express();
   app.use("/ascii", createAsciiRouter({
+    proxyDurationMs: 160,
     request(url, options, callback) {
       assert.equal(new URL(url).origin, "https://ascii.live");
       const target = upstreamOrigin + new URL(url).pathname;
@@ -138,6 +151,28 @@ test("proxy streams unchanged and closes upstream when curl disconnects", async 
   assert.equal(request.headers.cookie, undefined);
 });
 
+test("Rick and Parrot loop until the playback deadline, then end normally", async () => {
+  const before = upstreamClosed;
+  try {
+    for (const fragmented of [false, true]) {
+      splitFrames = fragmented;
+      for (const name of ["rick", "parrot"]) {
+        const started = Date.now();
+        const response = await fetch(origin + "/ascii/" + name, { signal: AbortSignal.timeout(2000) });
+        assert.equal(response.status, 200);
+        const body = await response.text();
+        assert.ok(Date.now() - started >= 150, "playback does not stop at a cycle boundary");
+        assert.ok((body.match(/first\n/g) || []).length >= 2, "animation loops before the deadline");
+        assert.ok(body.endsWith("\x1b[0m"), "terminal colors reset on normal EOF");
+      }
+    }
+    await new Promise(resolve => setTimeout(resolve, 50));
+    assert.ok(upstreamClosed >= before + 4, "finished playback closes all upstream streams");
+  } finally {
+    splitFrames = false;
+  }
+});
+
 test("proxy retains unknown-animation status and handles upstream failure", async () => {
   try {
     upstreamStatus = 404;
@@ -188,22 +223,24 @@ test("local playback waits for slow clients and removes drain listeners on close
   assert.equal(response.listenerCount("drain"), 0);
 });
 
-test("local playback loops and stops sending frames after disconnect", async () => {
+test("local playback ends after the last frame without looping and resets terminal colors", async () => {
   const { EventEmitter } = require("node:events");
-  const app = createAsciiRouter({ animation: { fps: 30, frames: ["repeat"] } });
+  const app = createAsciiRouter({ animation: { fps: 10, frames: ["one", "two", "three"] } });
   const response = new EventEmitter();
   const frames = [];
-  let looped;
-  const loop = new Promise(resolve => { looped = resolve; });
+  let ended;
+  let ending;
+  const completion = new Promise(resolve => { ended = resolve; });
   Object.assign(response, {
     set() {}, flushHeaders() {}, destroyed: false,
     write(frame) {
       frames.push(frame);
-      if (frames.length === 3) {
-        response.emit("close");
-        looped();
-      }
       return true;
+    },
+    end(text) {
+      ending = text;
+      response.emit("close");
+      ended();
     }
   });
   app.handle({ method: "GET", url: "/badapple", headers: {} }, response, error => {
@@ -211,12 +248,13 @@ test("local playback loops and stops sending frames after disconnect", async () 
   });
   let timeout;
   try {
-    await Promise.race([loop, new Promise((_, reject) => {
-      timeout = setTimeout(() => reject(new Error("Playback did not loop")), 2000);
+    await Promise.race([completion, new Promise((_, reject) => {
+      timeout = setTimeout(() => reject(new Error("Playback did not finish")), 2000);
     })]);
     await new Promise(resolve => setTimeout(resolve, 100));
     assert.equal(frames.length, 3);
-    assert.ok(frames.every(frame => frame === frames[0]));
+    assert.deepEqual(frames.map(frame => frame.split("\x1b[H")[1]), ["one\n", "two\n", "three\n"]);
+    assert.equal(ending, "\x1b[0m");
   } finally {
     clearTimeout(timeout);
     response.emit("close");

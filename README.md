@@ -58,14 +58,19 @@ curl -N https://nxlabtw.com/ascii/parrot
 Only `/ascii/badapple`, `/ascii/rick`, and `/ascii/parrot` are available.
 `/ascii`, `/ascii/`, `/ascii/list`, and every other animation return 404 without
 contacting the upstream service. Rick and Parrot proxy the HTTPS text stream from
-ascii.live; their availability depends on that service. No upstream frames or
-source code are copied into this repo. Only the three allowlisted names are accepted,
+ascii.live; their availability depends on that service. Rick and Parrot loop for
+120 seconds, measured from the first received animation data, then end the HTTP
+response normally so curl exits automatically. Bad Apple plays its full video once
+and ends automatically. Completed or interrupted playback closes the upstream
+connection and clears timers. No upstream frames or source code are copied into
+this repo. Only the three allowlisted names are accepted,
 not arbitrary URLs, cookies, or request headers.
 
 Bad Apple is generated from the supplied video: 80 columns, 30 rows, 15 fps,
-approximately 219 seconds, looping silently. Use an ANSI-compatible terminal with
-at least 80 columns and 30 rows (31 rows avoids scrolling on some terminals).
-Press Ctrl+C to stop. A browser tab is not an animation player; use curl in a terminal
+approximately 219 seconds, playing once without audio. Use an ANSI-compatible
+terminal with at least 80 columns and 30 rows (31 rows avoids scrolling on some
+terminals). Playback ends automatically; Ctrl+C stops it early. A browser tab is
+not an animation player; use curl in a terminal
 (`curl.exe -N` on Windows PowerShell if `curl` is an alias).
 
 The compressed frames are in `data/ascii/badapple.json.gz`, outside the public
