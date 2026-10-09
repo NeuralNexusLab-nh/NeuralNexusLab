@@ -51,14 +51,15 @@ The legacy `/exit` route has been removed and returns 404.
 
 ```sh
 curl -N https://nxlabtw.com/ascii/badapple
+curl -N https://nxlabtw.com/ascii/rick
 curl -N https://nxlabtw.com/ascii/parrot
-curl https://nxlabtw.com/ascii/list
 ```
 
-`/ascii/` shows help. `/ascii/list` merges ascii.live's animation list with our local
-`badapple`. Other `/ascii/:name` paths proxy the HTTPS text stream from ascii.live;
-availability and animation names depend on that service. No upstream frames or
-source code are copied into this repo. Only a simple animation name is accepted,
+Only `/ascii/badapple`, `/ascii/rick`, and `/ascii/parrot` are available.
+`/ascii`, `/ascii/`, `/ascii/list`, and every other animation return 404 without
+contacting the upstream service. Rick and Parrot proxy the HTTPS text stream from
+ascii.live; their availability depends on that service. No upstream frames or
+source code are copied into this repo. Only the three allowlisted names are accepted,
 not arbitrary URLs, cookies, or request headers.
 
 Bad Apple is generated from the supplied video: 80 columns, 30 rows, 15 fps,

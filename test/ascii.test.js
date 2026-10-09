@@ -9,7 +9,8 @@ let upstreamServer;
 let origin;
 let upstreamOrigin;
 let upstreamClosed = 0;
-let listBody = JSON.stringify({ frames: ["parrot", "rick"] });
+let upstreamStatus = 200;
+let upstreamFailure = false;
 const upstreamRequests = [];
 
 function listen(server) {
@@ -21,12 +22,11 @@ function listen(server) {
 before(async () => {
   upstreamServer = http.createServer((req, res) => {
     upstreamRequests.push({ path: req.url, headers: req.headers });
-    if (req.url === "/list") return res.end(listBody);
-    if (req.url === "/missing") {
-      res.writeHead(404);
+    if (upstreamFailure) return req.socket.destroy();
+    if (upstreamStatus !== 200) {
+      res.writeHead(upstreamStatus);
       return res.end('{"error":"Frames not found"}');
     }
-    if (req.url === "/disconnect") return req.socket.destroy();
     res.writeHead(200);
     res.write("\x1b[2J\x1b[Hfirst\n");
     const timer = setInterval(() => res.write("\x1b[2J\x1b[Hnext\n"), 20);
@@ -52,10 +52,10 @@ after(async () => {
   }
 });
 
-function sample(pathname, count = 2) {
+function sample(pathname, count = 2, headers = {}) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    const request = http.get(origin + pathname, response => {
+    const request = http.get(origin + pathname, { headers }, response => {
       response.on("data", chunk => {
         chunks.push(chunk.toString());
         if (chunks.length >= count) {
@@ -88,27 +88,16 @@ test("bundled Bad Apple covers the whole supplied video at a fixed size and rate
   assert.notEqual(animation.frames[300], animation.frames[600]);
 });
 
-test("help and merged list expose local and upstream animation paths", async () => {
-  const help = await fetch(origin + "/ascii/");
-  assert.equal(help.status, 200);
-  assert.match(await help.text(), /curl -N https:\/\/nxlabtw.com\/ascii\/badapple/);
-  const response = await fetch(origin + "/ascii/list");
-  assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { frames: ["badapple", "parrot", "rick"] });
-});
-
-test("invalid or oversized upstream lists produce a bounded error, not a server crash", async () => {
-  const original = listBody;
-  try {
-    for (const body of ["not JSON", JSON.stringify({ frames: null }), " ".repeat(65537)]) {
-      listBody = body;
-      const response = await fetch(origin + "/ascii/list");
-      assert.equal(response.status, 502);
-      assert.deepEqual((await response.json()).local, ["badapple"]);
+test("removed help, list and other animation paths return 404 without upstream requests", async () => {
+  const before = upstreamRequests.length;
+  for (const pathname of ["/ascii", "/ascii/", "/ascii/list", "/ascii/donut", "/ascii/missing"]) {
+    for (const method of ["GET", "HEAD"]) {
+      const response = await fetch(origin + pathname, { method });
+      assert.equal(response.status, 404, method + " " + pathname);
+      await response.text();
     }
-  } finally {
-    listBody = original;
   }
+  assert.equal(upstreamRequests.length, before);
 });
 
 test("Bad Apple streams frames locally without contacting ascii.live", async () => {
@@ -120,13 +109,13 @@ test("Bad Apple streams frames locally without contacting ascii.live", async () 
   assert.equal(result.headers["cache-control"], "no-store, no-transform");
   for (const frame of result.chunks) assert.match(frame, /^\x1b\[0;37;40m\x1b\[2J\x1b\[H/);
   assert.equal(upstreamRequests.length, before);
-  const health = await fetch(origin + "/ascii/");
+  const health = await fetch(origin + "/ascii/badapple", { method: "HEAD" });
   assert.equal(health.status, 200, "server continues responding after client disconnect");
 });
 
 test("HEAD does not start a never-ending playback or upstream connection", async () => {
   const before = upstreamRequests.length;
-  for (const name of ["badapple", "parrot", "list"]) {
+  for (const name of ["badapple", "parrot", "rick"]) {
     const response = await fetch(origin + "/ascii/" + name, { method: "HEAD" });
     assert.equal(response.status, 200);
     assert.equal(await response.text(), "");
@@ -136,9 +125,11 @@ test("HEAD does not start a never-ending playback or upstream connection", async
 
 test("proxy streams unchanged and closes upstream when curl disconnects", async () => {
   const before = upstreamClosed;
-  const result = await sample("/ascii/parrot");
-  assert.equal(result.status, 200);
-  assert.equal(result.chunks.join(""), "\x1b[2J\x1b[Hfirst\n\x1b[2J\x1b[Hnext\n");
+  for (const name of ["parrot", "rick"]) {
+    const result = await sample("/ascii/" + name);
+    assert.equal(result.status, 200);
+    assert.equal(result.chunks.join(""), "\x1b[2J\x1b[Hfirst\n\x1b[2J\x1b[Hnext\n");
+  }
   await new Promise(resolve => setTimeout(resolve, 50));
   assert.ok(upstreamClosed > before);
   const request = upstreamRequests.find(item => item.path === "/parrot");
@@ -148,12 +139,19 @@ test("proxy streams unchanged and closes upstream when curl disconnects", async 
 });
 
 test("proxy retains unknown-animation status and handles upstream failure", async () => {
-  const missing = await fetch(origin + "/ascii/missing");
-  assert.equal(missing.status, 404);
-  assert.match(await missing.text(), /Frames not found/);
-  const disconnected = await fetch(origin + "/ascii/disconnect");
-  assert.equal(disconnected.status, 502);
-  assert.deepEqual((await disconnected.json()).local, ["badapple"]);
+  try {
+    upstreamStatus = 404;
+    const missing = await fetch(origin + "/ascii/rick");
+    assert.equal(missing.status, 404);
+    assert.match(await missing.text(), /Frames not found/);
+    upstreamFailure = true;
+    const disconnected = await fetch(origin + "/ascii/rick");
+    assert.equal(disconnected.status, 502);
+    assert.deepEqual((await disconnected.json()).local, ["badapple"]);
+  } finally {
+    upstreamStatus = 200;
+    upstreamFailure = false;
+  }
 });
 
 test("destination URLs, query strings and client credentials are not forwarded", async () => {
@@ -162,12 +160,11 @@ test("destination URLs, query strings and client credentials are not forwarded",
     assert.equal(response.status, 404);
     await response.text();
   }
-  const response = await fetch(origin + "/ascii/missing?url=http://127.0.0.1", {
-    headers: { Cookie: "secret=123", Authorization: "Bearer secret" }
+  await sample("/ascii/parrot?url=http://127.0.0.1", 2, {
+    Cookie: "secret=123", Authorization: "Bearer secret"
   });
-  await response.text();
   const forwarded = upstreamRequests.at(-1);
-  assert.equal(forwarded.path, "/missing");
+  assert.equal(forwarded.path, "/parrot");
   assert.equal(forwarded.headers.cookie, undefined);
   assert.equal(forwarded.headers.authorization, undefined);
 });
