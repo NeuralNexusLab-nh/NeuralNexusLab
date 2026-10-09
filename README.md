@@ -46,3 +46,41 @@ Inline event handlers, inline style attributes, embedded frames, and plugins are
 blocked. The `/api/fetch` endpoint retains its stricter sandbox policy.
 
 The legacy `/exit` route has been removed and returns 404.
+
+## Terminal ASCII animations
+
+```sh
+curl -N https://nxlabtw.com/ascii/badapple
+curl -N https://nxlabtw.com/ascii/parrot
+curl https://nxlabtw.com/ascii/list
+```
+
+`/ascii/` shows help. `/ascii/list` merges ascii.live's animation list with our local
+`badapple`. Other `/ascii/:name` paths proxy the HTTPS text stream from ascii.live;
+availability and animation names depend on that service. No upstream frames or
+source code are copied into this repo. Only a simple animation name is accepted,
+not arbitrary URLs, cookies, or request headers.
+
+Bad Apple is generated from the supplied video: 80 columns, 30 rows, 15 fps,
+approximately 219 seconds, looping silently. Use an ANSI-compatible terminal with
+at least 80 columns and 30 rows (31 rows avoids scrolling on some terminals).
+Press Ctrl+C to stop. A browser tab is not an animation player; use curl in a terminal
+(`curl.exe -N` on Windows PowerShell if `curl` is an alias).
+
+The compressed frames are in `data/ascii/badapple.json.gz`, outside the public
+directory. They are loaded once and shared; each viewer has an independent playback
+clock. No video decoding, FFmpeg, extra npm packages, or upstream connection is
+needed for Bad Apple in production. Slow viewers skip overdue frames rather than
+accumulating them; disconnects clear timers and terminate upstream requests.
+Streaming responses disable caching and request proxy buffering to be disabled.
+The deployment proxy must also allow long-lived, unbuffered responses.
+
+To regenerate locally, install FFmpeg and run:
+
+```sh
+node scripts/convert-ascii.js "path/to/video.mp4"
+```
+
+This replaces the bundled compressed frames, not the homepage. The original video
+and audio are not committed. Converting a video does not change its copyright;
+ensure you have permission to host the supplied content.

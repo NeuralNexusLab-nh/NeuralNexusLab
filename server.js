@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { fetchPublic } = require("./lib/fetch-public");
 const { securityHeaders } = require("./lib/security-headers");
+const { createAsciiRouter } = require("./lib/ascii");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +26,8 @@ app.get("/api/health", (_request, response) => {
 });
 
 // Add new routes here.
+app.use("/ascii", createAsciiRouter());
+
 app.get("/api/fetch", async (req, res) => {
   res.set({
     "Cache-Control": "no-store",
