@@ -1,4 +1,4 @@
-name: Deploy public folder to GitHub Pages
+name: Deploy static website to GitHub Pages
 
 on:
   push:

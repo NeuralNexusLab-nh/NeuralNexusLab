@@ -1,96 +1,92 @@
 # NXLabTW
 
-Start the Express website with `npm install` followed by `npm start`.
+A fully static company website. All published files live in `public/`: HTML,
+CSS, browser JavaScript, images, SEO files, and a locally bundled QR generator.
+No Express server, package installation, build command, Node.js runtime, backend,
+API key, or environment variables are required to publish the website.
 
-## Reading external websites from frontend JavaScript
+## Deploy
 
-Use the same-origin server endpoint rather than requesting the external URL directly:
+- Publish directory: `public`
+- Build command: none
+- Entry page: `public/index.html`
+- Custom domain: `nxlabtw.com`, retained in `public/CNAME`
+- The existing GitHub Pages workflow uploads `public/` directly on pushes to
+  `main`. It does not install dependencies or run a server.
+- Other static hosts can publish the same folder. If an old deployment still uses
+  `npm start` or `node server.js`, switch it to static hosting with `public/`
+  as the publish directory. Those commands no longer exist.
+- Do not publish the repository root or enable an SPA fallback for removed APIs.
 
-```js
-const url = "https://example.com/";
-const response = await fetch("/api/fetch?url=" + encodeURIComponent(url));
-if (!response.ok) throw new Error("Fetch failed: " + response.status);
-const html = await response.text();
-```
-
-For a JSON endpoint, use `await response.json()` instead. The endpoint preserves the
-external HTTP status and returns its body. External HTML/XML is served as plain text;
-read it as data rather than inserting it into the page as trusted HTML.
-
-This endpoint supports public HTTP/HTTPS GET requests on standard ports, follows up
-to three redirects, and limits each request to 10 seconds and 2 MiB (including
-decompressed content). Each destination is checked and DNS is pinned to validated
-public addresses. It does not forward browser cookies, authentication, or arbitrary
-request headers. Reading logged-in pages, bypassing anti-bot checks, and browsing
-an external website through an iframe are not provided by this endpoint.
-
-The browser's normal `fetch("https://external-site/...")` still follows that site's
-CORS policy. This endpoint works because Node.js fetches the content server-side.
-
-## Security headers
-
-All responses include CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
-`Referrer-Policy: strict-origin-when-cross-origin`, and a Permissions Policy that
-disables camera, microphone, location, payments and USB while allowing same-origin
-clipboard writes for the donation address.
-
-HTTPS responses also include `Strict-Transport-Security: max-age=31536000` (one
-year). HSTS does not include subdomains or preload, and is omitted on HTTP and
-`.onion` hosts. Express uses the deployment proxy's forwarded protocol to detect
-HTTPS.
-
-CSP permits local assets, Google Fonts, and HTTPS frontend fetch requests. Existing
-inline scripts and styles are authorized by SHA-256 hashes computed from the HTML
-in `public` when the server starts. Restart the server after changing these files.
-Inline event handlers, inline style attributes, embedded frames, and plugins are
-blocked. The `/api/fetch` endpoint retains its stricter sandbox policy.
-
-The legacy `/exit` route has been removed and returns 404.
-
-## Terminal ASCII animations
+For a local preview (Python is only a development convenience):
 
 ```sh
-curl https://nxlabtw.com/ascii
-curl https://nxlabtw.com/ascii/list
-curl -N https://nxlabtw.com/ascii/badapple
-curl -N https://nxlabtw.com/ascii/rick
-curl -N https://nxlabtw.com/ascii/parrot
+python -m http.server 8000 --directory public
 ```
 
-`/ascii` (also `/ascii/`) shows usage and playback durations. `/ascii/list` returns
-`{"frames":["badapple","rick","parrot"]}` locally, without contacting ascii.live.
-Only `/ascii/badapple`, `/ascii/rick`, and `/ascii/parrot` play animations; other
-animation names return 404 without contacting the upstream service.
-Rick and Parrot proxy the HTTPS text stream from
-ascii.live; their availability depends on that service. Rick and Parrot loop for
-120 seconds, measured from the first received animation data, then end the HTTP
-response normally so curl exits automatically. Bad Apple plays its full video once
-and ends automatically. Completed or interrupted playback closes the upstream
-connection and clears timers. No upstream frames or source code are copied into
-this repo. Only the three allowlisted names are accepted,
-not arbitrary URLs, cookies, or request headers.
+Open http://localhost:8000/. There is no production application server to start.
 
-Bad Apple is generated from the supplied video: 80 columns, 30 rows, 15 fps,
-approximately 219 seconds, playing once without audio. Use an ANSI-compatible
-terminal with at least 80 columns and 30 rows (31 rows avoids scrolling on some
-terminals). Playback ends automatically; Ctrl+C stops it early. A browser tab is
-not an animation player; use curl in a terminal
-(`curl.exe -N` on Windows PowerShell if `curl` is an alias).
+## Retained
 
-The compressed frames are in `data/ascii/badapple.json.gz`, outside the public
-directory. They are loaded once and shared; each viewer has an independent playback
-clock. No video decoding, FFmpeg, extra npm packages, or upstream connection is
-needed for Bad Apple in production. Slow viewers skip overdue frames rather than
-accumulating them; disconnects clear timers and terminate upstream requests.
-Streaming responses disable caching and request proxy buffering to be disabled.
-The deployment proxy must also allow long-lived, unbuffered responses.
+- Homepage content and layout, black-hole animation, responsive navigation,
+  anchor scrolling, and reduced-motion support.
+- English, Traditional Chinese, and Japanese, including saved/browser language
+  selection.
+- AstraNote, Neutron, Browzen, and NexaCAPTCHA.
+- Bitcoin and Monero donations: exact addresses, browser-generated QR codes,
+  copy controls, and wallet URI links. No address is sent to a QR service.
+- Email/social links, SEO/structured data, sitemap, robots, and `llms.txt`.
+- Onion navigation, Dark Web badge, and onion-specific project links.
 
-To regenerate locally, install FFmpeg and run:
+## Removed
+
+The Express server, npm manifests/dependencies, environment-variable example,
+backend implementations/tests, ASCII conversion utility, and bundled ASCII video
+frames have been removed. The following former routes no longer exist:
+
+- `/api/health` and `/api/fetch`
+- `/ip`, `/ipinfo`, and `/ipinfo/:ip`
+- `/ascii`, `/ascii/list`, and every ASCII animation stream
+- `/.onion`, `/onion`, and `/tor` text endpoints (the actual Onion button remains)
+- `/studyx.ai` and `/StudyX.AI` server redirects
+
+No serverless function, replacement proxy, fake static API, or external backend
+has been added. Removed endpoints should return the static host's 404 response.
+Deleted source/assets remain recoverable in Git history.
+
+## Security and Onion discovery
+
+The homepage includes a hash-based CSP meta policy and referrer policy, so those
+protections do not depend on a server. Inline scripts/styles must match their
+SHA-256 hashes; after changing an inline block, update its hash in both
+`public/index.html` and `public/_headers`. The optional static tests catch stale hashes.
+
+`public/_headers` preserves the HTTP security settings for hosts supporting that
+format: CSP (including `frame-ancestors`), HSTS without subdomain/preload flags,
+X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and
+Onion-Location for the homepage. HSTS is for the HTTPS clearnet deployment, not a
+requirement to enable HTTPS on the onion service.
+
+GitHub Pages does **not** apply this custom header file. On Pages, the HTML meta
+CSP/referrer policy still applies, but HTTP-only protections (HSTS, frame-ancestors,
+X-Frame-Options, etc.) must be controlled by the hosting platform or an external
+CDN/reverse proxy. HTML cannot pretend to set those response headers.
+
+Onion discovery also uses the Tor-supported `onion-location` HTML meta tag.
+It points to the onion homepage; unlike a dynamic response header, it cannot
+preserve an arbitrary requested path. Existing frontend onion navigation is unchanged.
+
+References: [Tor Onion-Location](https://community.torproject.org/onion-services/advanced/onion-location/),
+[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site),
+[static host header configuration](https://docs.netlify.com/manage/routing/headers/).
+
+## Optional development checks
+
+The tests are dependency-free and can be run with Node.js installed locally:
 
 ```sh
-node scripts/convert-ascii.js "path/to/video.mp4"
+node --test
 ```
 
-This replaces the bundled compressed frames, not the homepage. The original video
-and audio are not committed. Converting a video does not change its copyright;
-ensure you have permission to host the supplied content.
+Node.js is used only for these developer checks, not to build or serve the
+published website.
