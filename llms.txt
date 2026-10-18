@@ -15,7 +15,7 @@
 ## Projects
 
 - [Neutron — ACMTN](https://neutron.nxlabtw.com/): Private, browser-encrypted conversations through the Advanced Confidential Message Transfer Network.
-- [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Privacy-conscious Chromium-based Windows browser.
+- [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Portable Windows browser with Chromium rendering, Tor routing, relay-route inspection, and configurable security levels.
 
 ## Official profiles
 
