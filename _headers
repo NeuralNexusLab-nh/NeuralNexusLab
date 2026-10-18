@@ -1,6 +1,6 @@
 # Applied by static hosts that support _headers (not GitHub Pages).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-7ACNtmxfatDdbyf6Of6izCDneYTI+sZxp/v03vxVSfA=' 'sha256-7iX7Fc0g7SRh6/sNhz4sp1OWjnpUc81UjHlU3M/FIro=' 'sha256-lKC1gibd58WkWWsixob4Luu8+4vCnAjh7VPj7DbJJJM='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com 'sha256-kjBHdW6pEtAJRIABpT48AFFO5bL2fwh8HuGHU+vmnfc='; style-src-attr 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-7ACNtmxfatDdbyf6Of6izCDneYTI+sZxp/v03vxVSfA=' 'sha256-U3iKYweZdRgjyGajqcf3/GBaZTjjW8J9ElefEpSENq0=' 'sha256-lKC1gibd58WkWWsixob4Luu8+4vCnAjh7VPj7DbJJJM='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com 'sha256-kjBHdW6pEtAJRIABpT48AFFO5bL2fwh8HuGHU+vmnfc='; style-src-attr 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff

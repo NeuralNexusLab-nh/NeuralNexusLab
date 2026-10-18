@@ -33,7 +33,7 @@ test("local homepage images, scripts and stylesheets exist in the publish direct
     assert.ok(existsSync(path.join(publicDirectory, url.split(/[?#]/)[0])), url);
   }
   assert.doesNotMatch(html, /(?:fetch\(|href=|src=)[^\n]*(?:\/api\/|\/ascii\/|\/ipinfo)/);
-  assert.equal((activeHtml.match(/class="project" /g) || []).length, 2);
+  assert.equal((activeHtml.match(/class="project" /g) || []).length, 3);
 });
 
 test("meta CSP and static host headers authorize the exact unchanged inline blocks", () => {
@@ -58,6 +58,21 @@ test("meta CSP and static host headers authorize the exact unchanged inline bloc
   }
 });
 
+test("AtlasNote leads the visible project list with its real URL and three localized descriptions", () => {
+  const cards = [...activeHtml.matchAll(/<a class="project"[^>]*>[\s\S]*?<\/a>/g)].map(match => match[0]);
+  assert.deepEqual(cards.map(card => card.match(/<h3>([^<]+)<\/h3>/)[1]), ["AtlasNote", "Neutron — ACMTN", "Browzen"]);
+  assert.deepEqual(cards.map(card => card.match(/class="number">([^<]+)/)[1]), ["01", "02", "03"]);
+  assert.match(cards[0], /href="https:\/\/atlasnote\.nxlabtw\.com"/);
+  assert.doesNotMatch(cards[0], /localhost/);
+  const descriptions = [...html.matchAll(/projectAtlasNote: "([^"]+)"/g)].map(match => match[1]);
+  assert.equal(descriptions.length, 3);
+  for (const copy of descriptions) {
+    assert.match(copy, /Markdown/);
+    assert.match(copy, /encrypt|加密|暗号化/i);
+    assert.match(copy, /offline|離線|オフライン/i);
+  }
+});
+
 test("paused projects and Onion entry points are inert but retain their source for restoration", () => {
   for (const id of ["paused-astranote", "paused-nexacaptcha", "paused-onion-navigation"]) {
     assert.ok(html.includes(`<template id="${id}">`));
@@ -69,6 +84,7 @@ test("paused projects and Onion entry points are inert but retain their source f
   const llms = readFileSync(path.join(root, "llms.txt"), "utf8");
   assert.doesNotMatch(llms, /astranote|nexacaptcha|\.onion/i);
   assert.match(llms, /neutron\.nxlabtw\.com/);
+  assert.match(llms, /atlasnote\.nxlabtw\.com/);
   assert.match(llms, /NeuralNexusLab-nh\/Browzen/);
 });
 

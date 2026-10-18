@@ -33,7 +33,7 @@ Open http://localhost:8000/. There is no production application server to start.
   anchor scrolling, and reduced-motion support.
 - English, Traditional Chinese, and Japanese, including saved/browser language
   selection.
-- Public project listing: Neutron and Browzen.
+- Public project listing: AtlasNote, Neutron, and Browzen, in that order.
 - Bitcoin and Monero donations: exact addresses, browser-generated QR codes,
   copy controls, and wallet URI links. No address is sent to a QR service.
 - Email/social links, SEO/structured data, sitemap, robots, and `llms.txt`.
@@ -44,7 +44,7 @@ Open http://localhost:8000/. There is no production application server to start.
 AstraNote and NexaCAPTCHA are stored in inert HTML templates in `index.html`, so
 they do not render, appear in the active navigation, or receive keyboard focus.
 Their translations and links are retained. Public summaries and `llms.txt` list
-only Neutron and Browzen.
+AtlasNote, Neutron, and Browzen. AtlasNote is a separate project; AstraNote remains paused.
 
 The Onion navigation link is also in an inert template. `onionEnabled = false`
 disables the Dark Web badge and onion link switching. Onion-Location discovery is

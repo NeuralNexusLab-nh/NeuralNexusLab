@@ -14,6 +14,7 @@
 
 ## Projects
 
+- [AtlasNote](https://atlasnote.nxlabtw.com/): Local-first notebook for text, images, and Markdown, with encryption and offline access. No account or cloud required.
 - [Neutron — ACMTN](https://neutron.nxlabtw.com/): Private, browser-encrypted conversations through the Advanced Confidential Message Transfer Network.
 - [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Portable Windows browser with Chromium rendering, Tor routing, relay-route inspection, and configurable security levels.
 
