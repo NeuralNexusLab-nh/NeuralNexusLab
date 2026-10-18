@@ -33,11 +33,28 @@ Open http://localhost:8000/. There is no production application server to start.
   anchor scrolling, and reduced-motion support.
 - English, Traditional Chinese, and Japanese, including saved/browser language
   selection.
-- AstraNote, Neutron, Browzen, and NexaCAPTCHA.
+- Public project listing: Neutron and Browzen.
 - Bitcoin and Monero donations: exact addresses, browser-generated QR codes,
   copy controls, and wallet URI links. No address is sent to a QR service.
 - Email/social links, SEO/structured data, sitemap, robots, and `llms.txt`.
-- Onion navigation, Dark Web badge, and onion-specific project links.
+- Paused project and Onion source content is retained for later restoration.
+
+## Temporarily hidden
+
+AstraNote and NexaCAPTCHA are stored in inert HTML templates in `index.html`, so
+they do not render, appear in the active navigation, or receive keyboard focus.
+Their translations and links are retained. Public summaries and `llms.txt` list
+only Neutron and Browzen.
+
+The Onion navigation link is also in an inert template. `onionEnabled = false`
+disables the Dark Web badge and onion link switching. Onion-Location discovery is
+commented out in both the HTML meta tag and `_headers`.
+
+To restore, unwrap the corresponding `paused-*` templates, restore the project
+numbering/summaries and `llms.txt` entries, set `onionEnabled` to `true` if restoring
+Onion, and uncomment its meta tag/header rules. Refresh CSP hashes after editing
+inline JavaScript. This is a presentation pause, not an access restriction on the
+separate project websites or onion service.
 
 ## Removed
 
@@ -48,7 +65,7 @@ frames have been removed. The following former routes no longer exist:
 - `/api/health` and `/api/fetch`
 - `/ip`, `/ipinfo`, and `/ipinfo/:ip`
 - `/ascii`, `/ascii/list`, and every ASCII animation stream
-- `/.onion`, `/onion`, and `/tor` text endpoints (the actual Onion button remains)
+- `/.onion`, `/onion`, and `/tor` text endpoints
 - `/studyx.ai` and `/StudyX.AI` server redirects
 
 No serverless function, replacement proxy, fake static API, or external backend
@@ -64,8 +81,8 @@ SHA-256 hashes; after changing an inline block, update its hash in both
 
 `_headers` preserves the HTTP security settings for hosts supporting that
 format: CSP (including `frame-ancestors`), HSTS without subdomain/preload flags,
-X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and
-Onion-Location for the homepage. HSTS is for the HTTPS clearnet deployment, not a
+X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.
+Onion-Location rules are retained as disabled comments. HSTS is for the HTTPS clearnet deployment, not a
 requirement to enable HTTPS on the onion service.
 
 GitHub Pages does **not** apply this custom header file. On Pages, the HTML meta
@@ -73,9 +90,9 @@ CSP/referrer policy still applies, but HTTP-only protections (HSTS, frame-ancest
 X-Frame-Options, etc.) must be controlled by the hosting platform or an external
 CDN/reverse proxy. HTML cannot pretend to set those response headers.
 
-Onion discovery also uses the Tor-supported `onion-location` HTML meta tag.
-It points to the onion homepage; unlike a dynamic response header, it cannot
-preserve an arbitrary requested path. Existing frontend onion navigation is unchanged.
+The Tor-supported `onion-location` HTML meta tag is retained as a disabled comment.
+If restored, it points to the onion homepage; unlike a dynamic response header,
+it cannot preserve an arbitrary requested path. Onion navigation is currently paused.
 
 References: [Tor Onion-Location](https://community.torproject.org/onion-services/advanced/onion-location/),
 [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site),

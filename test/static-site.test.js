@@ -3,11 +3,13 @@ const assert = require("node:assert/strict");
 const { readFileSync, existsSync, readdirSync } = require("node:fs");
 const path = require("node:path");
 const { createHash } = require("node:crypto");
+const vm = require("node:vm");
 
 const root = path.join(__dirname, "..");
 const publicDirectory = root;
 const html = readFileSync(path.join(publicDirectory, "index.html"), "utf8").replace(/\r\n?/g, "\n");
 const headers = readFileSync(path.join(publicDirectory, "_headers"), "utf8");
+const activeHtml = html.replace(/<!--[\s\S]*?-->/g, "").replace(/<template\b[^>]*>[\s\S]*?<\/template>/g, "");
 
 test("production is static with no server, npm manifest, API implementation or ASCII data", () => {
   for (const file of [
@@ -31,7 +33,7 @@ test("local homepage images, scripts and stylesheets exist in the publish direct
     assert.ok(existsSync(path.join(publicDirectory, url.split(/[?#]/)[0])), url);
   }
   assert.doesNotMatch(html, /(?:fetch\(|href=|src=)[^\n]*(?:\/api\/|\/ascii\/|\/ipinfo)/);
-  assert.equal((html.match(/class="project" /g) || []).length, 4);
+  assert.equal((activeHtml.match(/class="project" /g) || []).length, 2);
 });
 
 test("meta CSP and static host headers authorize the exact unchanged inline blocks", () => {
@@ -56,8 +58,39 @@ test("meta CSP and static host headers authorize the exact unchanged inline bloc
   }
 });
 
-test("Onion discovery, SEO and both donation assets remain available without a backend", () => {
-  assert.match(html, /<meta http-equiv="onion-location" content="http:\/\/nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion\/">/);
+test("paused projects and Onion entry points are inert but retain their source for restoration", () => {
+  for (const id of ["paused-astranote", "paused-nexacaptcha", "paused-onion-navigation"]) {
+    assert.ok(html.includes(`<template id="${id}">`));
+  }
+  const activeLinks = [...activeHtml.matchAll(/<a\b[^>]*\shref="([^"]+)"/g)].map(([, href]) => href);
+  assert.ok(activeLinks.every(href => !/(?:astranote\.|nexacaptcha\.|\.onion)/.test(href)));
+  assert.doesNotMatch(activeHtml, /<meta\b[^>]*http-equiv="onion-location"/);
+  assert.doesNotMatch(headers.split(/\r?\n/).filter(line => !line.trimStart().startsWith("#")).join("\n"), /Onion-Location:/i);
+  const llms = readFileSync(path.join(root, "llms.txt"), "utf8");
+  assert.doesNotMatch(llms, /astranote|nexacaptcha|\.onion/i);
+  assert.match(llms, /neutron\.nxlabtw\.com/);
+  assert.match(llms, /NeuralNexusLab-nh\/Browzen/);
+});
+
+test("paused Onion logic keeps clearnet links and hides the Dark Web badge on both hostnames", () => {
+  const source = html.match(/const onionEnabled = false;[\s\S]*?(?=\s*function normalizeLanguage)/)?.[0];
+  assert.ok(source);
+  for (const hostname of ["nxlabtw.com", "nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion"]) {
+    const classes = new Map();
+    const link = { dataset: { clearnetHref: "https://neutron.nxlabtw.com", onionHref: "http://neutron.example.onion/" } };
+    vm.runInNewContext(source, {
+      location: { hostname },
+      document: {
+        documentElement: { classList: { toggle(name, value) { classes.set(name, value); } } },
+        querySelectorAll: () => [link]
+      }
+    });
+    assert.equal(classes.get("is-onion"), false);
+    assert.equal(link.href, "https://neutron.nxlabtw.com");
+  }
+});
+
+test("SEO and both donation assets remain available without a backend", () => {
   assert.match(html, /<meta name="referrer" content="strict-origin-when-cross-origin">/);
   assert.ok(html.includes('data-onion-href="http://astranote.'));
   assert.ok(html.includes('data-onion-href="http://neutron.'));

@@ -14,10 +14,8 @@
 
 ## Projects
 
-- [AstraNote](https://astranote.nxlabtw.com/): Free online notebook available across devices.
 - [Neutron — ACMTN](https://neutron.nxlabtw.com/): Private, browser-encrypted conversations through the Advanced Confidential Message Transfer Network.
 - [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Privacy-conscious Chromium-based Windows browser.
-- [NexaCAPTCHA](https://nexacaptcha.nxlabtw.com/): Static image-based human verification.
 
 ## Official profiles
 
