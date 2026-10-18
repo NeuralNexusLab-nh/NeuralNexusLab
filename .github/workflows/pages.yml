@@ -25,10 +25,10 @@ jobs:
         uses: actions/checkout@v7.0.1
       - name: Configure Pages
         uses: actions/configure-pages@v6.0.0
-      - name: Upload public folder
+      - name: Upload repository root
         uses: actions/upload-pages-artifact@v5.0.0
         with:
-          path: public
+          path: .
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5.0.0

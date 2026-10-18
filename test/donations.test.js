@@ -4,7 +4,7 @@ const { readFileSync } = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 
-const html = readFileSync(path.join(__dirname, "..", "public", "index.html"), "utf8");
+const html = readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 const bitcoin = "bc1qxxarjr2qxy3cxwes7enxwucpyvxd9m3k3gdz6y";
 const monero = "48dSub3ZDxmTHC5snu499fDKwfct7vB4cPrnbjASgx45NdeLbT5kEQeDMU42ES6XQbJRaRUn8aayGibVJhG4npsDQCjTXKc";
 

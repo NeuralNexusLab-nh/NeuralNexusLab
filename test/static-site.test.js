@@ -5,7 +5,7 @@ const path = require("node:path");
 const { createHash } = require("node:crypto");
 
 const root = path.join(__dirname, "..");
-const publicDirectory = path.join(root, "public");
+const publicDirectory = root;
 const html = readFileSync(path.join(publicDirectory, "index.html"), "utf8").replace(/\r\n?/g, "\n");
 const headers = readFileSync(path.join(publicDirectory, "_headers"), "utf8");
 
@@ -18,7 +18,9 @@ test("production is static with no server, npm manifest, API implementation or A
   assert.ok(existsSync(path.join(publicDirectory, ".nojekyll")));
   assert.equal(readFileSync(path.join(publicDirectory, "CNAME"), "utf8").trim(), "nxlabtw.com");
   const workflow = readFileSync(path.join(root, ".github/workflows/pages.yml"), "utf8");
-  assert.match(workflow, /path: public/);
+  assert.match(workflow, /path: \./);
+  assert.doesNotMatch(workflow, /path: public/);
+  assert.equal(existsSync(path.join(root, "public", "index.html")), false);
   assert.doesNotMatch(workflow, /npm|server\.js|setup-node/);
 });
 

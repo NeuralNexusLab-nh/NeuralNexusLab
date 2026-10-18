@@ -1,27 +1,28 @@
 # NXLabTW
 
-A fully static company website. All published files live in `public/`: HTML,
-CSS, browser JavaScript, images, SEO files, and a locally bundled QR generator.
+A fully static company website. The entry page and publishing files live at the
+repository root; images and the local QR generator live in `assets/`.
 No Express server, package installation, build command, Node.js runtime, backend,
 API key, or environment variables are required to publish the website.
 
 ## Deploy
 
-- Publish directory: `public`
+- Publish directory: `.` (repository root)
 - Build command: none
-- Entry page: `public/index.html`
-- Custom domain: `nxlabtw.com`, retained in `public/CNAME`
-- The existing GitHub Pages workflow uploads `public/` directly on pushes to
+- Entry page: `index.html`
+- Custom domain: `nxlabtw.com`, retained in `CNAME`
+- The existing GitHub Pages workflow uploads the repository root on pushes to
   `main`. It does not install dependencies or run a server.
 - Other static hosts can publish the same folder. If an old deployment still uses
-  `npm start` or `node server.js`, switch it to static hosting with `public/`
+  `npm start` or `node server.js`, switch it to static hosting with `.`
   as the publish directory. Those commands no longer exist.
-- Do not publish the repository root or enable an SPA fallback for removed APIs.
+- Do not publish ignored local files such as `.env`, `.git/`, or `node_modules/`,
+  or enable an SPA fallback for removed APIs. Deploy from a clean checkout.
 
 For a local preview (Python is only a development convenience):
 
 ```sh
-python -m http.server 8000 --directory public
+python -m http.server 8000 --directory .
 ```
 
 Open http://localhost:8000/. There is no production application server to start.
@@ -59,9 +60,9 @@ Deleted source/assets remain recoverable in Git history.
 The homepage includes a hash-based CSP meta policy and referrer policy, so those
 protections do not depend on a server. Inline scripts/styles must match their
 SHA-256 hashes; after changing an inline block, update its hash in both
-`public/index.html` and `public/_headers`. The optional static tests catch stale hashes.
+`index.html` and `_headers`. The optional static tests catch stale hashes.
 
-`public/_headers` preserves the HTTP security settings for hosts supporting that
+`_headers` preserves the HTTP security settings for hosts supporting that
 format: CSP (including `frame-ancestors`), HSTS without subdomain/preload flags,
 X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and
 Onion-Location for the homepage. HSTS is for the HTTPS clearnet deployment, not a
