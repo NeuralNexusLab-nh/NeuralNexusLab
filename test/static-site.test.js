@@ -1,19 +1,20 @@
-const { test } = require("node:test");
-const assert = require("node:assert/strict");
-const { readFileSync, existsSync, readdirSync } = require("node:fs");
-const path = require("node:path");
-const { createHash } = require("node:crypto");
-const vm = require("node:vm");
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { createHash } from "node:crypto";
+import vm from "node:vm";
+import { fileURLToPath } from "node:url";
 
-const root = path.join(__dirname, "..");
+const root = fileURLToPath(new URL("../", import.meta.url));
 const publicDirectory = root;
 const html = readFileSync(path.join(publicDirectory, "index.html"), "utf8").replace(/\r\n?/g, "\n");
 const headers = readFileSync(path.join(publicDirectory, "_headers"), "utf8");
 const activeHtml = html.replace(/<!--[\s\S]*?-->/g, "").replace(/<template\b[^>]*>[\s\S]*?<\/template>/g, "");
 
-test("production is static with no server, npm manifest, API implementation or ASCII data", () => {
+test("homepage stays static with only dependency-free EdgeOne APIs and no old server or ASCII data", () => {
   for (const file of [
-    "server.js", "package.json", "package-lock.json", ".env.example",
+    "server.js", "package-lock.json",
     "lib/ascii.js", "lib/fetch-public.js", "lib/security-headers.js",
     "scripts/convert-ascii.js", "data/ascii/badapple.json.gz"
   ]) assert.equal(existsSync(path.join(root, file)), false, file);
@@ -24,6 +25,17 @@ test("production is static with no server, npm manifest, API implementation or A
   assert.doesNotMatch(workflow, /path: public/);
   assert.equal(existsSync(path.join(root, "public", "index.html")), false);
   assert.doesNotMatch(workflow, /npm|server\.js|setup-node/);
+  const manifest = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
+  assert.equal(manifest.private, true);
+  assert.equal(manifest.type, "module");
+  assert.deepEqual(manifest.dependencies || {}, {});
+  assert.deepEqual(manifest.devDependencies || {}, {});
+  assert.equal(manifest.scripts.start, undefined);
+  const config = JSON.parse(readFileSync(path.join(root, "edgeone.json"), "utf8"));
+  assert.equal(config.outputDirectory, ".");
+  assert.equal(config.buildCommand, "");
+  assert.equal(config.installCommand, "");
+  assert.deepEqual(readdirSync(path.join(root, "edge-functions")).sort(), ["ip.js", "ipinfo.js"]);
 });
 
 test("local homepage images, scripts and stylesheets exist in the publish directory", () => {
@@ -34,6 +46,17 @@ test("local homepage images, scripts and stylesheets exist in the publish direct
   }
   assert.doesNotMatch(html, /(?:fetch\(|href=|src=)[^\n]*(?:\/api\/|\/ascii\/|\/ipinfo)/);
   assert.equal((activeHtml.match(/class="project" /g) || []).length, 3);
+});
+
+test("EdgeOne preserves the existing security headers without re-enabling Onion discovery", () => {
+  const config = JSON.parse(readFileSync(path.join(root, "edgeone.json"), "utf8"));
+  const rule = config.headers.find(rule => rule.source === "/*");
+  assert.ok(rule);
+  const expected = headers.split(/\r?\n/).map(line => line.match(/^\s+([\w-]+):\s*(.+)$/))
+    .filter(Boolean).map(([, key, value]) => ({ key, value }));
+  assert.deepEqual(rule.headers, expected);
+  assert.ok(rule.headers.every(header => header.value.length <= 1000));
+  assert.ok(rule.headers.every(header => header.key !== "Onion-Location"));
 });
 
 test("meta CSP and static host headers authorize the exact unchanged inline blocks", () => {

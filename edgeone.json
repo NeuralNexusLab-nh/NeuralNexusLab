@@ -1,0 +1,24 @@
+{
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": ".",
+  "headers": [
+    {
+      "source": "/*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-7ACNtmxfatDdbyf6Of6izCDneYTI+sZxp/v03vxVSfA=' 'sha256-U3iKYweZdRgjyGajqcf3/GBaZTjjW8J9ElefEpSENq0=' 'sha256-lKC1gibd58WkWWsixob4Luu8+4vCnAjh7VPj7DbJJJM='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com 'sha256-kjBHdW6pEtAJRIABpT48AFFO5bL2fwh8HuGHU+vmnfc='; style-src-attr 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+        },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), clipboard-write=(self)"
+        }
+      ]
+    }
+  ]
+}
