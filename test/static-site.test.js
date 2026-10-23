@@ -14,7 +14,7 @@ const activeHtml = html.replace(/<!--[\s\S]*?-->/g, "").replace(/<template\b[^>]
 
 test("homepage stays static with only dependency-free EdgeOne APIs and no old server or ASCII data", () => {
   for (const file of [
-    "server.js", "package-lock.json",
+    "server.js", "package-lock.json", ".env.example",
     "lib/ascii.js", "lib/fetch-public.js", "lib/security-headers.js",
     "scripts/convert-ascii.js", "data/ascii/badapple.json.gz"
   ]) assert.equal(existsSync(path.join(root, file)), false, file);

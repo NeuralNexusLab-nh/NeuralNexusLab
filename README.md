@@ -36,9 +36,9 @@ TOKEN=your_ipinfo_lite_token
 
 `TOKEN` is an **IPinfo API token**, not a Tencent Cloud or EdgeOne deployment
 token. Enable it for Production, and for Preview if you want to test the API on
-preview deployments. Redeploy after changing it. `.env.example` is a placeholder
-reference only; the deployed functions read `context.env.TOKEN`, not a committed
-`.env` file. Never put the real value in frontend JavaScript, Git, or a public
+preview deployments. Redeploy after changing it. No environment example file is
+included; the deployed functions read `context.env.TOKEN` from the platform, not
+a committed `.env` file. Never put the real value in frontend JavaScript, Git, or a public
 upload. `/ip` does not require any environment variable.
 
 ### API routes
