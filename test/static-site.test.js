@@ -35,7 +35,8 @@ test("homepage stays static with only dependency-free EdgeOne APIs and no old se
   assert.equal(config.outputDirectory, ".");
   assert.equal(config.buildCommand, "");
   assert.equal(config.installCommand, "");
-  assert.deepEqual(readdirSync(path.join(root, "edge-functions")).sort(), ["ip.js", "ipinfo.js"]);
+  assert.deepEqual(readdirSync(path.join(root, "edge-functions")).sort(), ["ip.js", "ipinfo", "ipinfo.js"]);
+  assert.deepEqual(readdirSync(path.join(root, "edge-functions", "ipinfo")), ["[ip].js"]);
 });
 
 test("local homepage images, scripts and stylesheets exist in the publish directory", () => {

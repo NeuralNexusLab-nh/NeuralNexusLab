@@ -1,5 +1,5 @@
-// /ipinfo queries the visitor's IP, not the function's outbound IP.
-export async function onRequest({ request, env }) {
+// Shared IPinfo lookup for the visitor route and the explicit-IP route.
+export async function lookupIpInfo({ request, env }, ip) {
   const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
@@ -20,7 +20,6 @@ export async function onRequest({ request, env }) {
   const token = typeof env?.TOKEN === "string" ? env.TOKEN.trim() : "";
   if (!token) return json({ error: "TOKEN is not configured" }, 503);
 
-  const ip = request.eo?.clientIp;
   if (typeof ip !== "string" || !ip) {
     return json({ error: "Client IP unavailable" }, 503);
   }
@@ -54,4 +53,9 @@ export async function onRequest({ request, env }) {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+// /ipinfo queries the visitor's IP, not the function's outbound IP.
+export function onRequest(context) {
+  return lookupIpInfo(context, context.request.eo?.clientIp);
 }

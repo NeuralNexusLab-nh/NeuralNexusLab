@@ -1,6 +1,6 @@
 # NXLabTW
 
-A static company homepage with two small EdgeOne Pages / Makers Edge Functions.
+A static company homepage with small EdgeOne Pages / Makers Edge Functions.
 The entry page and publishing files stay at the repository root; images and the
 local QR generator live in `assets/`. No Express server, production Node.js
 process, third-party npm dependency, or frontend build is required.
@@ -47,10 +47,12 @@ upload. `/ip` does not require any environment variable.
 | --- | --- |
 | `GET /ip` | Visitor IP as plain text |
 | `GET /ipinfo` | IPinfo Lite JSON for that visitor IP |
+| `GET /ipinfo/{ip}` | IPinfo Lite JSON for the specified IPv4 or IPv6 address |
 
-Both use `context.request.eo.clientIp` from the EdgeOne runtime, not arbitrary
-client headers. Both support `HEAD` without a body; `/ipinfo` HEAD does not call
-IPinfo. Other methods return `405` with `Allow: GET, HEAD`. Responses use
+`/ip` and `/ipinfo` use `context.request.eo.clientIp` from the EdgeOne runtime,
+not arbitrary client headers. All three routes support `HEAD` without a body;
+IPinfo HEAD requests do not call the provider. Other methods return `405` with
+`Allow: GET, HEAD`. Responses use
 `Cache-Control: no-store`; do not add a CDN rule that forces caching of these URLs.
 
 `/ipinfo` sends the visitor's IP to `https://api.ipinfo.io/lite/<IP>` server-side.
@@ -61,8 +63,31 @@ invalid JSON errors return `502`, and an 8-second lookup timeout returns `504`.
 Provider error bodies and exception details are not exposed. A token failure
 does not stop the homepage or `/ip` from working.
 
-These are public same-origin endpoints, not a proxy, VPN, authenticated lookup
-service, or `/ipinfo/:ip` API. No wildcard CORS, database, KV, tracking or request
+`/ipinfo/{ip}` accepts IP literals only, not hostnames, URLs, ports, or IPv6 zone
+IDs. Invalid IP input returns `400` without calling IPinfo. It reuses the same
+`TOKEN`, timeout and error handling as `/ipinfo`; no extra variable or dependency
+is needed. Example commands (the IPv6 belongs in the path without brackets):
+
+```sh
+curl.exe https://nxlabtw.com/ip
+curl.exe https://nxlabtw.com/ipinfo
+curl.exe https://nxlabtw.com/ipinfo/8.8.8.8
+curl.exe https://nxlabtw.com/ipinfo/2001:4860:4860::8888
+```
+
+In Windows PowerShell 5.1, `curl` may be an alias for `Invoke-WebRequest`, which
+can show a script-parsing warning. This is a client-side safeguard, not a TLS
+warning, and cannot be disabled by website response headers. Use `curl.exe` to
+print the raw response directly. If you want the shorter name, run this in your
+own PowerShell session (it does not permanently change your profile):
+
+```powershell
+Set-Alias curl curl.exe
+curl https://nxlabtw.com/ip
+```
+
+These are public same-origin endpoints, not a proxy, VPN, or authenticated lookup
+service. No wildcard CORS, database, KV, tracking or request
 logging is added. Use the hosting platform's rate-limiting controls if needed;
 there is no reliable shared in-memory rate limiter across serverless instances.
 
@@ -135,12 +160,11 @@ utility, and bundled ASCII video frames remain removed. The following former
 routes are not restored:
 
 - `/api/health` and `/api/fetch`
-- `/ipinfo/:ip`
 - `/ascii`, `/ascii/list`, and every ASCII animation stream
 - `/.onion`, `/onion`, and `/tor` text endpoints
 - `/studyx.ai` and `/StudyX.AI` server redirects
 
-Only `/ip` and `/ipinfo` have been reintroduced as Edge Functions. No replacement
+Only `/ip`, `/ipinfo` and `/ipinfo/{ip}` have been reintroduced as Edge Functions. No replacement
 proxy or fake static API has been added. Other removed endpoints should return
 404. Deleted source/assets remain recoverable in Git history.
 

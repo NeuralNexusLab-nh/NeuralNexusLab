@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { onRequest as ipHandler } from "../edge-functions/ip.js";
 import { onRequest as ipinfoHandler } from "../edge-functions/ipinfo.js";
+import { onRequest as specificIpinfoHandler } from "../edge-functions/ipinfo/[ip].js";
 
 function context({ ip = "203.0.113.42", method = "GET", token = "test-token" } = {}) {
   const request = new Request("https://nxlabtw.com/ipinfo", {
@@ -154,9 +155,67 @@ test("Edge handlers execute with Web APIs only, without Node, Express or npm glo
       fetch: async () => new Response('{"ip":"203.0.113.42"}')
     };
     vm.createContext(sandbox);
-    vm.runInContext(source.replace("export ", ""), sandbox);
+    vm.runInContext(source.replaceAll("export ", ""), sandbox);
     const response = await sandbox.onRequest(fixture);
     assert.equal(response.status, 200);
     assertPrivateResponse(response);
   }
+});
+
+test("/ipinfo/{ip} looks up validated IPv4 and IPv6 instead of the visitor IP", async t => {
+  const addresses = [
+    "8.8.8.8", "1.1.1.1", "255.255.255.255", "0.0.0.0",
+    "2001:4860:4860::8888", "::1", "::", "2001:DB8:0:0:0:0:0:42", "::ffff:192.0.2.1"
+  ];
+  for (const ip of addresses) {
+    const fixture = context({ token: "specific&token=+" });
+    fixture.params = { ip };
+    delete fixture.request.eo;
+    const fetchMock = t.mock.method(globalThis, "fetch", async () => new Response(JSON.stringify({ ip })));
+    const response = await specificIpinfoHandler(fixture);
+    assert.equal(response.status, 200, ip);
+    assert.deepEqual(await response.json(), { ip });
+    assertPrivateResponse(response);
+    const url = new URL(fetchMock.mock.calls[0].arguments[0]);
+    assert.equal(url.origin, "https://api.ipinfo.io");
+    assert.equal(decodeURIComponent(url.pathname), `/lite/${ip}`);
+    assert.equal(url.searchParams.get("token"), "specific&token=+");
+    assert.equal([...url.searchParams].length, 1);
+    fetchMock.mock.restore();
+  }
+});
+
+test("/ipinfo/{ip} rejects malformed IPs, hostnames, URL injection and zone IDs without fetching", async t => {
+  const fetchMock = t.mock.method(globalThis, "fetch", () => { throw new Error("Must not fetch"); });
+  for (const ip of [
+    undefined, null, "", "example.com", "localhost", "127.1", "1234", "256.0.0.1",
+    "01.2.3.4", "1.2.3.4.5", "1.2.3.-1", "8.8.8.8:443", " 8.8.8.8", "8.8.8.8\n",
+    "https://example.com", "8.8.8.8?token=other", "8.8.8.8/path", "8.8.8.8%2fme",
+    "[::1]", "fe80::1%eth0", ":::1", "1::2::3", "::ffff:999.1.1.1", "abcd:".repeat(30)
+  ]) {
+    for (const method of ["GET", "HEAD"]) {
+      const fixture = context({ method });
+      fixture.params = { ip };
+      const response = await specificIpinfoHandler(fixture);
+      assert.equal(response.status, 400, String(ip));
+      assertPrivateResponse(response);
+      assert.equal(await response.text(), method === "HEAD" ? "" : '{"error":"Invalid IP address"}');
+    }
+  }
+  assert.equal(fetchMock.mock.callCount(), 0);
+});
+
+test("/ipinfo/{ip} shares token, method, HEAD and upstream failure handling", async t => {
+  const fixture = options => ({ ...context(options), params: { ip: "8.8.8.8" } });
+  const fetchMock = t.mock.method(globalThis, "fetch", async () => new Response("secret", { status: 429 }));
+  assert.equal((await specificIpinfoHandler(fixture({ method: "POST" }))).status, 405);
+  assert.equal((await specificIpinfoHandler(fixture({ token: "" }))).status, 503);
+  const head = await specificIpinfoHandler(fixture({ method: "HEAD" }));
+  assert.equal(head.status, 200);
+  assert.equal(await head.text(), "");
+  assert.equal(fetchMock.mock.callCount(), 0);
+  const rejected = await specificIpinfoHandler(fixture());
+  assert.equal(rejected.status, 429);
+  assert.deepEqual(await rejected.json(), { error: "IP information provider rejected the request" });
+  assertPrivateResponse(rejected);
 });
