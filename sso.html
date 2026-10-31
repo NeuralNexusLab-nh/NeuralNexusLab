@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    NTPC SSO
+  </head>
+  <body>
+    <script>
+      let hash = window.location.hash.substring(1);
+      if (hash === "logout") {
+        window.open("https://sso.ntpc.edu.tw");
+        document.body.innerHTML = "Opps! Your SSO account has been logout!";
+      }
+    </script>
+  </body>
+</html>
