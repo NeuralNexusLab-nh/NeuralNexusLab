@@ -11,16 +11,27 @@ test("PiPlex is a standalone static page with English to Traditional Chinese def
   assert.match(page, /<select id="source-language"[^>]*><option value="en">/);
   assert.match(page, /<select id="target-language"[^>]*><option value="zh-TW">/);
   assert.match(page, /https:\/\/nxlabtw\.com\/piplex\.html/);
-  assert.match(page, /<html lang="zh-Hant">/);
+  assert.match(page, /<html lang="en">/);
   for (const id of ["left-text", "right-text"]) {
     const textarea = page.match(new RegExp(`<textarea id="${id}"[^>]*>`))?.[0];
     assert.ok(textarea);
     assert.doesNotMatch(textarea, /readonly|disabled/);
     assert.match(textarea, /dir="auto"/);
   }
-  assert.match(page, /MyMemory 處理/);
-  assert.match(page, /請勿輸入機密資料/);
+  assert.match(page, /Text is sent to MyMemory/);
+  assert.match(page, /Avoid sensitive information/);
   assert.doesNotMatch(page, /<input[^>]+id="auto-translate"[^>]+checked/);
+});
+
+test("PiPlex keeps a minimal dark workspace and an entirely English interface", () => {
+  assert.match(css, /color-scheme: dark/);
+  assert.match(css, /--background: #0c0e13/);
+  assert.match(page, /<h1>Translate<\/h1>/);
+  assert.doesNotMatch(page, /introduction|language-art|details-strip|data-example/);
+  assert.doesNotMatch(page + source, /[\u3400-\u9fff]/);
+  assert.equal(LANGUAGES.find(([code]) => code === "zh-TW")[1], "Traditional Chinese");
+  assert.match(source, /index === active \? "Source" : "Translation"/);
+  assert.match(source, /copied \? "Copied" : "Select text to copy"/);
 });
 
 test("all 33 original languages are retained without duplicate codes", () => {

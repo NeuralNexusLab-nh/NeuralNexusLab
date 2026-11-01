@@ -1,14 +1,14 @@
 export const MAX_BYTES = 500;
 export const LANGUAGES = [
-  ["en", "English"], ["zh-TW", "繁體中文"], ["zh-CN", "简体中文"],
-  ["ja", "日本語"], ["ko", "한국어"], ["es", "Español"], ["fr", "Français"],
-  ["de", "Deutsch"], ["it", "Italiano"], ["pt", "Português"], ["nl", "Nederlands"],
-  ["ru", "Русский"], ["ar", "العربية"], ["tr", "Türkçe"], ["pl", "Polski"],
-  ["cs", "Čeština"], ["da", "Dansk"], ["el", "Ελληνικά"], ["he", "עברית"],
-  ["hi", "हिन्दी"], ["id", "Bahasa Indonesia"], ["ms", "Bahasa Melayu"],
-  ["no", "Norsk"], ["sv", "Svenska"], ["fi", "Suomi"], ["hu", "Magyar"],
-  ["sk", "Slovenčina"], ["sl", "Slovenščina"], ["ro", "Română"],
-  ["bg", "Български"], ["uk", "Українська"], ["th", "ไทย"], ["vi", "Tiếng Việt"]
+  ["en", "English"], ["zh-TW", "Traditional Chinese"], ["zh-CN", "Simplified Chinese"],
+  ["ja", "Japanese"], ["ko", "Korean"], ["es", "Spanish"], ["fr", "French"],
+  ["de", "German"], ["it", "Italian"], ["pt", "Portuguese"], ["nl", "Dutch"],
+  ["ru", "Russian"], ["ar", "Arabic"], ["tr", "Turkish"], ["pl", "Polish"],
+  ["cs", "Czech"], ["da", "Danish"], ["el", "Greek"], ["he", "Hebrew"],
+  ["hi", "Hindi"], ["id", "Indonesian"], ["ms", "Malay"],
+  ["no", "Norwegian"], ["sv", "Swedish"], ["fi", "Finnish"], ["hu", "Hungarian"],
+  ["sk", "Slovak"], ["sl", "Slovenian"], ["ro", "Romanian"],
+  ["bg", "Bulgarian"], ["uk", "Ukrainian"], ["th", "Thai"], ["vi", "Vietnamese"]
 ];
 
 export function utf8Length(text) {
@@ -57,7 +57,7 @@ export function initPiPlex(doc = document) {
   const byId = id => doc.getElementById(id);
   const sides = ["left", "right"].map(name => ({
     name, text: byId(`${name}-text`), panel: byId(`${name}-panel`), counter: byId(`${name}-counter`),
-    role: byId(`${name}-role`), hint: byId(`${name}-hint`), code: byId(`${name}-code`),
+    role: byId(`${name}-role`), code: byId(`${name}-code`),
     copy: byId(`copy-${name}`), clear: byId(`clear-${name}`), feedback: byId(`${name}-copy-feedback`),
     language: byId(name === "left" ? "source-language" : "target-language"), copyTimer: null
   }));
@@ -91,20 +91,19 @@ export function initPiPlex(doc = document) {
   function render() {
     for (const [index, side] of sides.entries()) {
       const bytes = utf8Length(side.text.value);
-      side.counter.textContent = `${Array.from(side.text.value).length} 字元 · ${bytes} / ${MAX_BYTES} bytes`;
+      side.counter.textContent = `${bytes} / ${MAX_BYTES} bytes`;
       side.counter.dataset.over = String(bytes > MAX_BYTES);
       side.copy.disabled = !side.text.value;
       side.clear.disabled = !side.text.value;
       side.panel.dataset.role = index === active ? "source" : "translation";
-      side.role.textContent = index === active ? "原文" : "譯文";
-      side.hint.textContent = index === active ? "你的想法，從這裡開始" : "也可以在這一側輸入";
+      side.role.textContent = index === active ? "Source" : "Translation";
       side.code.textContent = side.language.value.toUpperCase();
       side.text.lang = side.language.value;
       side.text.setAttribute("aria-busy", String(loading && index !== active));
     }
     button.disabled = loading || !sides[active].text.value.trim() || utf8Length(sides[active].text.value) > MAX_BYTES;
     button.dataset.direction = active === 0 ? "forward" : "reverse";
-    buttonLabel.textContent = loading ? "翻譯中" : active === 0 ? "翻譯文字" : "反向翻譯";
+    buttonLabel.textContent = loading ? "Translating…" : "Translate";
   }
 
   function cancel() {
@@ -122,9 +121,9 @@ export function initPiPlex(doc = document) {
     sides[1 - index].panel.dataset.stale = String(Boolean(sides[1 - index].text.value));
     render();
     if (utf8Length(sides[index].text.value) > MAX_BYTES) {
-      setStatus("超過單次 500 bytes，請縮短文字後再試。", "error");
+      setStatus("Text exceeds 500 bytes. Shorten it to continue.", "error");
     } else if (!sides[index].text.value.trim()) {
-      setStatus("準備好，讓文字跨越語言");
+      setStatus("Ready");
     } else {
       setStatus(`${languageName(sides[index])} → ${languageName(sides[1 - index])}`, "ready");
       if (auto.checked && !composing) debounce = setTimeout(run, 750);
@@ -137,12 +136,12 @@ export function initPiPlex(doc = document) {
     const target = sides[1 - active];
     const text = source.text.value;
     if (!text.trim() || utf8Length(text) > MAX_BYTES) {
-      setStatus(!text.trim() ? "請先在任一側輸入要翻譯的文字。" : "超過單次 500 bytes，請縮短文字後再試。", !text.trim() ? "idle" : "error");
+      setStatus(!text.trim() ? "Enter text on either side." : "Text exceeds 500 bytes. Shorten it to continue.", !text.trim() ? "idle" : "error");
       render(); return;
     }
     const key = [active, source.language.value, target.language.value, text].join("\u0000");
     if (lastSuccess?.key === key && target.text.value === lastSuccess.output) {
-      setStatus("翻譯已完成，可複製或繼續編輯。", "done");
+      setStatus("Translated", "done");
       render(); return;
     }
     const current = revision;
@@ -151,7 +150,7 @@ export function initPiPlex(doc = document) {
     let timedOut = false;
     const timeout = setTimeout(() => { timedOut = true; currentController.abort(); }, 15000);
     loading = true;
-    setStatus(`${languageName(source)} → ${languageName(target)}，翻譯中…`, "loading");
+    setStatus("Translating…", "loading");
     render();
     try {
       const output = await translateSegment(text, source.language.value, target.language.value, { signal: currentController.signal });
@@ -159,15 +158,15 @@ export function initPiPlex(doc = document) {
       target.text.value = output;
       target.panel.dataset.stale = "false";
       lastSuccess = { key, output };
-      setStatus("翻譯已完成，可複製或繼續編輯。", "done");
+      setStatus("Translated", "done");
     } catch (error) {
       if (current !== revision) return;
       const messages = {
-        limit: "超過單次 500 bytes，請縮短文字後再試。",
-        quota: "MyMemory 的翻譯額度暫時用完了，請稍後再試。",
-        language: "請重新選擇支援的語言。"
+        limit: "Text exceeds 500 bytes. Shorten it to continue.",
+        quota: "MyMemory's translation limit was reached. Try again later.",
+        language: "Please select a supported language."
       };
-      setStatus(timedOut ? "連線逾時，請稍後重新翻譯。" : messages[error.code] || "暫時無法連線至翻譯服務，請再試一次。", "error");
+      setStatus(timedOut ? "Connection timed out. Try again." : messages[error.code] || "Translation unavailable. Try again.", "error");
     } finally {
       clearTimeout(timeout);
       if (current === revision) { loading = false; render(); }
@@ -190,7 +189,7 @@ export function initPiPlex(doc = document) {
       side.feedback.textContent = ""; clearTimeout(side.copyTimer);
       if (index === active) sides[1 - index].panel.dataset.stale = String(Boolean(sides[1 - index].text.value));
       lastSuccess = null;
-      setStatus(`${index === 0 ? "左" : "右"}側文字已清空。`);
+      setStatus("Cleared");
       render(); side.text.focus();
     });
     side.copy.addEventListener("click", async () => {
@@ -206,7 +205,7 @@ export function initPiPlex(doc = document) {
         side.text.setSelectionRange(start, end);
         focused?.focus({ preventScroll: true });
       }
-      side.feedback.textContent = copied ? "已複製" : "請選取文字後手動複製";
+      side.feedback.textContent = copied ? "Copied" : "Select text to copy";
       clearTimeout(side.copyTimer);
       side.copyTimer = setTimeout(() => { side.feedback.textContent = ""; }, 1800);
     });
@@ -219,29 +218,15 @@ export function initPiPlex(doc = document) {
     active = 0;
     lastSuccess = null;
     for (const side of sides) { side.panel.dataset.stale = "false"; side.feedback.textContent = ""; }
-    setStatus("語言與文字已交換。", "ready");
+    setStatus("Swapped", "ready");
     render();
   });
   auto.addEventListener("change", () => {
     clearTimeout(debounce);
     if (auto.checked) edited(active);
-    else { cancel(); setStatus("即時翻譯已關閉，按下翻譯按鈕送出。"); render(); }
+    else { cancel(); setStatus("Auto-translate off"); render(); }
   });
   button.addEventListener("click", run);
-  const examples = {
-    greeting: "Hello! It is lovely to meet you. How has your day been?",
-    travel: "A window seat, a good book, and somewhere new to discover.",
-    work: "Great ideas start with a conversation. Let's build something meaningful together."
-  };
-  doc.querySelectorAll("[data-example]").forEach(example => example.addEventListener("click", () => {
-    cancel();
-    sides[0].language.value = "en";
-    sides[1].language.value = "zh-TW";
-    sides[0].text.value = examples[example.dataset.example];
-    edited(0);
-    sides[0].text.focus({ preventScroll: true });
-    run();
-  }));
   if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) byId("keyboard-hint").firstElementChild.textContent = "⌘";
   render();
 }

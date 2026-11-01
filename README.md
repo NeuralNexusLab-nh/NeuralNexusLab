@@ -106,7 +106,8 @@ and application module are `assets/piplex.css` and `assets/piplex.js`. It works
 on static hosts as well as Makers, without a backend, API key or new dependency.
 The company homepage and existing Edge Functions are unchanged.
 
-- Defaults to English -> Traditional Chinese and retains all 33 original languages.
+- Minimal dark workspace with an English interface; defaults to English ->
+  Traditional Chinese and retains all 33 original languages.
 - Both text areas are editable: editing either side selects its translation direction.
 - Swap exchanges both languages and text, then uses the left side as the source.
 - Explicit translate button and Ctrl/Command+Enter; optional real-time translation
