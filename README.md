@@ -99,6 +99,38 @@ References: [Edge Functions](https://pages.edgeone.ai/document/edge-functions),
 [build/environment settings](https://pages.edgeone.ai/document/build-guide),
 [IPinfo Lite](https://ipinfo.io/developers/lite-api).
 
+## PiPlex Translate
+
+`/piplex.html` is a standalone, buildless translation workspace. Its stylesheet
+and application module are `assets/piplex.css` and `assets/piplex.js`. It works
+on static hosts as well as Makers, without a backend, API key or new dependency.
+The company homepage and existing Edge Functions are unchanged.
+
+- Defaults to English -> Traditional Chinese and retains all 33 original languages.
+- Both text areas are editable: editing either side selects its translation direction.
+- Swap exchanges both languages and text, then uses the left side as the source.
+- Explicit translate button and Ctrl/Command+Enter; optional real-time translation
+  is off by default, debounces typing, and waits for IME composition to finish.
+- Copy controls include a fallback for unavailable Clipboard API; each clear
+  control clears only its own side. Text is not saved in local/session storage.
+- Uses the original MyMemory GET API in the browser. Translation text is sent to
+  MyMemory, which has its own usage/privacy policies; do not enter confidential
+  information. Requests omit cookies/referrers and disable browser caching.
+- Enforces MyMemory's documented **500 UTF-8 bytes per request**, not 500 Chinese
+  characters. Over-limit text is left intact with a clear message; it is never
+  silently truncated or split into multiple requests.
+- Handles quota, network and timeout errors; cancels superseded requests and
+  prevents stale responses from overwriting newer edits. Same-language and
+  unchanged repeated translations avoid unnecessary provider calls.
+
+The page uses local external JS/CSS so it works with the existing hash-based CSP,
+with no new inline script/style hashes or `unsafe-inline`. Layout adapts from
+equal-width desktop panels to stacked mobile panels; reduced motion, keyboard
+focus, RTL input and inline accessible status messages are supported.
+
+Run `node --test test/piplex.test.js` for its dependency-free checks. Provider
+limits: https://mymemory.translated.net/doc/spec.php.
+
 ## Static hosting fallback
 
 - Publish directory: `.` (repository root)

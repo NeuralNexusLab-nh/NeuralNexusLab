@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.mymemory.translated.net; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#f6f7fb">
+  <meta name="description" content="PiPlex 是 NXLabTW 的輕巧雙向翻譯工具。支援 33 種語言、交換語言與雙側輸入，預設英文翻譯成繁體中文。">
+  <meta property="og:title" content="PiPlex 翻譯 — NXLabTW">
+  <meta property="og:description" content="兩種語言，同一個想法。輕巧、清晰的雙向文字翻譯工具。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nxlabtw.com/piplex.html">
+  <meta property="og:site_name" content="NXLabTW">
+  <title>PiPlex 翻譯 — NXLabTW</title>
+  <link rel="canonical" href="https://nxlabtw.com/piplex.html">
+  <link rel="icon" href="assets/nx-logo-imagegen-final.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/piplex.css">
+  <script type="module" src="assets/piplex.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#translator">跳至翻譯工具</a>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h15m-4-4 4 4-4 4M20 16H5m4-4-4 4 4 4"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14z"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6L10 14m0-10H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header">
+    <nav class="top-nav shell" aria-label="主要導覽">
+      <a class="company-brand" href="./" aria-label="回到 NXLabTW 首頁">
+        <img src="assets/nx-logo-imagegen-final.png" width="32" height="32" alt="">
+        <span>NXLabTW<span class="brand-period">.</span></span>
+      </a>
+      <span class="nav-divider" aria-hidden="true"></span>
+      <a class="product-nav" href="piplex.html" aria-current="page">PiPlex <span>Translate</span></a>
+      <a class="back-link" href="./">探索 NXLabTW <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="introduction" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <div class="product-signature"><span class="product-mark" aria-hidden="true">p<span>p</span></span><span>PiPlex<span class="signature-detail">TRANSLATE</span></span></div>
+        <h1 id="page-title">兩種語言，<span>同一個想法</span></h1>
+        <p class="intro-description">把想說的，清楚傳達。從任一側輸入，讓對話自然延續。</p>
+      </div>
+      <div class="language-art" aria-hidden="true">
+        <span class="art-orbit"></span><span class="art-glyph art-glyph-latin">Aa</span><span class="art-glyph art-glyph-han">文</span><span class="art-caption">A LITTLE CLOSER, IN EVERY LANGUAGE.</span>
+      </div>
+    </section>
+
+    <section class="translator" id="translator" aria-label="PiPlex 雙向翻譯工具">
+      <div class="workspace-heading">
+        <span class="workspace-title"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>文字翻譯</span>
+        <label class="auto-control"><span>即時翻譯</span><input id="auto-translate" type="checkbox" role="switch" aria-describedby="privacy-note"><span class="switch-track" aria-hidden="true"></span></label>
+      </div>
+
+      <div class="language-bar">
+        <div class="language-choice">
+          <span class="language-index" aria-hidden="true">01</span>
+          <label class="visually-hidden" for="source-language">左側語言</label>
+          <select id="source-language" aria-label="左側語言"><option value="en">English</option></select>
+          <span class="language-code" id="left-code">EN</span>
+        </div>
+        <button class="swap-button" id="swap-languages" type="button" aria-label="交換左右語言與文字" title="交換語言與文字"><svg class="icon" aria-hidden="true"><use href="#i-swap"/></svg></button>
+        <div class="language-choice">
+          <span class="language-index" aria-hidden="true">02</span>
+          <label class="visually-hidden" for="target-language">右側語言</label>
+          <select id="target-language" aria-label="右側語言"><option value="zh-TW">繁體中文</option></select>
+          <span class="language-code" id="right-code">ZH-TW</span>
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <div class="editor-panel" id="left-panel" data-role="source">
+          <div class="panel-heading"><span class="role-label" id="left-role">原文</span><span class="panel-hint" id="left-hint">你的想法，從這裡開始</span><button class="icon-button clear-button" id="clear-left" type="button" aria-label="清空左側文字" title="清空文字" disabled><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+          <label class="visually-hidden" for="left-text">左側文字；輸入後可翻譯至右側</label>
+          <textarea id="left-text" lang="en" dir="auto" placeholder="Type something worth sharing…" spellcheck="false" aria-describedby="left-counter translation-limit"></textarea>
+          <div class="panel-footer"><button class="icon-button copy-button" id="copy-left" type="button" aria-label="複製左側文字" title="複製文字" disabled><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="copy-feedback" id="left-copy-feedback" role="status"></span><span class="character-count" id="left-counter">0 字元 <span>·</span> 0 / 500 bytes</span></div>
+        </div>
+        <div class="editor-panel" id="right-panel" data-role="translation">
+          <div class="panel-heading"><span class="role-label" id="right-role">譯文</span><span class="panel-hint" id="right-hint">也可以在這一側輸入</span><button class="icon-button clear-button" id="clear-right" type="button" aria-label="清空右側文字" title="清空文字" disabled><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+          <label class="visually-hidden" for="right-text">右側文字；輸入後可反向翻譯至左側</label>
+          <textarea id="right-text" lang="zh-TW" dir="auto" placeholder="翻譯會出現在這裡。&#10;你也可以直接輸入中文，反向翻譯。" spellcheck="false" aria-describedby="right-counter translation-limit"></textarea>
+          <div class="panel-footer"><button class="icon-button copy-button" id="copy-right" type="button" aria-label="複製右側文字" title="複製文字" disabled><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="copy-feedback" id="right-copy-feedback" role="status"></span><span class="character-count" id="right-counter">0 字元 <span>·</span> 0 / 500 bytes</span></div>
+        </div>
+      </div>
+
+      <div class="workspace-actions">
+        <div class="translation-state" id="translation-state" role="status" aria-live="polite" aria-atomic="true"><span class="status-indicator" aria-hidden="true"></span><span id="status-text">準備好，讓文字跨越語言</span></div>
+        <div class="action-group"><span class="keyboard-hint" id="keyboard-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span><button class="translate-button" id="translate-button" type="button" disabled><span id="translate-label">翻譯文字</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+      </div>
+    </section>
+
+    <div class="below-workspace">
+      <div class="try-examples"><span>試著說</span><button type="button" data-example="greeting">一句問候 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button type="button" data-example="travel">旅行日常 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button type="button" data-example="work">工作訊息 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+      <p class="translation-limit" id="translation-limit"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>單次上限 500 UTF-8 bytes<span>，約 166 個中文字</span></p>
+    </div>
+
+    <section class="details-strip" aria-label="使用說明">
+      <div class="detail-item"><span class="detail-number">01 —</span><div><h2>從任何一側開始</h2><p>兩邊都能編輯，翻譯方向跟著輸入切換。</p></div></div>
+      <div class="detail-item"><span class="detail-number">02 —</span><div><h2>33 種語言，一鍵交換</h2><p>保留原文與譯文，讓對話來回更順手。</p></div></div>
+      <div class="detail-item"><span class="detail-number">03 —</span><div><h2>不自動儲存翻譯紀錄</h2><p id="privacy-note">翻譯時文字會送至 MyMemory 處理；本站不儲存翻譯紀錄。請勿輸入機密資料。</p></div></div>
+    </section>
+    <noscript><p class="noscript-note">PiPlex 需要啟用 JavaScript 才能翻譯文字。</p></noscript>
+  </main>
+
+  <footer class="site-footer shell"><div><a class="footer-product" href="piplex.html">PiPlex</a><span class="footer-divider">/</span><span>A small tool. A wider world.</span></div><div><span>Made by <a href="./">NXLabTW</a></span><a href="https://mymemory.translated.net/doc/usagelimits.php" target="_blank" rel="noopener noreferrer">MyMemory 翻譯服務與額度 <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div></footer>
+</body>
+</html>
