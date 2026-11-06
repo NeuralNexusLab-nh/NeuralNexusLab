@@ -1,6 +1,6 @@
 # NXLabTW
 
-> NXLabTW is a Taiwan-based technology team specializing in website development, web application security testing, and practical software products.
+> NXLabTW is a Taiwan-based web design and development team building websites with usability, maintainability, and security in mind.
 
 ## Official website
 
@@ -8,13 +8,13 @@
 
 ## Services
 
-- Website development for small companies, independent teams, and organizations.
-- Web application security assessments and penetration testing.
-- Service inquiries: service@nxlabtw.com
+- Company websites, landing pages, and web tools for small businesses and teams.
+- Security considerations include data handling, access permissions, and checks before launch.
+- Website project inquiries: mail@nxlabtw.com
 
 ## Projects
 
-- [AtlasNote](https://atlasnote.nxlabtw.com/): Local-first notebook for text, images, and Markdown, with encryption and offline access. No account or cloud required.
+- [AtlasNote](https://atlasnote.nxlabtw.com/): Online notebook for text and images, with cross-device access and optional encryption.
 - [Neutron — ACMTN](https://neutron.nxlabtw.com/): Private, browser-encrypted conversations through the Advanced Confidential Message Transfer Network.
 - [Browzen](https://github.com/NeuralNexusLab-nh/Browzen): Portable Windows browser with Chromium rendering, Tor routing, relay-route inspection, and configurable security levels.
 

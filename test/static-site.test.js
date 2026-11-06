@@ -91,10 +91,29 @@ test("AtlasNote leads the visible project list with its real URL and three local
   const descriptions = [...html.matchAll(/projectAtlasNote: "([^"]+)"/g)].map(match => match[1]);
   assert.equal(descriptions.length, 3);
   for (const copy of descriptions) {
-    assert.match(copy, /Markdown/);
+    assert.match(copy, /images|圖片|画像/);
     assert.match(copy, /encrypt|加密|暗号化/i);
-    assert.match(copy, /offline|離線|オフライン/i);
+    assert.match(copy, /cross-device|跨裝置|複数の端末/i);
   }
+});
+
+test("homepage leads with website development and displays genuine project previews", () => {
+  assert.match(activeHtml, /Web Design & Development/);
+  assert.match(activeHtml, /class="hero-action primary" href="mailto:mail@nxlabtw.com"/);
+  assert.match(activeHtml, /class="hero-action" href="#projects"/);
+  assert.match(activeHtml, /class="service-email" href="mailto:mail@nxlabtw.com"/);
+  assert.doesNotMatch(html, /service@nxlabtw\.com/);
+  assert.match(activeHtml, /Security from the start/);
+  assert.match(activeHtml, /Selected work/);
+  assert.match(activeHtml, /atlasnote-work\.jpg/);
+  assert.match(activeHtml, /neutron-work\.jpg/);
+  assert.match(activeHtml, /Windows app/);
+  const graph = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])["@graph"];
+  assert.deepEqual(graph.filter(entry => entry["@type"] === "Service").map(entry => entry.serviceType), ["Website design and development"]);
+  assert.equal(graph.find(entry => entry["@type"] === "Organization").contactPoint[0].email, "mail@nxlabtw.com");
+  const stylesheet = readFileSync(path.join(root, "assets/home-studio.css"), "utf8");
+  assert.match(stylesheet, /grayscale\(1\)/);
+  assert.match(stylesheet, /prefers-reduced-motion: reduce/);
 });
 
 test("paused projects and Onion entry points are inert but retain their source for restoration", () => {
