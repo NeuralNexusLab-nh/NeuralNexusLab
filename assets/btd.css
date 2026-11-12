@@ -47,8 +47,7 @@ h2 { margin: 0; font-size: clamp(17px, 4.5vw, 21px); letter-spacing: -.02em; lin
 .ticket::after { right: -1px; border-right: 0; border-radius: 20px 0 0 20px; }
 .ticket-label { display: flex; justify-content: center; gap: 10px; align-items: center; color: var(--muted); font-size: 12px; }
 .ticket-label span + span { padding-left: 10px; border-left: 1px solid #d6cdd0; line-height: 1.1; }
-code { display: block; margin: 9px 0 18px; color: var(--blue); font: 700 clamp(31px, 7vw, 43px)/1.3 "Courier New", monospace; letter-spacing: .14em; padding-left: .14em; user-select: all; }
-.copy-button { display: inline-flex; justify-content: center; align-items: center; gap: 10px; width: min(270px, 100%); min-height: 46px; padding: 10px 16px; border: 1px solid var(--blue); border-radius: 7px; color: white; background: var(--blue); font-size: 14px; font-weight: 600; transition: background .2s, transform .2s; }
+.copy-button { display: inline-flex; justify-content: center; align-items: center; gap: 10px; width: min(270px, 100%); min-height: 46px; margin-top: 18px; padding: 10px 16px; border: 1px solid var(--blue); border-radius: 7px; color: white; background: var(--blue); font-size: 14px; font-weight: 600; transition: background .2s, transform .2s; }
 .copy-button svg { width: 17px; height: 17px; }
 .copy-button[data-copied="true"] { background: #427c64; border-color: #427c64; }
 .copy-status { min-height: 20px; margin: 7px 0 0; color: #516c5d; font-size: 11px; }

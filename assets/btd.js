@@ -1,5 +1,4 @@
 export const GIFT_CODE = "ELBILLUG";
-export const REVEAL_DELAY = 3800;
 export const PARTY_DURATION = 5600;
 
 export function initBirthday(doc = document) {
@@ -13,7 +12,6 @@ export function initBirthday(doc = document) {
   const copy = doc.getElementById("copy-code");
   const label = doc.getElementById("copy-label");
   const status = doc.getElementById("copy-status");
-  let revealTimer;
   let copyTimer;
   let frame;
   let particles = [];
@@ -85,38 +83,41 @@ export function initBirthday(doc = document) {
     frame = view.requestAnimationFrame(draw);
   }
 
-  function reveal({ announce = true } = {}) {
-    view.clearTimeout(revealTimer);
+  function reveal() {
     const moveFocus = opening.contains(doc.activeElement);
     opening.hidden = true;
     doc.body.dataset.phase = "gift";
+    gift.hidden = false;
     gift.removeAttribute("aria-hidden");
     gift.inert = false;
     replay.hidden = false;
-    if (announce) doc.getElementById("reveal-status").textContent = "生日禮物已拆開！競爭者優惠碼：ELBILLUG。";
+    doc.getElementById("reveal-status").textContent = "生日禮物已拆開！按下按鈕，就能複製競爭者優惠碼。";
     if (moveFocus) copy.focus({ preventScroll: true });
   }
 
   function celebrate() {
-    view.clearTimeout(revealTimer);
     stopConfetti();
+    view.clearTimeout(copyTimer);
+    copy.dataset.copied = "false";
+    label.textContent = "複製優惠碼";
+    status.textContent = "";
     doc.getElementById("reveal-status").textContent = "";
-    if (reducedMotion.matches) { reveal({ announce: false }); return; }
     doc.body.dataset.phase = "celebrate";
     opening.hidden = false;
+    doc.getElementById("open-gift").disabled = false;
+    gift.hidden = true;
     gift.setAttribute("aria-hidden", "true");
     gift.inert = true;
     const moveFocus = doc.activeElement === replay;
     replay.hidden = true;
     if (moveFocus) doc.getElementById("open-gift").focus({ preventScroll: true });
-    if (context) {
+    if (context && !reducedMotion.matches) {
       resize();
       burst = 0;
       seed(width < 600 ? 95 : 165);
       started = previous = view.performance.now();
       frame = view.requestAnimationFrame(draw);
     }
-    revealTimer = view.setTimeout(reveal, REVEAL_DELAY);
   }
 
   copy.addEventListener("click", async () => {
@@ -139,7 +140,7 @@ export function initBirthday(doc = document) {
     copy.disabled = false;
     copy.dataset.copied = String(copied);
     label.textContent = copied ? "已複製！" : "複製優惠碼";
-    status.textContent = copied ? "優惠碼已收好，祝你玩得開心！" : "請選取 ELBILLUG，手動複製。";
+    status.textContent = copied ? "優惠碼已收好，祝你玩得開心！" : "複製失敗，請允許剪貼簿存取後再試一次。";
     view.clearTimeout(copyTimer);
     copyTimer = view.setTimeout(() => {
       copy.dataset.copied = "false";
@@ -151,13 +152,13 @@ export function initBirthday(doc = document) {
   replay.addEventListener("click", celebrate);
   view.addEventListener("resize", resize, { passive: true });
   doc.addEventListener("visibilitychange", () => {
-    if (doc.hidden) { stopConfetti(); reveal({ announce: false }); }
+    if (doc.hidden) stopConfetti();
   });
   reducedMotion.addEventListener("change", () => {
-    if (reducedMotion.matches) { stopConfetti(); reveal({ announce: false }); }
+    if (reducedMotion.matches) stopConfetti();
   });
   view.addEventListener("pagehide", () => {
-    view.clearTimeout(revealTimer); view.clearTimeout(copyTimer); stopConfetti();
+    view.clearTimeout(copyTimer); stopConfetti();
   });
   celebrate();
 }

@@ -59,17 +59,16 @@
       <span class="cake-caption" aria-hidden="true">MAKE A WISH</span>
     </div>
 
-    <div class="opening" id="opening" hidden>
-      <p>許個願，禮物馬上就到。</p>
-      <button type="button" class="open-button" id="open-gift">先拆禮物 <span aria-hidden="true">↗</span></button>
+    <div class="opening" id="opening">
+      <p>許個願吧，願你的願望都能實現。</p>
+      <button type="button" class="open-button" id="open-gift" disabled>許好願了，打開禮物 <span aria-hidden="true">↗</span></button>
     </div>
 
-    <section class="gift" id="gift" aria-labelledby="gift-title">
+    <section class="gift" id="gift" aria-labelledby="gift-title" hidden>
       <div class="gift-heading"><span class="gift-icon" aria-hidden="true">✧</span><div><p class="gift-kicker">A GIFT FOR YOU</p><h2 id="gift-title">這份小禮物，送給你</h2></div><span class="gift-star" aria-hidden="true">✷</span></div>
       <div class="ticket">
         <div class="ticket-label"><span>競爭者</span><span>優惠碼</span></div>
-        <code id="gift-code" tabindex="0" aria-label="優惠碼 ELBILLUG">ELBILLUG</code>
-        <button type="button" class="copy-button" id="copy-code" aria-label="複製優惠碼 ELBILLUG">
+        <button type="button" class="copy-button" id="copy-code" aria-label="複製競爭者優惠碼">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
           <span id="copy-label">複製優惠碼</span>
         </button>
@@ -79,7 +78,7 @@
     </section>
     <p class="reveal-status" id="reveal-status" role="status" aria-live="polite"></p>
     <button class="replay-button" id="replay" type="button" hidden><span aria-hidden="true">↺</span> 再慶祝一次</button>
-    <noscript><p class="noscript-note">生日快樂！可以選取上方優惠碼，直接複製。</p></noscript>
+    <noscript><p class="noscript-note">生日快樂！請啟用 JavaScript，就能打開禮物並複製優惠碼。</p></noscript>
     <footer>MADE FOR YOUR SPECIAL DAY <span aria-hidden="true">♡</span></footer>
   </main>
 </body>
