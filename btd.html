@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#fbf5e9">
+  <meta name="description" content="今天的主角是你。生日快樂，還有一份小禮物等你拆開！">
+  <title>生日快樂！有份禮物送給你 🎂</title>
+  <link rel="stylesheet" href="/assets/btd.css">
+  <script type="module" src="/assets/btd.js"></script>
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <main class="birthday" aria-labelledby="birthday-title">
+    <div class="party-stamp" aria-hidden="true">A LITTLE<br>BIRTHDAY<br>MAGIC <span>✦</span></div>
+    <p class="eyebrow"><span aria-hidden="true">✷</span> TODAY IS YOUR DAY <span aria-hidden="true">✷</span></p>
+    <h1 id="birthday-title">生日快樂<span class="exclamation">！</span></h1>
+    <p class="birthday-wish">願你的快樂不只今天，<br>每一個明天都值得期待。</p>
+
+    <div class="cake-scene" role="img" aria-label="插著三根點燃蠟燭的生日蛋糕">
+      <span class="spark spark-one" aria-hidden="true">✦</span>
+      <span class="spark spark-two" aria-hidden="true">✧</span>
+      <span class="spark spark-three" aria-hidden="true">✶</span>
+      <svg class="cake" viewBox="0 0 420 285" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="210" cy="255" rx="150" ry="15" fill="#e8ddce"/>
+        <path d="M57 241c0-10 69-19 153-19s153 9 153 19v7c0 12-69 21-153 21S57 260 57 248z" fill="#495dca"/>
+        <ellipse cx="210" cy="239" rx="153" ry="20" fill="#6b7edd"/>
+        <path d="M91 150h238v75c0 25-238 25-238 0z" fill="#e9a8b2"/>
+        <path d="M91 178c56 15 183 17 238 0v20c-60 17-176 16-238 0z" fill="#fff0ce"/>
+        <path d="M91 211c57 16 184 15 238 0v14c0 25-238 25-238 0z" fill="#d47f99"/>
+        <ellipse cx="210" cy="150" rx="119" ry="31" fill="#fff5df"/>
+        <path d="M91 149v31c0 14 14 13 17 0v-9c0-10 16-10 16 0v16c0 17 17 17 17 0v-8c0-12 17-12 17 0v12c0 18 18 18 18 0v-8c0-9 18-10 18 0v14c0 16 19 16 19 0v-12c0-10 18-10 18 0v6c0 17 19 17 19 0v-12c0-11 16-11 16 0v8c0 15 17 15 17 0v-15c0-10 17-10 17 0v7c0 14 19 14 19-1v-24c-38 31-200 32-238 0z" fill="#fff5df"/>
+        <g stroke-width="4" stroke-linecap="round">
+          <path d="m130 148 7 4m40 5 5-5m55 7 6 2m37-12 7-3" stroke="#5368c9"/>
+          <path d="m150 134 6 3m49 16 6-3m47-16 7 3m-41-9 4 3" stroke="#d56c88"/>
+        </g>
+        <g class="candles">
+          <rect x="151" y="84" width="13" height="58" rx="3" fill="#7686dc"/>
+          <path d="m152 94 11 8m-11 8 11 8m-11 8 11 8" stroke="#c8d1fc" stroke-width="4"/>
+          <rect x="203" y="68" width="14" height="68" rx="3" fill="#df8d9e"/>
+          <path d="m204 78 12 8m-12 8 12 8m-12 8 12 8" stroke="#ffcfda" stroke-width="4"/>
+          <rect x="257" y="85" width="13" height="56" rx="3" fill="#80a88d"/>
+          <path d="m258 95 11 8m-11 8 11 8m-11 8 11 8" stroke="#c8e2bc" stroke-width="4"/>
+          <g fill="#f3b44d" class="flames">
+            <path d="M158 80c-18-9-8-23 0-33 9 12 17 25 0 33z"/>
+            <path d="M210 64c-18-9-8-23 0-33 9 12 17 25 0 33z"/>
+            <path d="M264 81c-18-9-8-23 0-33 9 12 17 25 0 33z"/>
+          </g>
+          <g fill="#ffe7a5">
+            <path d="M158 77c-7-4-3-10 0-14 4 5 7 10 0 14z"/>
+            <path d="M210 61c-7-4-3-10 0-14 4 5 7 10 0 14z"/>
+            <path d="M264 78c-7-4-3-10 0-14 4 5 7 10 0 14z"/>
+          </g>
+        </g>
+      </svg>
+      <span class="cake-caption" aria-hidden="true">MAKE A WISH</span>
+    </div>
+
+    <div class="opening" id="opening" hidden>
+      <p>許個願，禮物馬上就到。</p>
+      <button type="button" class="open-button" id="open-gift">先拆禮物 <span aria-hidden="true">↗</span></button>
+    </div>
+
+    <section class="gift" id="gift" aria-labelledby="gift-title">
+      <div class="gift-heading"><span class="gift-icon" aria-hidden="true">✧</span><div><p class="gift-kicker">A GIFT FOR YOU</p><h2 id="gift-title">這份小禮物，送給你</h2></div><span class="gift-star" aria-hidden="true">✷</span></div>
+      <div class="ticket">
+        <div class="ticket-label"><span>競爭者</span><span>優惠碼</span></div>
+        <code id="gift-code" tabindex="0" aria-label="優惠碼 ELBILLUG">ELBILLUG</code>
+        <button type="button" class="copy-button" id="copy-code" aria-label="複製優惠碼 ELBILLUG">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+          <span id="copy-label">複製優惠碼</span>
+        </button>
+        <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+      </div>
+      <p class="gift-note">新的一歲，繼續一起玩，<br>也一起收集更多好回憶。</p>
+    </section>
+    <p class="reveal-status" id="reveal-status" role="status" aria-live="polite"></p>
+    <button class="replay-button" id="replay" type="button" hidden><span aria-hidden="true">↺</span> 再慶祝一次</button>
+    <noscript><p class="noscript-note">生日快樂！可以選取上方優惠碼，直接複製。</p></noscript>
+    <footer>MADE FOR YOUR SPECIAL DAY <span aria-hidden="true">♡</span></footer>
+  </main>
+</body>
+</html>
